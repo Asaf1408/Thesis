@@ -1,0 +1,3317 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+% Hebrew does not work unless I use this. 
+\usepackage{culmus}
+
+\usepackage{fancyhdr}
+\fancyhf{}               % Clear fancy header/footer
+\fancyhead[C]{
+\begin{otherlanguage}{English}
+Technion, Faculty of Industrial Engineering and Management
+\end{otherlanguage}
+}   
+\fancyfoot[C]{\thepage}  % Page number in Right footer
+\makeatletter
+\let\ps@plain\ps@fancy   % Plain page style = fancy page style
+\makeatother
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language hebrew
+\language_package auto
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 12
+\spacing other 1.5
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+אופטימיזציה
+\family roman
+\series medium
+\shape up
+\size largest
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+1
+\numeric off
+ -
+\family roman
+\series medium
+\shape up
+\size largest
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+098311
+\numeric off
+
+\begin_inset Newline newline
+\end_inset
+
+גיליון
+\family roman
+\series medium
+\shape up
+\size largest
+\emph off
+\bar no
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\noun default
+\color inherit
+בית מס'
+\family roman
+\series medium
+\shape up
+\size largest
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+2
+\family roman
+\series medium
+\shape up
+\size largest
+\emph off
+\numeric off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+- חורף
+\family roman
+\series medium
+\shape up
+\size largest
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+תשפ
+\begin_inset Quotes erd
+\end_inset
+
+א 
+\numeric on
+2021
+\end_layout
+
+\begin_layout Author
+אסף גנדלר
+\family roman
+\series medium
+\shape up
+\size large
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+301727715
+\family roman
+\series medium
+\shape up
+\size large
+\emph off
+\numeric off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+עידו צ'רנינסקי
+\family roman
+\series medium
+\shape up
+\size large
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+ 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\numeric on
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+312544596
+\numeric off
+ 
+\end_layout
+
+\begin_layout Standard
+\align right
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\bar under
+\lang english
+Problem 1:
+\end_layout
+
+\begin_layout Subsection*
+
+\lang english
+a)
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Find the maximum and minimum of 
+\begin_inset Formula $f\left(x\right)=a^{T}x$
+\end_inset
+
+ over the set: 
+\begin_inset Formula $B\left[0,\alpha\right]=\left\{ x\in\mathbb{R}^{n}:\left\Vert x\right\Vert _{2}\leq\alpha\right\} $
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+First, let's explain why the maximum and minimum are attained.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula $f\left(x\right)=a^{T}x=\sum_{i=1}^{n}a_{i}x_{i}$
+\end_inset
+
+ is a continuous function over 
+\begin_inset Formula $\mathbb{R}^{n}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula $B\left[0,\alpha\right]\subset\mathbb{R}^{n}$
+\end_inset
+
+ is a non empty compact set.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang english
+Therefore, using the Weierstrass Theorem, 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ attains a minimum and a maximum value over 
+\begin_inset Formula $B\left[0,\alpha\right].$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Let's show that all the partial derivatives of 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ exist over all 
+\begin_inset Formula $\mathbb{R}^{n}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Formula 
+\begin{align*}
+f\left(x;e_{i}\right) & =\lim_{t\rightarrow0}\frac{f\left(x+te_{i}\right)-f\left(x\right)}{t}=\lim_{t\rightarrow0}\frac{a^{T}\left(x+te_{i}\right)-a^{T}x}{t}=\\
+ & =\lim_{t\rightarrow0}\frac{a^{T}x+a^{T}te_{i}-a^{T}x}{t}=\lim_{t\rightarrow0}\frac{a^{T}te_{i}}{t}=\lim_{t\rightarrow0}a^{T}e_{i}=a_{i}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Formula 
+\[
+\nabla f\left(x\right)=a
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+The optimum points can be obtained on the boundary or in an interior point.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Let's first check the possibility of an interior point, because all the
+ partial derivatives exist in all 
+\begin_inset Formula $\mathbb{R}^{n}$
+\end_inset
+
+ in must be attained in a stationery point, let's find the stationery points:
+\begin_inset Formula 
+\[
+\nabla f\left(x\right)=0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+a=0
+\]
+
+\end_inset
+
+
+\begin_inset Formula $a$
+\end_inset
+
+ is a non zero vector, thus, there are no stationery points, and the optimum
+ points are not interior points.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Let's check on the boundary, we need to solve:
+\begin_inset Formula 
+\[
+\max_{x\in R^{n}}/\min\left\{ a^{T}x:\left\Vert x\right\Vert _{2}=\alpha\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+using the Cauchy-Schwartz Inequality:
+\begin_inset Formula 
+\[
+\left|a^{T}x\right|\leq\left\Vert a\right\Vert _{2}\left\Vert x\right\Vert _{2}=\alpha\left\Vert a\right\Vert _{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\alpha\left\Vert a\right\Vert _{2}\leq a^{T}x\leq\alpha\left\Vert a\right\Vert _{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+in addition for 
+\begin_inset Formula $x=\alpha\frac{a}{\left\Vert a\right\Vert _{2}}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+a^{T}x=a^{T}\alpha\frac{a}{\left\Vert a\right\Vert _{2}}=\alpha\frac{\left\Vert a\right\Vert _{2}^{2}}{\left\Vert a\right\Vert _{2}}=\alpha\left\Vert a\right\Vert _{2}
+\]
+
+\end_inset
+
+and for 
+\begin_inset Formula $x=-\alpha\frac{a}{\left\Vert a\right\Vert _{2}}$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+a^{T}x=-a^{T}\alpha\frac{a}{\left\Vert a\right\Vert _{2}}=-\alpha\frac{\left\Vert a\right\Vert _{2}^{2}}{\left\Vert a\right\Vert _{2}}=-\alpha\left\Vert a\right\Vert _{2}
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\noindent
+
+\lang english
+We have found an upper and lower bounds that are attained, therefore:
+\begin_inset Formula 
+\[
+\max_{x\in R^{n}}/\min\left\{ a^{T}x:\left\Vert x\right\Vert =\alpha\right\} =\pm\alpha\left\Vert a\right\Vert 
+\]
+
+\end_inset
+
+and:
+\begin_inset Formula 
+\[
+\arg\max_{x\in R^{n}}/\min\left\{ a^{T}x:\left\Vert x\right\Vert =\alpha\right\} =\pm\alpha\frac{a}{\left\Vert a\right\Vert }
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+
+\lang english
+Since the maximum/minimum are attained, and since we didn't find any other
+ optimum points those are the global maximum and minimum of 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+
+\lang english
+b)
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Find the optimum points of 
+\begin_inset Formula $f\left(x,y\right)=3x-5y$
+\end_inset
+
+ over the constraint 
+\begin_inset Formula $U=\left\{ x,y:x^{2}+y^{2}-2y-3\leq0\right\} $
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Let's look at 
+\begin_inset Formula $U$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+x^{2}+y^{2}-2y-3=x^{2}+y^{2}-2y-1+1-3=x^{2}+\left(y-1\right)^{2}-4
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+U=\left\{ x,y:x^{2}+\left(y-1\right)^{2}\leq4\right\} =B\left[\left(\begin{array}{c}
+0\\
+1
+\end{array}\right),2\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Define:
+\begin_inset Formula 
+\[
+a=\left(\begin{array}{c}
+3\\
+-5
+\end{array}\right),z=\left(\begin{array}{c}
+x\\
+y-1
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+a^{T}z=3x-5y+5
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Notice that:
+\begin_inset Formula 
+\[
+\arg\max/\min\left\{ 3x-5y+5:\left(x,y\right)^{T}\in U\right\} =\arg\max/\min\left\{ 3x-5y:\left(x,y\right)^{T}\in U\right\} 
+\]
+
+\end_inset
+
+Therefore, we can solve the left problem instead.
+ Since 
+\begin_inset Formula $z=\left(\begin{array}{c}
+x\\
+y-1
+\end{array}\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\left(x,y\right)^{T}\in U\iff\left\Vert z\right\Vert _{2}^{2}\leq4\iff\left\Vert z\right\Vert _{2}\leq2
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Thus, the left problem is given by:
+\begin_inset Formula 
+\[
+\max/\min\left\{ a^{T}z:\left\Vert z\right\Vert _{2}\leq2\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+which is the exact problem we solved at section 
+\begin_inset Formula $a$
+\end_inset
+
+ and the solution is:
+\begin_inset Formula 
+\[
+z=\pm2\frac{a}{\left\Vert a\right\Vert _{2}}=\pm2\frac{\left(\begin{array}{c}
+3\\
+-5
+\end{array}\right)}{\sqrt{3^{2}+5^{2}}}=\pm2\frac{\left(\begin{array}{c}
+3\\
+-5
+\end{array}\right)}{\sqrt{34}}=\pm\left(\begin{array}{c}
+\frac{6}{\sqrt{34}}\\
+-\frac{10}{\sqrt{34}}
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang english
+Hence, the solution to the original problem is attained at:
+\begin_inset Formula 
+\[
+\left(\begin{array}{c}
+x\\
+y
+\end{array}\right)=\pm\left(\begin{array}{c}
+\frac{6}{\sqrt{34}}\\
+1-\frac{10}{\sqrt{34}}
+\end{array}\right)
+\]
+
+\end_inset
+
+and the maximum
+\backslash
+minimum values are (maximum :
+\begin_inset Formula 
+\[
+f\left(x,y\right)=\pm3\frac{6}{\sqrt{34}}\mp5\left(1-\frac{10}{\sqrt{34}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\bar under
+\lang english
+Problem 2:
+\end_layout
+
+\begin_layout Subsection*
+
+\lang american
+a)
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Let 
+\begin_inset Formula $A\in\mathbb{R}^{n\times n}$
+\end_inset
+
+ and 
+\begin_inset Formula $B\in\mathbb{R}^{m\times m}$
+\end_inset
+
+ be two symmetric matrices.
+ Prove that both 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ are positive semi-definite if and only if:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\[
+C\triangleq\left(\begin{array}{cc}
+A & 0_{n\times m}\\
+0_{m\times n} & B
+\end{array}\right)\succeq0
+\]
+
+\end_inset
+
+First direction:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula $A,B$
+\end_inset
+
+ 
+\begin_inset Formula $\succeq0$
+\end_inset
+
+ 
+\begin_inset Formula $\Rightarrow C\succeq0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\series bold
+\lang american
+Proof:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Let 
+\begin_inset Formula $x\in\mathbb{R}^{n+m}$
+\end_inset
+
+ :
+\begin_inset Formula 
+\[
+x=\left(\begin{array}{c}
+|\\
+x_{1}\\
+|\\
+x_{2}\\
+|
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+where 
+\begin_inset Formula $x_{1}\in\mathbb{R}^{n}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{2}\in\mathbb{R}^{m}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\begin{align*}
+x^{T}Cx & =\sum_{i=1}^{n+m}\sum_{j=i}^{n+m}x_{i}x_{j}C_{i,j}=\sum_{i=1}^{n}\sum_{j=i}^{n}x_{i}x_{j}C_{i,j}+\sum_{i=1}^{n}\sum_{j=n+1}^{n+m}x_{i}x_{j}C_{i,j}+\sum_{i=n+1}^{n+m}\sum_{j=1}^{n}x_{i}x_{j}C_{i,j}+\sum_{i=n+1}^{n+m}\sum_{j=n+1}^{n+m}x_{i}x_{j}C_{i,j}\\
+ & =\sum_{i=1}^{n}\sum_{j=i}^{n}x_{1,i}x_{1,j}A_{i,j}+\sum_{i=1}^{n}\sum_{j=n+1}^{n+m}x_{i}x_{j}\cdot0+\sum_{i=n+1}^{n+m}\sum_{j=1}^{n}x_{i}x_{j}\cdot0+\sum_{i=1}^{m}\sum_{j=1}^{m}x_{2,i}x_{2,j}B_{i,j}\\
+ & =x_{1}^{T}Ax_{1}+x_{2}^{T}Bx_{2}\geq0+0=0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+The last inequality holds since 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ are positive semi-definite meaning:
+\begin_inset Formula 
+\[
+\forall x_{1}\in\mathbb{R}^{n},x_{2}\in\mathbb{R}^{m}:x_{1}^{T}Ax_{1}\geq0,x_{2}^{T}Bx_{2}\geq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Second direction:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula $C\succeq0\Rightarrow A,B\succeq0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Let's assume by contradiction that at least one of the matrices 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+, is not positive semi-definite (without the loss of generality we choose
+ A):
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+thus:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\[
+\exists x_{1}\in\mathbb{R}^{n}:x_{1}^{T}Ax<0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+by choosing:
+\begin_inset Formula 
+\begin{align*}
+x & =\left(\begin{array}{c}
+|\\
+x_{1}\\
+|\\
+0_{m}\\
+|
+\end{array}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+we get:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\[
+x^{T}Cx=x_{1}^{T}Ax_{1}+0_{m}^{T}B0_{m}=x_{1}^{T}Ax_{1}<0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+and that is a contradiction to the given fact that 
+\begin_inset Formula $C\succeq$
+\end_inset
+
+0.
+\begin_inset Newline newline
+\end_inset
+
+To summarize, we got:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula 
+\[
+A,B\succeq0\iff C\succeq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+\noindent
+
+\lang american
+b)
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\[
+C=\left(\begin{array}{ccc}
+2 & 2 & 2\\
+2 & 3 & 3\\
+2 & 3 & 3
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+First, it can be seen that 
+\begin_inset Formula $C$
+\end_inset
+
+ is a symmetric matrix 
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Let's try to rule out options:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula $C$
+\end_inset
+
+ is 
+\series bold
+not 
+\series default
+negative definite
+\backslash
+semi-definite since it's diagonal elements are all positive (hence its trace
+ is positive).
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula $C$
+\end_inset
+
+ is 
+\series bold
+not
+\series default
+ positive definite since it does not have a full rank (hence its determinant
+ equals to zero and not positive).
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+We could not determine easily whether the matrix is positive semi-definite
+ or indefinite.
+ Let's try by definition:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Let 
+\begin_inset Formula $x=\left(\begin{array}{c}
+x_{1}\\
+x_{2}\\
+x_{3}
+\end{array}\right)\in\mathbb{R}^{3}.$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\begin{align*}
+x^{T}Cx & =\sum_{i=1}^{3}\sum_{j=1}^{3}x_{i}\cdot x_{j}\cdot C_{i,j}=2x_{1}^{2}+3x_{2}^{2}+3x_{3}^{2}+4x_{1}x_{2}+4x_{1}x_{3}+6x_{2}x_{3}\\
+ & =2\left(x_{1}^{2}+x_{2}^{2}+x_{3}^{2}+2x_{1}x_{2}+2x_{1}x_{3}+2x_{2}x_{3}\right)+x_{2}^{2}+x_{3}^{2}+2x_{2}x_{3}\\
+ & =2\left(x_{1}+x_{2}+x_{3}\right)^{2}+\left(x_{2}+x_{3}\right)^{2}\geq0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+hence:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula 
+\[
+C\succeq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\[
+D=\left(\begin{array}{ccc}
+1 & 0 & 1\\
+0 & 1 & 0\\
+1 & 0 & 1
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+First, it can be seen that 
+\begin_inset Formula $D$
+\end_inset
+
+ is a symmetric matrix 
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Let's try to rule out options:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula $D$
+\end_inset
+
+ is 
+\series bold
+not 
+\series default
+negative definite
+\backslash
+semi-definite since it's diagonal elements are all positive (hence its trace
+ is positive)
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula $D$
+\end_inset
+
+ is 
+\series bold
+not
+\series default
+ positive definite since it does not have a full rank (hence its determinant
+ equals to zero and not positive).
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula $D$
+\end_inset
+
+ is diagonally dominant (not strictly) with positive diagonal elements thus,
+ it is 
+\series bold
+positive semi-definite
+\series default
+.
+ 
+\end_layout
+
+\begin_layout Subsection*
+\noindent
+
+\lang american
+c)
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\[
+E=\left(\begin{array}{cccc}
+1 & \alpha & 0 & 0\\
+\alpha & 2 & \alpha & 0\\
+0 & \alpha & 2 & \alpha\\
+0 & 0 & \alpha & 1
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+First, 
+\begin_inset Formula $E$
+\end_inset
+
+ is a symmetric matrix 
+\begin_inset Formula $\forall\alpha\in\mathbb{R}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Moreover, 
+\begin_inset Formula $\forall\alpha\in\mathbb{R}$
+\end_inset
+
+, 
+\begin_inset Formula $E$
+\end_inset
+
+ is not negative definite
+\backslash
+semi-definite since it's diagonal elements are all positive (hence its trace
+ is positive).
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Thus, we have three options:
+\end_layout
+
+\begin_layout Subsubsection*
+\noindent
+
+\lang american
+Positive definite
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+As shown in class, 
+\begin_inset Formula $E$
+\end_inset
+
+ is positive definite if and only if 
+\begin_inset Formula $D_{1}\left(E\right)>0,D_{2}\left(E\right)>0,D_{3}\left(E\right)>0,D_{4}\left(E\right)>0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\[
+D_{1}\left(E\right)=1>0,\,\forall\alpha\in\mathbb{R}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+D_{2} & \left(E\right)=2-\alpha^{2}>0\\
+\Rightarrow & \alpha^{2}<2\\
+\Rightarrow\left(*\right) & -\sqrt{2}<\alpha<\sqrt{2}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+D_{3}\left(E\right)=1\cdot\left(4-\alpha^{2}\right)-\alpha\cdot\left(2\alpha-0\right)=4-\alpha^{2}-2\alpha^{2}=4-3\alpha^{2}>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Rightarrow3\alpha^{2}<4
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Rightarrow\alpha^{2}<\frac{4}{3}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Rightarrow\left(**\right)-\frac{2}{\sqrt{3}}<\alpha<\frac{2}{\sqrt{3}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+D_{4}\left(E\right) & =1\left(2\left(2-\alpha^{2}\right)-\alpha\cdot\alpha\right)-\alpha\left(\alpha\left(2-\alpha^{2}\right)\right)=\\
+ & =4-2\alpha^{2}-\alpha^{2}-2\alpha^{2}+\alpha^{4}=\alpha^{4}-5\alpha^{2}+4>0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+let's mark 
+\begin_inset Formula $t=\alpha^{2}:$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+t^{2}-5t+4>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left(t-4\right)\left(t-1\right)>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+t<1\cup t>4
+\]
+
+\end_inset
+
+now go back to 
+\begin_inset Formula $\alpha:$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\alpha^{2}<1\cup\alpha^{2}>4
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left(***\right)-1<\alpha<1\cup\alpha<-2\cup\alpha>2
+\]
+
+\end_inset
+
+the intersection of 
+\begin_inset Formula $\left(*\right)$
+\end_inset
+
+ , 
+\begin_inset Formula $\left(**\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $\left(***\right)$
+\end_inset
+
+ is:
+\begin_inset Formula 
+\[
+-1<\alpha<1
+\]
+
+\end_inset
+
+hence for 
+\begin_inset Formula $\left|\alpha\right|<1,$
+\end_inset
+
+ 
+\begin_inset Formula $E$
+\end_inset
+
+ is 
+\series bold
+positive definite
+\series default
+.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+\noindent
+
+\lang american
+Positive semi-definite
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+for 
+\begin_inset Formula $\alpha=\pm1$
+\end_inset
+
+, 
+\begin_inset Formula $E$
+\end_inset
+
+ is diagonally dominant (not strictly) with positive diagonal elements hence,
+ it is positive semi-definite.
+\end_layout
+
+\begin_layout Subsubsection*
+\noindent
+
+\lang american
+Indefinite 
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+let's take a vector 
+\begin_inset Formula $x\in R^{4}$
+\end_inset
+
+ ant try to classify by definition:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\begin{align*}
+x^{T}Ex & =x_{1}^{2}+2x_{2}^{2}+2x_{3}^{2}+x_{4}^{2}+2\alpha x_{1}x_{2}+2\alpha x_{2}x_{3}+2\alpha x_{3}x_{4}\\
+ & =\left(x_{1}^{2}+2\alpha x_{1}x_{2}+x_{2}^{2}\right)+\left(x_{2}^{2}+2\alpha x_{2}x_{3}+x_{3}^{2}\right)+\left(x_{3}^{2}+2\alpha x_{3}x_{4}+x_{4}^{2}\right)
+\end{align*}
+
+\end_inset
+
+let's pick the vector:
+\begin_inset Formula 
+\[
+x=\left(\begin{array}{c}
+1\\
+1\\
+1\\
+1
+\end{array}\right)
+\]
+
+\end_inset
+
+for this vector we get:
+\begin_inset Formula 
+\[
+x^{T}Ex=6+6\alpha
+\]
+
+\end_inset
+
+notice that for 
+\begin_inset Formula $\alpha<-1$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+x^{T}Ex=6+6\alpha<0
+\]
+
+\end_inset
+
+hence 
+\begin_inset Formula $E$
+\end_inset
+
+ is not positive semi-definite for 
+\begin_inset Formula $\alpha<-1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+we can also pick:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Formula 
+\[
+x=\left(\begin{array}{c}
+1\\
+-1\\
+1\\
+-1
+\end{array}\right)
+\]
+
+\end_inset
+
+for this vector we get:
+\begin_inset Formula 
+\[
+x^{T}Ex=6-6\alpha
+\]
+
+\end_inset
+
+notice that for 
+\begin_inset Formula $\alpha>1$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+x^{T}Ex=6-6\alpha<0
+\]
+
+\end_inset
+
+hence 
+\begin_inset Formula $E$
+\end_inset
+
+ is not positive semi-definite for 
+\begin_inset Formula $\alpha>1$
+\end_inset
+
+ neither.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+conclusion: for 
+\begin_inset Formula $\left|\alpha\right|>1,$
+\end_inset
+
+ 
+\begin_inset Formula $E$
+\end_inset
+
+ is indefinite.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang american
+let's summarize:
+\begin_inset Formula 
+\[
+E=\begin{cases}
+PD & \left|\alpha\right|<1\\
+PSD & \left|\alpha\right|=1\\
+ID & \left|\alpha\right|>1
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\bar under
+\lang english
+Problem 3:
+\end_layout
+
+\begin_layout Subsection*
+
+\lang english
+a)
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+f:\mathbb{R}^{2}\longrightarrow\mathbb{R}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+f\left(x_{1},x_{2}\right)=2x_{1}^{3}-3x_{1}^{2}-6x_{1}x_{2}\left(x_{1}-x_{2}-1\right)=2x_{1}^{3}-3x_{1}^{2}-6x_{1}^{2}x_{2}+6x_{1}x_{2}^{2}+6x_{1}x_{2}
+\]
+
+\end_inset
+
+First of all, 
+\begin_inset Formula $f$
+\end_inset
+
+ is a continuous and differentiable function over all 
+\begin_inset Formula $\mathbb{R}^{2}$
+\end_inset
+
+ therefore any interior optimum point must be a stationery point.
+ In addition, every point in 
+\begin_inset Formula $\mathbb{R}^{2}$
+\end_inset
+
+ is an interior point thus, every optimum point must be a stationery point.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Let's find the stationery points:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+The gradient of 
+\begin_inset Formula $f$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f\left(x_{1},x_{2}\right)}{\partial x_{1}} & =6x_{1}^{2}-6x_{1}-12x_{1}x_{2}+6x_{2}^{2}+6x_{2}=\\
+ & =6\left(x_{1}^{2}-2x_{1}x_{2}+x_{2}^{2}-\left(x_{1}-x_{2}\right)\right)=\\
+ & =6\left(\left(x_{1}-x_{2}\right)^{2}-\left(x_{1}-x_{2}\right)\right)=6\left(x_{1}-x_{2}\right)\left(\left(x_{1}-x_{2}\right)-1\right)
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f\left(x_{1},x_{2}\right)}{\partial x_{2}} & =-6x_{1}^{2}+12x_{1}x_{2}+6x_{1}=-6x_{1}\left(x_{1}-2x_{2}-1\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Compare the gradient to zero:
+\begin_inset Formula 
+\[
+6\left(x_{1}-x_{2}\right)\left(x_{1}-x_{2}-1\right)=0\longrightarrow\left(x_{1}=x_{2}\right)\cup\left(x_{1}=x_{2}+1\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-6x_{1}\left(x_{1}-2x_{2}-1\right)=0\longrightarrow\left(x_{1}=0\right)\cup\left(x_{1}=2x_{2}+1\right)
+\]
+
+\end_inset
+
+To find the stationary points, we need to find all the possible combinations
+ that zeros the gradient.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\noindent
+
+\lang english
+Thus, the stationary points are:
+\begin_inset Formula 
+\[
+\left(0,0\right),\left(0,-1\right),\left(-1,-1\right),\left(1,0\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+To classify the points, let's compute the hessian:
+\begin_inset Formula 
+\[
+\frac{\partial^{2}f\left(x_{1},x_{2}\right)}{\partial x_{1}^{2}}=12x_{1}-6-12x_{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial^{2}f\left(x_{1},x_{2}\right)}{\partial x_{2}^{2}}=12x_{1}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial^{2}f\left(x_{1},x_{2}\right)}{\partial x_{1}\partial x_{2}}=-12x_{1}+12x_{2}+6
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(x_{1},x_{2}\right)=\left(\begin{array}{cc}
+12x_{1}-6-12x_{2} & -12x_{1}+12x_{2}+6\\
+-12x_{1}+12x_{2}+6 & 12x_{1}
+\end{array}\right)=6\left(\begin{array}{cc}
+2x_{1}-1-2x_{2} & -2x_{1}+2x_{2}+1\\
+-2x_{1}+2x_{2}+1 & 2x_{1}
+\end{array}\right)
+\]
+
+\end_inset
+
+let's look at the hessian at each of the stationery points:
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(0,0\right)=6\left(\begin{array}{cc}
+-1 & 1\\
+1 & 0
+\end{array}\right)
+\]
+
+\end_inset
+
+It's enough to look at (multiplication by positive scalar does not change
+ any inequalities):
+\begin_inset Formula 
+\[
+A=\left(\begin{array}{cc}
+-1 & 1\\
+1 & 0
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Tr\left(A\right)=-1<0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+det\left(A\right)=-1<0
+\]
+
+\end_inset
+
+Since it is a 
+\begin_inset Formula $2x2$
+\end_inset
+
+ matrix with negative trace and determinant, 
+\begin_inset Formula $A$
+\end_inset
+
+ is negative definite (as seen in class).
+ Hence, 
+\begin_inset Formula $\left(0,0\right)$
+\end_inset
+
+ is a strict local maximum point.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(0,-1\right)=6\left(\begin{array}{cc}
+1 & -1\\
+-1 & 0
+\end{array}\right)
+\]
+
+\end_inset
+
+It's enough to look at (same reason as before):
+\begin_inset Formula 
+\[
+B=\left(\begin{array}{cc}
+1 & -1\\
+-1 & 0
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+Tr\left(B\right)=1>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+det\left(B\right)=-1<0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Since it is a 
+\begin_inset Formula $2x2$
+\end_inset
+
+ matrix with positive trace and negative determinant, 
+\begin_inset Formula $B$
+\end_inset
+
+ is indefinite.
+ Hence 
+\begin_inset Formula $\left(0,-1\right)$
+\end_inset
+
+ is a saddle point.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(1,0\right)=6\left(\begin{array}{cc}
+1 & -1\\
+-1 & 2
+\end{array}\right)
+\]
+
+\end_inset
+
+It is enough to look at:
+\begin_inset Formula 
+\[
+C=\left(\begin{array}{cc}
+1 & -1\\
+-1 & 2
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+Tr\left(C\right)=3>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+det\left(B\right)=2-1=1>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Since it is a 
+\begin_inset Formula $2x2$
+\end_inset
+
+ matrix with positive trace and determinant, 
+\begin_inset Formula $C$
+\end_inset
+
+ is positive definite, hence 
+\begin_inset Formula $\left(1,0\right)$
+\end_inset
+
+ is a strict local minimum point.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(-1,-1\right)=6\left(\begin{array}{cc}
+-1 & 1\\
+1 & -2
+\end{array}\right)
+\]
+
+\end_inset
+
+It is enough to look at:
+\begin_inset Formula 
+\[
+D=\left(\begin{array}{cc}
+-1 & 1\\
+1 & -2
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+Tr\left(D\right)=-3<0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+det\left(B\right)=2-1=1>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Since it is a 
+\begin_inset Formula $2x2$
+\end_inset
+
+ matrix with negative trace and positive determinant, 
+\begin_inset Formula $D$
+\end_inset
+
+ is indefinite, hence 
+\begin_inset Formula $\left(0,-1\right)$
+\end_inset
+
+ is a saddle point.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+to find global optimum let's look at the function:
+\begin_inset Formula 
+\[
+f\left(x_{1},x_{2}\right)=2x_{1}^{3}-3x_{1}^{2}-6x_{1}x_{2}\left(x_{1}-x_{2}-1\right)=2x_{1}^{3}-3x_{1}^{2}-6x_{1}^{2}x_{2}+6x_{1}x_{2}^{2}+6x_{1}x_{2}
+\]
+
+\end_inset
+
+Let's look at the direction 
+\begin_inset Formula $\left(x,0\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\lim_{x\rightarrow\infty}f\left(x,0\right)=\lim_{x\rightarrow\infty}2x^{3}-3x^{2}=\infty
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Hence, 
+\begin_inset Formula $f\left(x_{1},x_{2}\right)$
+\end_inset
+
+ doesn't have a global maximum.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Let's look at the direction 
+\begin_inset Formula $\left(-x,0\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\lim_{x\rightarrow\infty}f\left(-x,0\right)=\lim_{x\rightarrow\infty}-2x^{3}-3x^{2}=-\infty
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Hence 
+\begin_inset Formula $f\left(x_{1},x_{2}\right)$
+\end_inset
+
+ doesn't have a global minimum.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang english
+To summarize:
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+The stationery points are:
+\begin_inset Formula 
+\[
+\begin{cases}
+\left(0,0\right) & \text{strict local maximum}\\
+\left(0,-1\right) & \text{saddle point}\\
+\left(1,0\right) & \text{strict local minimum}\\
+\left(-1,-1\right) & \text{saddle point}
+\end{cases}
+\]
+
+\end_inset
+
+There are no other local maximum/minimum points and there are no global
+ maximum and minimum.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+
+\lang english
+b)
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+f:\mathbb{R}^{2}\longrightarrow\mathbb{R}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula 
+\[
+f\left(x_{1},x_{2}\right)=\left(x_{1}^{2}+x_{2}^{2}\right)e^{-x_{1}^{2}-x_{2}^{2}}
+\]
+
+\end_inset
+
+First of all, 
+\begin_inset Formula $f$
+\end_inset
+
+ is a continuous and differentiable function over all 
+\begin_inset Formula $\mathbb{R}^{2}$
+\end_inset
+
+ therefore any interior optimum point must be a stationery point.
+ In addition, every point in 
+\begin_inset Formula $\mathbb{R}^{2}$
+\end_inset
+
+ is an interior point thus every optimum point must be a stationery point.
+ Let's find the stationery points:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Denote (only for convenient) 
+\begin_inset Formula $r^{2}=x_{1}^{2}+x_{2}^{2}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\align left
+
+\series bold
+\begin_inset Formula 
+\[
+f\left(x_{1},x_{2}\right)=\left(x_{1}^{2}+x_{2}^{2}\right)e^{-x_{1}^{2}-x_{2}^{2}}=r^{2}e^{-r^{2}}
+\]
+
+\end_inset
+
+
+\series default
+\lang english
+Let's calculate the gradient:
+\end_layout
+
+\begin_layout Standard
+\align left
+\begin_inset Formula 
+\[
+\frac{\partial f}{\partial x_{1}}=2x_{1}e^{-r^{2}}-2r^{2}x_{1}e^{-r^{2}}=2x_{1}e^{-r^{2}}\left(1-r^{2}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial f}{\partial x_{2}}=2x_{2}e^{-r^{2}}\left(1-r^{2}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\nabla f\left(x_{1},x_{2}\right)=\left(\begin{array}{c}
+2x_{1}e^{-r^{2}}\left(1-r^{2}\right)\\
+2x_{2}e^{-r^{2}}\left(1-r^{2}\right)
+\end{array}\right)=\left(\begin{array}{c}
+2x_{1}e^{-\left(x_{1}^{2}+x_{2}^{2}\right)}\left(1-\left(x_{1}^{2}+x_{2}^{2}\right)\right)\\
+2x_{2}e^{-\left(x_{1}^{2}+x_{2}^{2}\right)}\left(1-\left(x_{1}^{2}+x_{2}^{2}\right)\right)
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\lang english
+Stationary points are attained at two cases:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align left
+
+\lang english
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align left
+
+\lang english
+\begin_inset Formula 
+\[
+x_{1}=x_{2}=0\Rightarrow\left(0,0\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula 
+\[
+r^{2}=x_{1}^{2}+x_{2}^{2}=1\Rightarrow\left\{ \left(x_{1},x_{2}\right)|x_{1}^{2}+x_{2}^{2}=1\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+Let's calculate the hessian to classify the points:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial^{2}f}{\partial x_{1}^{2}} & =2\left[e^{-r^{2}}\left(1-r^{2}\right)-2x_{1}^{2}e^{-r^{2}}\left(1-r^{2}\right)-2x_{1}^{2}e^{-r^{2}}\right]\\
+ & =2e^{-r^{2}}\left(1-r^{2}-2x_{1}^{2}+2x_{1}^{2}r^{2}-2x_{1}^{2}\right)\\
+ & =2e^{-r^{2}}\left(1-r^{2}-4x_{1}^{2}+2x_{1}^{2}r^{2}\right)
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial^{2}f}{\partial x_{2}^{2}}=2e^{-r^{2}}\left(1-r^{2}-4x_{2}^{2}+2x_{2}^{2}r^{2}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial^{2}f}{\partial x_{1}\partial x_{2}} & =2x_{1}\left[-2x_{2}e^{-r^{2}}\left(1-r^{2}\right)-2x_{2}e^{-r^{2}}\right]\\
+ & =-4x_{1}x_{2}e^{-r^{2}}\left(1-r^{2}+1\right)\\
+ & =-4x_{1}x_{2}e^{-r^{2}}\left(2-r^{2}\right)
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(x_{1},x_{2}\right)=\left(\begin{array}{cc}
+2e^{-r^{2}}\left(1-r^{2}-4x_{1}^{2}+2x_{1}^{2}r^{2}\right) & -4x_{1}x_{2}e^{-r^{2}}\left(2-r^{2}\right)\\
+-4x_{1}x_{2}e^{-r^{2}}\left(2-r^{2}\right) & 2e^{-r^{2}}\left(1-r^{2}-4x_{2}^{2}+2x_{2}^{2}r^{2}\right)
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(0,0\right)=\left(\begin{array}{cc}
+2 & 0\\
+0 & 2
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\lang english
+
+\begin_inset Formula 
+\[
+det\left(\nabla^{2}f\left(0,0\right)\right)=Tr\left(\nabla^{2}f\left(0,0\right)\right)=4>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Rightarrow\nabla^{2}f\left(0,0\right)\succ0\Rightarrow\left(0,0\right)\text{ is a strict local minimum with the value:}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f\left(0,0\right)=0
+\]
+
+\end_inset
+
+
+\lang hebrew
+
+\begin_inset Formula 
+\begin{align*}
+\nabla^{2}f\left(x_{1}^{2}+x_{2}^{2}=1\right) & =\left(\begin{array}{cc}
+2e^{-1}\left(1-1-4x_{1}^{2}+2x_{1}^{2}\right) & -4x_{1}x_{2}e^{-1}\left(2-1\right)\\
+-4x_{1}x_{2}e^{-1}\left(2-1\right) & 2e^{-1}\left(1-1-4x_{2}^{2}+2x_{2}^{2}\right)
+\end{array}\right)\\
+ & =\left(\begin{array}{cc}
+-4e^{-1}x_{1}^{2} & -4x_{1}x_{2}e^{-1}\\
+-4x_{1}x_{2}e^{-1} & -4e^{-1}x_{2}^{2}
+\end{array}\right)
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+det\left(\nabla^{2}f\left(x_{1}^{2}+x_{2}^{2}=1\right)\right)=16e^{-2}x_{1}^{2}x_{2}^{2}-16e^{-2}x_{1}^{2}x_{2}^{2}=0\leq0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Tr\left(\nabla^{2}f\left(x_{1}^{2}+x_{2}^{2}=1\right)\right)=-2e^{-1}\left(x_{1}^{2}+x_{2}^{2}\right)=-2e^{-1}\leq0
+\]
+
+\end_inset
+
+ 
+\begin_inset Formula 
+\[
+\Rightarrow\nabla^{2}f\left(x_{1}^{2}+x_{2}^{2}=1\right)\preceq0\Rightarrow\left\{ \left(x_{1},x_{2}\right)|x_{1}^{2}+x_{2}^{2}=1\right\} \text{ are non-strict local maximums with the value:}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f\left(x_{1}^{2}+x_{2}^{2}=1\right)=1e^{-1}=e^{-1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+To find global optimum let's look at the function:
+\begin_inset Formula 
+\[
+f\left(x_{1},x_{2}\right)=\left(x_{1}^{2}+x_{2}^{2}\right)e^{-x_{1}^{2}-x_{2}^{2}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\forall x_{1},x_{2}\in\mathbb{R}:f\left(x_{1},x_{2}\right)\geq0
+\]
+
+\end_inset
+
+and:
+\begin_inset Formula 
+\[
+f\left(x_{1},x_{2}\right)=0\iff x_{1}=x_{2}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Therefore the stationery point we have found before 
+\begin_inset Formula $\left(0,0\right)$
+\end_inset
+
+ is actually a strict global minimum point.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+In addition:
+\begin_inset Formula 
+\[
+\lim_{\left|x_{1},x_{2}\right|_{2}\rightarrow\infty}f\left(x_{1},x_{2}\right)=\lim_{\left|x_{1},x_{2}\right|_{2}\rightarrow\infty}\left(x_{1}^{2}+x_{2}^{2}\right)e^{-x_{1}^{2}-x_{2}^{2}}=\lim_{\left|\left(x_{1},x_{2}\right)^{T}\right|_{2}\rightarrow\infty}\left|\left(x_{1},x_{2}\right)^{T}\right|_{2}^{2}e^{-\left|\left(x_{1},x_{2}\right)^{T}\right|_{2}^{2}}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+and the local maximum points we have found:
+\begin_inset Formula 
+\[
+x_{1}^{2}+x_{2}^{2}=1
+\]
+
+\end_inset
+
+ achieves a higher value:
+\begin_inset Formula 
+\[
+f\left(x_{1}^{2}+x_{2}^{2}=1\right)=e^{-1}>0
+\]
+
+\end_inset
+
+Thus, the points on the circle are actually global (non strict) maximum
+ points.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang english
+To summarize:
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+The stationery points are:
+\begin_inset Formula 
+\[
+\begin{cases}
+\left(0,0\right) & \text{strict local minimum}\\
+\left\{ \left(x_{1},x_{2}\right)\in\mathbb{R}^{2}|x_{1}^{2}+x_{2}^{2}=1\right\}  & \text{local maximum}
+\end{cases}
+\]
+
+\end_inset
+
+There are no other local maximum/minimum points.
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $\left(0,0\right)$
+\end_inset
+
+ is a strict global minimum point.
+\end_layout
+
+\begin_layout Plain Layout
+
+\lang english
+\begin_inset Formula $\left\{ x_{1},x_{2}\in\mathbb{R}:x_{1}^{2}+x_{2}^{2}=1\right\} $
+\end_inset
+
+ are global maximum points
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\bar under
+\lang english
+Problem 4:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+Let 
+\begin_inset Formula $f:\mathbb{R}^{n}\rightarrow\mathbb{R}$
+\end_inset
+
+ be a twice continuously differentiable function such that:
+\begin_inset Formula 
+\[
+\forall x\in\mathbb{R}^{n}:\nabla^{2}f\left(x\right)\succ0
+\]
+
+\end_inset
+
+Let 
+\begin_inset Formula $x\in\mathbb{R}^{n}$
+\end_inset
+
+ be a stationary point of 
+\begin_inset Formula $f$
+\end_inset
+
+, meaning:
+\begin_inset Formula 
+\[
+\nabla f\left(x\right)=0_{n}
+\]
+
+\end_inset
+
+Let 
+\begin_inset Formula $y\in R^{n}$
+\end_inset
+
+ such that:
+\begin_inset Formula 
+\[
+y\neq x
+\]
+
+\end_inset
+
+Denote 
+\begin_inset Formula $r=1.1\cdot\left\Vert y-x\right\Vert _{2}$
+\end_inset
+
+ and the ball 
+\begin_inset Formula $B\left(x,r\right)$
+\end_inset
+
+.
+ We know that:
+\end_layout
+
+\begin_layout Itemize
+\noindent
+
+\lang american
+\begin_inset Formula $B\subset\mathbb{R}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\noindent
+
+\lang american
+\begin_inset Formula $y\in B$
+\end_inset
+
+ (since 
+\begin_inset Formula $\left\Vert y-x\right\Vert _{2}<1.1\left\Vert y-x\right\Vert _{2}=r$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+In addition, 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is twice continuously differentiable over 
+\begin_inset Formula $\mathbb{R}^{n}$
+\end_inset
+
+ ,hence, by a the linear approximation theorem:
+\begin_inset Formula 
+\begin{align*}
+\exists\xi\in\left[x,y\right] & :\\
+ & f\left(y\right)=f\left(x\right)+\underbrace{\nabla f\left(x\right)^{T}}_{0_{n}}\left(y-x\right)+\frac{1}{2}\left(y-x\right)^{T}\nabla^{2}f\left(\xi\right)\left(y-x\right)\\
+ & =f\left(x\right)+\frac{1}{2}\underbrace{\left(y-x\right)^{T}\nabla^{2}f\left(\xi\right)\left(y-x\right)}_{\left(*\right)>0}\\
+ & >f\left(x\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+hence:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang american
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula 
+\[
+\forall y\in\mathbb{R}^{n}:f\left(x\right)<f\left(y\right)\Rightarrow x\text{ is a strict global minimum}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $\left(*\right)$
+\end_inset
+
+Since 
+\begin_inset Formula $\nabla^{2}f\left(x\right)\succ0$
+\end_inset
+
+ for all 
+\begin_inset Formula $x\in\mathbb{R}^{n}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\forall c,x\in\mathbb{R}^{n}:c^{T}\nabla^{2}f\left(x\right)c>0
+\]
+
+\end_inset
+
+In particular, for 
+\begin_inset Formula $c=y-x\in\mathbb{R}^{n},$
+\end_inset
+
+we get:
+\begin_inset Formula 
+\[
+\forall y,x\in\mathbb{R}^{n}:\left(y-x\right)^{T}\nabla^{2}f\left(x\right)\left(y-x\right)>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\lang english
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\bar under
+\lang english
+Problem 5:
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is twice continuously differentiable function over 
+\begin_inset Formula $U$
+\end_inset
+
+ ,hence all combined partial derivatives are continuous over 
+\begin_inset Formula $U$
+\end_inset
+
+, meaning that each cell in the hessian, 
+\begin_inset Formula $\nabla^{2}f\left(x\right)$
+\end_inset
+
+ is a continuous function of 
+\begin_inset Formula $x$
+\end_inset
+
+ over 
+\begin_inset Formula $U$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+Let's take an arbitrary vector 
+\begin_inset Formula $y\in R^{n}$
+\end_inset
+
+ and define the function:
+\begin_inset Formula 
+\[
+g\left(x\right):U\longrightarrow\mathbb{R}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+g\left(x\right)=y^{T}\nabla^{2}f\left(x\right)y=\sum_{i=1}^{n}\sum_{j=1}^{n}\left(\nabla^{2}f\left(x\right)\right)_{i,j}y_{i}y_{j}
+\]
+
+\end_inset
+
+As we can see, the function 
+\begin_inset Formula $g\left(x\right)$
+\end_inset
+
+ is a linear combination of the cells of the hessian, meaning it is a linear
+ combination of continuous functions over 
+\begin_inset Formula $U$
+\end_inset
+
+ and hence continuous by itself over 
+\begin_inset Formula $U$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang english
+In addition, in the point 
+\begin_inset Formula $x^{0}\in U$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+g\left(x^{0}\right)=y^{T}\nabla^{2}f\left(x^{0}\right)y>0
+\]
+
+\end_inset
+
+because:
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(x^{0}\right)\succ0
+\]
+
+\end_inset
+
+Since 
+\begin_inset Formula $g\left(x\right)$
+\end_inset
+
+ is a continuous function over 
+\begin_inset Formula $U$
+\end_inset
+
+ , and 
+\begin_inset Formula $g\left(x^{0}\right)>0$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\exists r>0:\forall x\in B\left(x^{0},r\right)\hspace{1em}g\left(x\right)>0
+\]
+
+\end_inset
+
+therefore:
+\begin_inset Formula 
+\[
+\exists r>0:\forall x\in B\left(x^{0},r\right)\hspace{1em}y^{T}\nabla^{2}f\left(x\right)y>0
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\lang english
+Since 
+\begin_inset Formula $y$
+\end_inset
+
+ was chosen arbitrary, this statement is true for every vector 
+\begin_inset Formula $y\in\mathbb{R}^{n}$
+\end_inset
+
+ thus:
+\begin_inset Formula 
+\[
+\exists r>0:\forall x\in B\left(x^{0},r\right)\hspace{1em}\nabla^{2}f\left(x\right)\succ0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
