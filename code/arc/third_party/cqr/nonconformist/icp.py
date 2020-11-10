@@ -13,8 +13,8 @@ from functools import partial
 import numpy as np
 from sklearn.base import BaseEstimator
 
-from nonconformist.base import RegressorMixin, ClassifierMixin
-from nonconformist.util import calc_p
+from third_party.cqr.nonconformist.base import RegressorMixin, ClassifierMixin
+from third_party.cqr.nonconformist.util import calc_p
 
 
 # -----------------------------------------------------------------------------

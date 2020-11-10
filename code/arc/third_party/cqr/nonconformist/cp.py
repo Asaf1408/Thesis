@@ -1,4 +1,4 @@
-from nonconformist.icp import *
+from third_party.cqr.nonconformist.icp import *
 
 # TODO: move contents from nonconformist.icp here
 

@@ -1,6 +1,6 @@
 
 
-from run_experiment_real_data import run_experiment
+from experiments_real_data.run_experiment_real_data import run_experiment
 
 alpha = 0.1
 

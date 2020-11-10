@@ -5,8 +5,8 @@ import pdb
 
 import os, sys
 sys.path.insert(0, os.path.abspath("../third_party/"))
-from cqr import torch_models
-from nonconformist.base import RegressorAdapter
+from third_party.cqr import torch_models
+from third_party.cqr.nonconformist.base import RegressorAdapter
 
 if torch.cuda.is_available():
     device = "cuda:0"

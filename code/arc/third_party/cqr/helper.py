@@ -2,11 +2,11 @@
 import sys
 import torch
 import numpy as np
-from cqr import torch_models
+from third_party.cqr import torch_models
 from functools import partial
-from cqr import tune_params_cv
-from nonconformist.cp import IcpRegressor
-from nonconformist.base import RegressorAdapter
+from third_party.cqr import tune_params_cv
+from third_party.cqr.nonconformist.cp import IcpRegressor
+from third_party.cqr.nonconformist.base import RegressorAdapter
 from skgarden import RandomForestQuantileRegressor
 
 if torch.cuda.is_available():

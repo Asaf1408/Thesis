@@ -4,10 +4,11 @@ from skgarden import RandomForestQuantileRegressor
 from scipy.stats.mstats import mquantiles
 import sys
 sys.path.insert(0, '../third_party')
-from third_party.cqr_comparison import NeuralNetworkQR
+from third_party.cqr_comparison.qr_net import NeuralNetworkQR
 import torch
 
 from arc.classification import ProbabilityAccumulator as ProbAccum
+
 
 class NeuralQuantileRegressor:
     def __init__(self, p, alpha, random_state=2020, verbose=True):
@@ -40,6 +41,7 @@ class NeuralQuantileRegressor:
     def predict(self, X):
         y = self.model.predict(X)
         return y
+
 
 class ForestQuantileRegressor:
     def __init__(self, p, alpha, random_state=2020, verbose=True):
