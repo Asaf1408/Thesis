@@ -1,0 +1,1892 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+% Hebrew does not work unless I use this. 
+\usepackage{culmus}
+
+\usepackage{fancyhdr}
+\fancyhf{}               % Clear fancy header/footer
+\fancyhead[C]{
+\begin{otherlanguage}{English}
+Technion, Faculty of Industrial Engineering and Management
+\end{otherlanguage}
+}   
+\fancyfoot[C]{\thepage}  % Page number in Right footer
+\makeatletter
+\let\ps@plain\ps@fancy   % Plain page style = fancy page style
+\makeatother
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package auto
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 12
+\spacing other 1.5
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\noindent
+Optimization 1 - 098311
+\lang hebrew
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lang english
+Winter 2021 - HW 3
+\end_layout
+
+\begin_layout Author
+\noindent
+Ido Czerninski 312544596, Asaf Gendler 301727715
+\lang hebrew
+ 
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang hebrew
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 1:
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Subsubsection*
+solution 1:
+\end_layout
+
+\begin_layout Standard
+\noindent
+since 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ has a 
+\begin_inset Formula $L$
+\end_inset
+
+ Lipschitz continuous gradient, it is twice continuously differentiable
+ and from the equivalence we saw in the lecture:
+\begin_inset Formula 
+\[
+\left\Vert \nabla^{2}f\left(x\right)\right\Vert \leq L
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+in addition from the linear approximation theorem we know that, there exists
+ 
+\begin_inset Formula $\xi\in\left[x,y\right]$
+\end_inset
+
+ such that:
+\begin_inset Formula 
+\[
+f\left(y\right)=f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right)+\frac{1}{2}\left(y-x\right)^{T}\nabla^{2}f\left(\xi\right)\left(y-x\right)
+\]
+
+\end_inset
+
+from the Cauchy–Schwarz inequality:
+\begin_inset Formula 
+\[
+\left|\left(y-x\right)^{T}\nabla^{2}f\left(\xi\right)\left(y-x\right)\right|\leq\left\Vert \left(y-x\right)\right\Vert \left\Vert \nabla^{2}f\left(\xi\right)\left(y-x\right)\right\Vert 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+and from the induced norm inequality:
+\begin_inset Formula 
+\[
+\left\Vert \left(y-x\right)\right\Vert \left\Vert \nabla^{2}f\left(\xi\right)\left(y-x\right)\right\Vert \leq\left\Vert \left(y-x\right)\right\Vert \left\Vert \nabla^{2}f\left(\xi\right)\right\Vert \left\Vert \left(y-x\right)\right\Vert =\left\Vert \left(y-x\right)\right\Vert ^{2}\left\Vert \nabla^{2}f\left(\xi\right)\right\Vert \leq L\left\Vert \left(y-x\right)\right\Vert ^{2}
+\]
+
+\end_inset
+
+thus:
+\begin_inset Formula 
+\[
+\left|\left(y-x\right)^{T}\nabla^{2}f\left(\xi\right)\left(y-x\right)\right|\leq L\left\Vert \left(y-x\right)\right\Vert ^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left(y-x\right)^{T}\nabla^{2}f\left(\xi\right)\left(y-x\right)\leq L\left\Vert \left(y-x\right)\right\Vert ^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+putting it back in the linear approximation theorem:
+\begin_inset Formula 
+\[
+f\left(y\right)=f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right)+\frac{1}{2}\left(y-x\right)^{T}\nabla^{2}f\left(\xi\right)\left(y-x\right)\leq f\left(y\right)=f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right)+\frac{1}{2}L\left\Vert \left(y-x\right)\right\Vert ^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+f\left(y\right)\leq f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right)+\frac{1}{2}L\left\Vert \left(y-x\right)\right\Vert ^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\blacksquare
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+solution 2:
+\end_layout
+
+\begin_layout Standard
+\noindent
+we know that 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ has a 
+\begin_inset Formula $L$
+\end_inset
+
+ Lipschitz continuous gradient, thus:
+\begin_inset Formula 
+\[
+\left\Vert \nabla f\left(x\right)-\nabla f\left(y\right)\right\Vert \leq L\left\Vert x-y\right\Vert 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+multiply both sides by the positive constant 
+\begin_inset Formula $\left\Vert x-y\right\Vert $
+\end_inset
+
+ :
+\begin_inset Formula 
+\[
+\left\Vert \nabla f\left(x\right)-\nabla f\left(y\right)\right\Vert \left\Vert x-y\right\Vert \leq L\left\Vert x-y\right\Vert ^{2}
+\]
+
+\end_inset
+
+using the Cauchy–Schwarz inequality:
+\begin_inset Formula 
+\[
+\left|\left(\nabla f\left(x\right)-\nabla f\left(y\right)\right)^{T}\left(x-y\right)\right|\leq\left\Vert \nabla f\left(x\right)-\nabla f\left(y\right)\right\Vert \left\Vert x-y\right\Vert 
+\]
+
+\end_inset
+
+thus:
+\begin_inset Formula 
+\[
+\left|\left(\nabla f\left(x\right)-\nabla f\left(y\right)\right)^{T}\left(x-y\right)\right|\leq L\left\Vert x-y\right\Vert ^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left(\nabla f\left(x\right)-\nabla f\left(y\right)\right)^{T}\left(x-y\right)\leq L\left\Vert x-y\right\Vert ^{2}
+\]
+
+\end_inset
+
+define the function:
+\begin_inset Formula 
+\[
+g\left(t\right)=f\left(x+t\left(y-x\right)\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+and notice the next properties:
+\begin_inset Formula 
+\[
+g\left(0\right)=f\left(x\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+g\left(1\right)=f\left(y\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+g'\left(t\right)=\nabla f\left(x+t\left(y-x\right)\right)^{T}\left(y-x\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+g'\left(0\right)=\nabla f\left(x\right)^{T}\left(y-x\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+g\left(1\right)-g\left(0\right)=\intop_{0}^{1}g'\left(t\right)dt\longrightarrow g\left(1\right)=g\left(0\right)+\intop_{0}^{1}g'\left(t\right)dt
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+because of the inequality we proved, than:
+\begin_inset Formula 
+\begin{align*}
+g'\left(t\right)-g'\left(0\right) & =\nabla f\left(x+t\left(y-x\right)\right)^{T}\left(y-x\right)-\nabla f\left(x\right)^{T}\left(y-x\right)=\\
+ & =\left(\nabla f\left(x+t\left(y-x\right)\right)-\nabla f\left(x\right)\right)^{T}\left(y-x\right)=\\
+ & =\frac{1}{t}\left(\nabla f\left(x+t\left(y-x\right)\right)-\nabla f\left(x\right)\right)^{T}\left(x+t\left(y-x\right)-x\right)\\
+ & \leq\frac{1}{t}L\left\Vert x+t\left(y-x\right)-x\right\Vert ^{2}=\frac{1}{t}L\left\Vert t\left(y-x\right)\right\Vert ^{2}=tL\left\Vert \left(y-x\right)\right\Vert ^{2}
+\end{align*}
+
+\end_inset
+
+thus:
+\begin_inset Formula 
+\[
+g'\left(t\right)\leq g'\left(0\right)+tL\left\Vert \left(y-x\right)\right\Vert ^{2}
+\]
+
+\end_inset
+
+putting it all together:
+\begin_inset Formula 
+\begin{align*}
+g\left(1\right) & =g\left(0\right)+\intop_{0}^{1}g'\left(t\right)dt\leq g\left(0\right)+\intop_{0}^{1}g'\left(0\right)+tL\left\Vert \left(y-x\right)\right\Vert ^{2}dt=\\
+ & =g\left(0\right)+g'\left(0\right)+L\left\Vert \left(y-x\right)\right\Vert ^{2}\left[\frac{t^{2}}{2}\right]_{0}^{1}=g\left(0\right)+g'\left(0\right)+\frac{1}{2}L\left\Vert \left(y-x\right)\right\Vert ^{2}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+now going back from 
+\begin_inset Formula $g$
+\end_inset
+
+ to 
+\begin_inset Formula $f$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+f\left(y\right)=f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right)+\frac{1}{2}L\left\Vert \left(y-x\right)\right\Vert ^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Formula 
+\[
+\blacksquare
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+\noindent
+let's look at:
+\begin_inset Formula 
+\begin{align*}
+g_{k}\left(x\right) & =f\left(x_{k}\right)+\nabla f\left(x_{k}\right)^{T}\left(x-x_{k}\right)+\frac{1}{t_{k}}\left\Vert x-x_{k}\right\Vert _{2}^{2}=\\
+ & =f\left(x_{k}\right)+\nabla f\left(x_{k}\right)^{T}x-\nabla f\left(x_{k}\right)^{T}x_{k}+\frac{1}{t_{k}}\left(x^{T}x-2x_{k}^{T}x+x_{k}^{T}x_{k}\right)=\\
+ & =x^{T}\underbrace{\left(\frac{1}{t_{k}}I\right)}_{A}x+2\underbrace{\left(\frac{1}{2}\nabla f\left(x_{k}\right)-\frac{1}{t_{k}}x_{k}\right)^{T}}_{b}x+\underbrace{f\left(x_{k}\right)-\nabla f\left(x_{k}\right)^{T}x_{k}+\frac{1}{t_{k}}x_{k}^{T}x_{k}}_{c}
+\end{align*}
+
+\end_inset
+
+this is a quadratic function of 
+\begin_inset Formula $x$
+\end_inset
+
+ , and in addition 
+\begin_inset Formula $A=\frac{1}{t_{k}}I$
+\end_inset
+
+ is positive definite (
+\begin_inset Formula $t_{k}>0$
+\end_inset
+
+) , hence:
+\begin_inset Formula 
+\[
+x=-A^{-1}b=-t_{k}I\left(\frac{1}{2}\nabla f\left(x_{k}\right)-\frac{1}{t_{k}}x_{k}\right)=x_{k}-\frac{1}{2}t_{k}\nabla f\left(x_{k}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\noindent
+is a strict global minimum of 
+\begin_inset Formula $g_{k}\left(x\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+therefore:
+\begin_inset Formula 
+\[
+x_{k+1}=\arg\min_{x\in R^{n}}\left\{ g_{k}\left(x\right)\right\} =x_{k}-\frac{1}{2}t_{k}\nabla f\left(x_{k}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+c)
+\end_layout
+
+\begin_layout Standard
+for:
+\begin_inset Formula 
+\[
+0<t_{k}\leq\frac{2}{L}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\Downarrow
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+0>\frac{1}{t_{k}}\geq\frac{L}{2}
+\]
+
+\end_inset
+
+Therefore:
+\begin_inset Formula 
+\begin{align*}
+g_{k}\left(x\right) & =f\left(x_{k}\right)+\nabla f\left(x_{k}\right)^{T}\left(x-x_{k}\right)+\frac{1}{t_{k}}\left\Vert x-x_{k}\right\Vert _{2}^{2}\\
+ & \geq f\left(x_{k}\right)+\nabla f\left(x_{k}\right)^{T}\left(x-x_{k}\right)+\frac{L}{2}\left\Vert x_{k}-x\right\Vert _{2}^{2}
+\end{align*}
+
+\end_inset
+
+using the inequality we proved in section 
+\begin_inset Formula $a$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+f\left(x_{k}\right)+\nabla f\left(x_{k}\right)^{T}\left(x-x_{k}\right)+\frac{L}{2}\left\Vert x_{k}-x\right\Vert _{2}^{2}\geq f\left(x\right)
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+hence for the interval 
+\begin_inset Formula $I=\left(0,\frac{2}{L}\right]\subset R_{++}$
+\end_inset
+
+ , for 
+\begin_inset Formula $t_{k}\in I$
+\end_inset
+
+ we have:
+\begin_inset Formula 
+\[
+f\left(x\right)\leq g_{k}\left(x\right),\hspace{1em}\forall x\in R^{n}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+d)
+\end_layout
+
+\begin_layout Standard
+using the inequality from section 
+\begin_inset Formula $c$
+\end_inset
+
+ in the point 
+\begin_inset Formula $x_{k+1}$
+\end_inset
+
+ we get:
+\begin_inset Formula 
+\[
+g_{k}\left(x_{k+1}\right)\geq f\left(x_{k+1}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f\left(x_{k}\right)+\nabla f\left(x_{k}\right)^{T}\left(x_{k+1}-x_{k}\right)+\frac{1}{t_{k}}\left\Vert x_{k+1}-x_{k}\right\Vert _{2}^{2}\geq f\left(x_{k+1}\right)
+\]
+
+\end_inset
+
+plugging 
+\begin_inset Formula $x_{k+1}=x_{k}-\frac{1}{2}t_{k}\nabla f\left(x_{k}\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+f\left(x_{k}\right)-\frac{1}{2}t_{k}\left\Vert \nabla f\left(x_{k}\right)\right\Vert _{2}^{2}+\frac{1}{4}t_{k}\left\Vert \nabla f\left(x_{k}\right)\right\Vert _{2}^{2}\geq f\left(x_{k+1}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f\left(x_{k}\right)-f\left(x_{k+1}\right)\geq\underbrace{\frac{1}{4}t_{k}}_{M>0}\left\Vert \nabla f\left(x_{k}\right)\right\Vert _{2}^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+thus for 
+\begin_inset Formula $\nabla f\left(x_{k}\right)\neq0$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+f\left(x_{k}\right)\geq\underbrace{M}_{>0}\underbrace{\left\Vert \nabla f\left(x_{k}\right)\right\Vert _{2}^{2}}_{>0}+f\left(x_{k+1}\right)>f\left(x_{k+1}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f\left(x_{k}\right)>f\left(x_{k+1}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang hebrew
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 2:
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $x_{0}\in\mathbb{R}^{n}$
+\end_inset
+
+ be the initial guess for the newton method.
+\end_layout
+
+\begin_layout Standard
+We know:
+\begin_inset Formula 
+\[
+x_{1}=x_{0}+d_{0}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+such that:
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(x_{0}\right)d_{0}=-\nabla f\left(x_{0}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+in our case:
+\begin_inset Formula 
+\begin{align*}
+\nabla f\left(x_{0}\right) & =2Ax_{0}+2b\\
+\nabla^{2}f\left(x_{0}\right) & =2A
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence 
+\begin_inset Formula $d_{0}$
+\end_inset
+
+ holds:
+\begin_inset Formula 
+\[
+2Ad_{0}=-2Ax_{0}-2b
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $A\succ0$
+\end_inset
+
+ thus invertible.
+ By multiplying both side in 
+\begin_inset Formula $A^{-1}$
+\end_inset
+
+ we get:
+\begin_inset Formula 
+\begin{align*}
+2d_{0} & =-2x_{0}-2A^{-1}b\\
+d_{0} & =-x_{0}-A^{-1}b
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\begin{align*}
+x_{1} & =x_{0}+d_{0}=x_{0}-x_{0}-A^{-1}b\\
+ & =-A^{-1}b\underbrace{=}_{*}\text{arg\ensuremath{\min_{x\in\mathbb{R}^{n}}f\left(x\right)}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The minimum is attained after one iteration.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\left(*\right)$
+\end_inset
+
+Since 
+\begin_inset Formula $A\succ0$
+\end_inset
+
+ we know that the minimum of the quadratic form is attained exactly at the
+ resulted point.
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+We assume 
+\begin_inset Formula $t$
+\end_inset
+
+ can be any 
+\series bold
+constant
+\series default
+ in 
+\begin_inset Formula $\mathbb{R}_{++}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+Let's find a condition on 
+\begin_inset Formula $x_{0}$
+\end_inset
+
+ in which the optimum point is attained after only one step:
+\end_layout
+
+\begin_layout Standard
+The update rule of the gradient descend algorithm is given by:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x_{min}=x_{0}-t\nabla f\left(x_{0}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+-A^{-1}b & =x_{0}-t\left(2Ax_{0}+2b\right)\\
+ & =\left(I-2tA\right)x_{0}-2tb
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left(I-2tA\right)x_{0}=\left(2tI-A^{-1}\right)b
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-\left(2tI-A^{-1}\right)Ax_{0}=\left(2tI-A^{-1}\right)b
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\underbrace{\left(2tI-A^{-1}\right)}_{B}\left(Ax_{0}+b\right)=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+First, we see that if 
+\begin_inset Formula $B$
+\end_inset
+
+ is invertible 
+\begin_inset Formula $\boxed{x_{0}=A^{-1}b=x_{min}}$
+\end_inset
+
+ is the only point that will achieve optimality after one iteration (by
+ multiplying by the inverse in both sides).
+ 
+\end_layout
+
+\begin_layout Standard
+Otherwise, we know that 
+\begin_inset Formula $\text{Ker}\left(B\right)\neq\left\{ 0\right\} $
+\end_inset
+
+ and the resulted equality hold if and only if:
+\begin_inset Formula 
+\[
+Ax_{0}+b\in\text{Ker}\left(B\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $v$
+\end_inset
+
+ be any eigen vector (not necessarily normalized) with a zero eigen value
+ of 
+\begin_inset Formula $B$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+Ax_{0}+b=v
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+x_{0}=A^{-1}\left(v-b\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 3:
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f\left(x,y\right)=f_{1}\left(x,y\right)^{2}+f_{2}\left(x,y\right)^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+f_{1}\left(x,y\right) & =-13+x+\left(\left(5-y\right)y-2\right)y\\
+f_{2}\left(x,y\right) & =-29+x+\left(\left(y+1\right)y-14\right)y
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+First, for convenient, let's find the first and second derivative of 
+\begin_inset Formula $f_{1},f_{2}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\frac{\partial}{\partial x}f_{1}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial}{\partial y}f_{1} & =y\left(5-2y\right)+\left(\left(5-y\right)y-2\right)\\
+ & =-2y^{2}+5y+5y-y^{2}-2\\
+ & =-3y^{2}+10y-2
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial^{2}}{\partial x^{2}}f_{1}=0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial^{2}}{\partial y^{2}}f_{1}=-6y+10
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial^{2}}{\partial xy}f_{1}=0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial}{\partial x}f_{2}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial}{\partial y}f_{2} & =\left(2y+1\right)y+\left(\left(y+1\right)y-14\right)\\
+ & =2y^{2}+y+y^{2}+y-14\\
+ & =3y^{2}+2y-14
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial^{2}}{\partial x^{2}}f_{2}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial^{2}}{\partial y^{2}}f_{2}=6y+2
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\partial^{2}}{\partial xy}f_{2}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now, let's find the stationary point by checking when the gradient is equal
+ to zero:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial}{\partial x}f\left(x,y\right) & =2\cdot f_{1}\left(x,y\right)\cdot\frac{\partial}{\partial x}f_{1}\left(x,y\right)+2\cdot f_{2}\left(x,y\right)\cdot\frac{\partial}{\partial x}f_{2}\left(x,y\right)\\
+ & =2\left(f_{1}\left(x,y\right)+f_{2}\left(x,y\right)\right)=0\\
+\Rightarrow & f_{2}\left(x,y\right)=-f_{1}\left(x,y\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+ & \boxed{f_{2}\left(x,y\right)=-f_{1}\left(x,y\right)}\\
+\iff & -29+x+\left(\left(y+1\right)y-14\right)y=13-x-\left(\left(5-y\right)y-2\right)y\\
+\iff & -42+2x+y\left(\left(y+1\right)y-14+\left(5-y\right)y-2\right)=0\\
+\iff & -42+2x+y\left(6y-16\right)=0\\
+\iff & 6y^{2}-16y+2x-42=0\\
+\iff & \boxed{x=-3y^{2}+8y+21}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial}{\partial y}f\left(x,y\right) & =2\cdot f_{1}\left(x,y\right)\cdot\frac{\partial}{\partial y}f_{1}\left(x,y\right)+2\cdot f_{2}\left(x,y\right)\cdot\frac{\partial}{\partial y}f_{2}\left(x,y\right)\\
+ & =2\left[f_{1}\left(x,y\right)\cdot\left(-3y^{2}+10y-2\right)+f_{2}\left(x,y\right)\cdot\left(3y^{2}+2y-14\right)\right]
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By using the condition we got on 
+\begin_inset Formula $f_{2}$
+\end_inset
+
+ and in 
+\begin_inset Formula $x$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+ & =2\left[f_{1}\left(x,y\right)\cdot\left(-3y^{2}+10y-2\right)-f_{1}\left(x,y\right)\cdot\left(3y^{2}+2y-14\right)\right]\\
+ & =2f_{1}\left(x,y\right)\left[-6y^{2}+8y+12\right]\\
+ & =-4f_{1}\left(x,y\right)\left(3y^{2}-4y-6\right)\\
+ & =-4f_{1}\left(x,y\right)\left(3y^{2}-4y-6\right)\\
+ & =-4\left(-13+x+\left(\left(5-y\right)y-2\right)y\right)\left(3y^{2}-4y-6\right)\\
+ & =-4\left(-13+x+\left(5y-y^{2}-2\right)y\right)\left(3y^{2}-4y-6\right)\\
+ & =-4\left(-13+x+5y^{2}-y^{3}-2y\right)\left(3y^{2}-4y-6\right)\\
+ & =-4\left(-13-3y^{2}+8y+21+5y^{2}-y^{3}-2y\right)\left(3y^{2}-4y-6\right)\\
+ & =-4\left(-y^{3}+2y^{2}+6y+8\right)\left(3y^{2}-4y-6\right)\\
+ & =4\left(y^{3}-2y^{2}-6y-8\right)\left(3y^{2}-4y-6\right)\\
+ & =4\left(y^{3}-4y^{2}+2y^{2}-8y+2y-8\right)\left(3y^{2}-4y-6\right)\\
+ & =4\left(y^{2}\left(y-4\right)+2y\left(y-4\right)+2\left(y-4\right)\right)\left(3y^{2}-4y-6\right)\\
+ & =4\left(y-4\right)\left(y^{2}+2y+2\right)\left(3y^{2}-4y-6\right)\\
+ & =4\left(y-4\right)\left(y^{2}+2y+2\right)\left[y-\left(\frac{2+\sqrt{22}}{3}\right)\right]\left[y-\left(\frac{2-\sqrt{22}}{3}\right)\right]
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula $p\left(y\right)=y^{2}+2y+2>0,\hspace{1em}\forall y\in R$
+\end_inset
+
+ because:
+\begin_inset Formula 
+\[
+\Delta=4-8=-4<0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence there are exactly three stationery points:
+\begin_inset Formula 
+\[
+y_{1}=4,\hspace{1em}y_{2}=\frac{2+\sqrt{22}}{3}\hspace{1em}y_{3}=\frac{2-\sqrt{22}}{3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+using:
+\begin_inset Formula 
+\[
+x=-3y^{2}+8y+21
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+x_{1}=5
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+x_{2}=\frac{53+4\sqrt{22}}{3}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+x_{3}=\frac{53-4\sqrt{22}}{3}
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+hence the stationery points are:
+\begin_inset Formula 
+\[
+\left(5,4\right),\hspace{1em}\left(\frac{53+4\sqrt{22}}{3},\frac{2+\sqrt{22}}{3}\right),\hspace{1em}\left(\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $f\left(x,y\right)$
+\end_inset
+
+ is twice continuous differentiable over 
+\begin_inset Formula $R^{2},$
+\end_inset
+
+and 
+\begin_inset Formula $R^{2}$
+\end_inset
+
+ is an open set, therefore, all the optimum points must be stationery points,
+ now we just need to classify the stationery points that we have found using
+ the hessian:
+\begin_inset Formula 
+\[
+\frac{\partial^{2}}{\partial x^{2}}f\left(x,y\right)=\frac{\partial}{\partial x}2\left(f_{1}\left(x,y\right)+f_{2}\left(x,y\right)\right)=2\left(1+1\right)=4
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial^{2}}{\partial y\partial x}f\left(x,y\right) & =\frac{\partial}{\partial y}2\left(f_{1}\left(x,y\right)+f_{2}\left(x,y\right)\right)=2\left(-3y^{2}+10y-2+3y^{2}+2y-14\right)=\\
+ & =2\left(12y-16\right)=8\left(3y-4\right)
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial^{2}}{\partial y^{2}}f\left(x,y\right) & =\frac{\partial}{\partial y}2\left[f_{1}\left(x,y\right)\cdot\frac{\partial}{\partial y}f_{1}\left(x,y\right)+f_{2}\left(x,y\right)\cdot\frac{\partial}{\partial y}f_{2}\left(x,y\right)\right]=\\
+ & =2\left(\left(\frac{\partial}{\partial y}f_{1}\left(x,y\right)\right)^{2}+f_{1}\left(x,y\right)\frac{\partial^{2}}{\partial y^{2}}f_{1}\left(x,y\right)+\left(\frac{\partial}{\partial y}f_{2}\left(x,y\right)\right)^{2}+f_{2}\left(x,y\right)\frac{\partial^{2}}{\partial y^{2}}f_{2}\left(x,y\right)\right)=\\
+ & =2\left(\left(-3y^{2}+10y-2\right)^{2}+f_{1}\left(x,y\right)\left(-6y+10\right)+\left(3y^{2}+2y-14\right)^{2}+f_{2}\left(x,y\right)\left(6y+2\right)\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we saw that at the stationery points 
+\begin_inset Formula $f_{1}\left(x,y\right)=f_{2}\left(x,y\right)=-\left(y-4\right)\left(y^{2}+2y+2\right)$
+\end_inset
+
+ 
+\begin_inset Formula 
+\[
+\frac{\partial^{2}}{\partial y^{2}}f\left(x,y\right)=2\left(\left(-3y^{2}+10y-2\right)^{2}-\left(y-4\right)\left(y^{2}+2y+2\right)\left(-12y+8\right)+\left(3y^{2}+2y-14\right)^{2}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(x,y\right)=\left(\begin{array}{cc}
+4 & 8\left(3y-4\right)\\
+8\left(3y-4\right) & 2\left(\left(-3y^{2}+10y-2\right)^{2}-\left(y-4\right)\left(y^{2}+2y+2\right)\left(-12y+8\right)+\left(3y^{2}+2y-14\right)^{2}\right)
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(5,4\right)=\left(\begin{array}{cc}
+4 & 64\\
+64 & 3728
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Tr\left(\nabla^{2}f\left(5,4\right)\right)=3732>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+det\left(\nabla^{2}f\left(5,4\right)\right)=10.816>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+it's a 
+\begin_inset Formula $2X2$
+\end_inset
+
+ matrix, hence:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(5,4\right)\succ0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore 
+\begin_inset Formula $\left(5,4\right)$
+\end_inset
+
+ is a strict local minimum
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(\frac{53+4\sqrt{22}}{3},\frac{2+\sqrt{22}}{3}\right)=\left(\begin{array}{cc}
+4 & -16+8\sqrt{22}\\
+-16+8\sqrt{22} & -643.52
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Tr\left(\nabla^{2}f\left(\frac{53+4\sqrt{22}}{3},\frac{2+\sqrt{22}}{3}\right)\right)=-639.52<0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+det\left(\nabla^{2}f\left(\frac{53+4\sqrt{22}}{3},\frac{2+\sqrt{22}}{3}\right)\right)=-3037.33<0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+it's a 
+\begin_inset Formula $2X2$
+\end_inset
+
+ matrix, hence 
+\begin_inset Formula $\nabla^{2}f\left(\frac{53+4\sqrt{22}}{3},\frac{2+\sqrt{22}}{3}\right)$
+\end_inset
+
+ is indefinite.
+\end_layout
+
+\begin_layout Standard
+Therefore 
+\begin_inset Formula $\left(\frac{53+4\sqrt{22}}{3},\frac{2+\sqrt{22}}{3}\right)$
+\end_inset
+
+ is a saddle.
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3}\right)=\left(\begin{array}{cc}
+4 & -16-8\sqrt{22}\\
+-16-8\sqrt{22} & 901.89
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Tr\left(\nabla^{2}f\left(\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3}\right)\right)=905.89>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+det\left(\nabla^{2}f\left(\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3}\right)\right)=742.81>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+it's a 
+\begin_inset Formula $2X2$
+\end_inset
+
+ matrix, hence:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3}\right)\prec0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore 
+\begin_inset Formula $\left(\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3}\right)$
+\end_inset
+
+ is a strict local minimum.
+\end_layout
+
+\begin_layout Standard
+in addition:
+\begin_inset Formula 
+\[
+f\left(x,y\right)=f_{1}\left(x,y\right)^{2}+f_{2}\left(x,y\right)^{2}\geq0
+\]
+
+\end_inset
+
+and equality hold if and only if 
+\begin_inset Formula $f_{1}\left(x,y\right)=f_{2}\left(x,y\right)=0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+we saw that:
+\begin_inset Formula 
+\[
+f_{1}\left(5,4\right)=f_{2}\left(5,4\right)=0
+\]
+
+\end_inset
+
+hence 
+\begin_inset Formula $\left(5,4\right)$
+\end_inset
+
+ is a global minimizer of 
+\begin_inset Formula $f$
+\end_inset
+
+
+\begin_inset Formula $\left(x,y\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $f\left(x,y\right)$
+\end_inset
+
+ doesn't have a global maximum since it is not bounded, for example in the
+ direction 
+\begin_inset Formula $\left(t,0\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+f\left(t,0\right)=f_{1}\left(t,0\right)^{2}+f_{2}\left(t,0\right)^{2}=\left(-13+t\right)^{2}+\left(-29+t\right)^{2}\xrightarrow{t\rightarrow\infty}\infty
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+to summarize:
+\begin_inset Formula 
+\[
+\begin{cases}
+\left(5,4\right) & \text{global minimizer}\\
+\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3} & \text{strict local minimum}\\
+\frac{53+4\sqrt{22}}{3},\frac{2+\sqrt{22}}{3} & \text{saddle}
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename results.jfif
+	lyxscale 80
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can see that all the algorithm converged to stationary points.
+ Gradient backtracking and gradient newton backtracking converged to a local
+ minimum one time and two time respectively.
+ The rest was the global minimum.
+ Gauss newton backtracking converged to the global minimum in each time.
+ It can be seen that Gauss newton backtracking was the slowest while gradient
+ Newton backtracking was the fastest.
+ As shown in class, it is no surprising since Newton method has a quadratic
+ convergence rate when near the optimum.
+ 
+\end_layout
+
+\begin_layout Subsection*
+\noindent
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 4:
+\end_layout
+
+\begin_layout Standard
+define:
+\begin_inset Formula 
+\[
+f\left(x\right)=\sum_{i=1}^{m}\left(\underbrace{\left|\left|x-a_{i}\right|\right|_{2}}_{=g_{i}\left(x\right)}-d_{i}\right)^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+g_{i}\left(x\right)=\left|\left|x-a_{i}\right|\right|_{2}=\sqrt{\sum_{j=1}^{n}\left(x_{j}-a_{ij}\right)^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+for 
+\begin_inset Formula $x\notin\mathcal{A}=\left\{ a_{1},a_{2},...,a_{m}\right\} $
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial g_{i}}{\partial x_{k}} & =\frac{1}{2g_{i}\left(x\right)}\cdot2\left(x_{k}-a_{ik}\right)\\
+ & =\frac{x_{k}-a_{ik}}{g_{i}\left(x\right)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+Let's compute the gradient of 
+\begin_inset Formula $f$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f}{\partial x_{k}} & =2\sum_{i=1}^{m}\left(g_{i}\left(x\right)-d_{i}\right)\frac{\partial g_{i}}{\partial x_{k}}\\
+ & =2\sum_{i=1}^{m}\left(g_{i}\left(x\right)-d_{i}\right)\frac{x_{k}-a_{ik}}{g_{i}\left(x\right)}\\
+ & =2\sum_{i=1}^{m}\left(\left|\left|x-a_{i}\right|\right|_{2}-d_{i}\right)\frac{x_{k}-a_{ik}}{\left|\left|x-a_{i}\right|\right|_{2}}\\
+ & =
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\nabla f\left(x\right) & =2\sum_{i=1}^{m}\left(\left|\left|x-a_{i}\right|\right|_{2}-d_{i}\right)\frac{\left(x-a_{i}\right)}{\left|\left|x-a_{i}\right|\right|_{2}}\\
+ & =2\sum_{i=1}^{m}\left(x-a_{i}\right)-2\sum_{i=1}^{m}d_{i}\frac{\left(x-a_{i}\right)}{\left|\left|x-a_{i}\right|\right|_{2}}\underbrace{=}_{\text{demand}}0\\
+\Rightarrow & \sum_{i=1}^{m}\left(x-a_{i}\right)-\sum_{i=1}^{m}d_{i}\frac{\left(x-a_{i}\right)}{\left|\left|x-a_{i}\right|\right|_{2}}=0\\
+\Rightarrow & mx-\sum_{i=1}^{m}a_{i}-\sum_{i=1}^{m}d_{i}\frac{\left(x-a_{i}\right)}{\left|\left|x-a_{i}\right|\right|_{2}}=0\\
+\Rightarrow & \boxed{x=\frac{1}{m}\left(\sum_{i=1}^{m}a_{i}+\sum_{i=1}^{m}d_{i}\frac{\left(x-a_{i}\right)}{\left|\left|x-a_{i}\right|\right|_{2}}\right)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+First we know:
+\begin_inset Formula 
+\begin{align*}
+\nabla f\left(x_{k}\right) & =\sum_{i=1}^{m}\left(x_{k}-a_{i}\right)-\sum_{i=1}^{m}d_{i}\frac{\left(x_{k}-a_{i}\right)}{\left|\left|x-a_{i}\right|\right|_{2}}\\
+ & =mx_{k}-\sum_{i=1}^{m}a_{i}-\sum_{i=1}^{m}d_{i}\frac{\left(x_{k}-a_{i}\right)}{\left|\left|x_{k}-a_{i}\right|\right|_{2}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+x_{k+1} & =\frac{1}{m}\left(\sum_{i=1}^{m}a_{i}+\sum_{i=1}^{m}d_{i}\frac{\left(x_{k}-a_{i}\right)}{\left|\left|x_{k}-a_{i}\right|\right|_{2}}\right)\\
+ & =\frac{1}{m}\left(mx_{k}-mx_{k}+\sum_{i=1}^{m}a_{i}+\sum_{i=1}^{m}d_{i}\frac{\left(x_{k}-a_{i}\right)}{\left|\left|x_{k}-a_{i}\right|\right|_{2}}\right)\\
+ & =x_{k}+\frac{1}{m}\left(-mx_{k}+\sum_{i=1}^{m}a_{i}+\sum_{i=1}^{m}d_{i}\frac{\left(x_{k}-a_{i}\right)}{\left|\left|x_{k}-a_{i}\right|\right|_{2}}\right)\\
+ & =x_{k}-\frac{1}{m}\left(mx_{k}-\sum_{i=1}^{m}a_{i}-\sum_{i=1}^{m}d_{i}\frac{\left(x_{k}-a_{i}\right)}{\left|\left|x_{k}-a_{i}\right|\right|_{2}}\right)\\
+ & =x_{k}-\frac{1}{m}\nabla f\left(x\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+we can conclude that the fixed point method is equivalent to the gradient
+ decent method with constant size 
+\begin_inset Formula $t=\frac{1}{m}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
