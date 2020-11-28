@@ -587,7 +587,7 @@ for:
 
 \begin_inset Formula 
 \[
-0>\frac{1}{t_{k}}\geq\frac{L}{2}
+\frac{1}{t_{k}}\geq\frac{L}{2}
 \]
 
 \end_inset
@@ -1352,6 +1352,9 @@ hence the stationery points are:
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula $f\left(x,y\right)$
 \end_inset
 
@@ -1567,7 +1570,7 @@ it's a
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\nabla^{2}f\left(\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3}\right)\prec0
+\nabla^{2}f\left(\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3}\right)\succ0
 \]
 
 \end_inset
@@ -1688,7 +1691,7 @@ b)
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1721,16 +1724,83 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-We can see that all the algorithm converged to stationary points.
- Gradient backtracking and gradient newton backtracking converged to a local
- minimum one time and two time respectively.
+We can see in general, that if the algorithms converge, then they converge
+ to stationary points as expected.
+ Gradient method with backtracking and gradient Newton hybrid method with
+ backtracking converged to a local minimum one time and two time respectively.
  The rest was the global minimum.
- Gauss newton backtracking converged to the global minimum in each time.
- It can be seen that Gauss newton backtracking was the slowest while gradient
- Newton backtracking was the fastest.
+ It can be seen that Gradient method with backtracking was the slowest while
+ gradient Newton hybrid method with backtracking was the fastest.
  As shown in class, it is no surprising since Newton method has a quadratic
  convergence rate when near the optimum.
- 
+ Another thing we see is that the Gauss Newton method with backtracking
+ did not converge in two occasions.
+ Remember that in Gauss Newton we assume that the matrix 
+\begin_inset Formula $J\left(x,y\right)^{T}J\left(x,y\right)$
+\end_inset
+
+ is invertible.
+\end_layout
+
+\begin_layout Standard
+Let's see when is the jacobian non invertible and thus 
+\begin_inset Formula $J\left(x,y\right)^{T}J\left(x,y\right)$
+\end_inset
+
+ non invertible:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+J\left(x,y\right)=\left(\begin{array}{cc}
+\frac{\partial}{\partial x}f_{1}\left(x,y\right) & \frac{\partial}{\partial y}f_{1}\left(x,y\right)\\
+\frac{\partial}{\partial x}f_{2}\left(x,y\right) & \frac{\partial}{\partial y}f_{2}\left(x,y\right)
+\end{array}\right)=\left(\begin{array}{cc}
+1 & -3y^{2}+10y-2\\
+1 & 3y^{2}+2y-14
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+det\left(J\left(x,y\right)\right) & =3y^{2}+2y-14-\left(-3y^{2}+10y-2\right)=\\
+ & =3y^{2}+2y-14+3y^{2}-10y+2=\\
+ & =6y^{2}-8y-12=\\
+ & =2\left(3y^{2}-4y-6\right)=0
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+y_{1,2}=\frac{4\pm\sqrt{16+72}}{6}=\frac{2\pm\sqrt{22}}{3}
+\]
+
+\end_inset
+
+so at every point with a 
+\begin_inset Formula $y$
+\end_inset
+
+ coordinate of 
+\begin_inset Formula $\frac{2\pm\sqrt{22}}{3}$
+\end_inset
+
+ the Jacobian matrix becomes non invertible, thus if the algorithm reached
+ such a point during the iterations it will not converge.
+ Interesting, both the stationery points that we have found (that are not
+ the global minimum) have such 
+\begin_inset Formula $y$
+\end_inset
+
+ values, so it is very likely the algorithm converged to their area, and
+ that the jacobian became very ill conditioned and thus the algorithm did
+ not converge.
 \end_layout
 
 \begin_layout Subsection*

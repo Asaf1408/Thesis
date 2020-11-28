@@ -1,0 +1,3461 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+% Hebrew does not work unless I use this. 
+\usepackage{culmus}
+
+\usepackage{fancyhdr}
+\fancyhf{}               % Clear fancy header/footer
+\fancyhead[C]{
+\begin{otherlanguage}{English}
+Technion, Faculty of Industrial Engineering and Management
+\end{otherlanguage}
+}   
+\fancyfoot[C]{\thepage}  % Page number in Right footer
+\makeatletter
+\let\ps@plain\ps@fancy   % Plain page style = fancy page style
+\makeatother
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package auto
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 12
+\spacing other 1.5
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\noindent
+Optimization 1 - 098311
+\lang hebrew
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lang english
+Winter 2021 - HW 5
+\end_layout
+
+\begin_layout Author
+\noindent
+Ido Czerninski 312544596, Asaf Gendler 301727715
+\lang hebrew
+ 
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang hebrew
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 1:
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $A\in\mathbb{R}^{mxn}$
+\end_inset
+
+ , and 
+\begin_inset Formula $C\subseteq\mathbb{R}^{n}$
+\end_inset
+
+ and 
+\begin_inset Formula $D\subseteq\mathbb{R}^{m}$
+\end_inset
+
+ convex sets.
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+prove that the set 
+\begin_inset Formula $A\left(C\right)$
+\end_inset
+
+ is convex:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+A\left(C\right)=\left\{ Ax\in\mathbb{R}^{n}:x\in C\right\} 
+\]
+
+\end_inset
+
+let 
+\begin_inset Formula $z,y\in A\left(C\right)$
+\end_inset
+
+, from 
+\begin_inset Formula $A\left(C\right)$
+\end_inset
+
+ definition:
+\begin_inset Formula 
+\[
+z=Ax_{z}:x_{z}\in C
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+y=Ax_{y}:x_{y}\in C
+\]
+
+\end_inset
+
+for 
+\begin_inset Formula $\lambda\in\left[0,1\right]$
+\end_inset
+
+ let's look at:
+\begin_inset Formula 
+\[
+\lambda y+\left(1-\lambda\right)z=\lambda Ax_{y}+\left(1-\lambda\right)Ax_{z}=A\left(\lambda x_{y}+\left(1-\lambda\right)x_{z}\right)
+\]
+
+\end_inset
+
+because 
+\begin_inset Formula $C$
+\end_inset
+
+ is a convex set, and 
+\begin_inset Formula $x_{z},x_{y}\in C$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\lambda x_{y}+\left(1-\lambda\right)x_{z}\in C
+\]
+
+\end_inset
+
+thus from 
+\begin_inset Formula $A\left(C\right)$
+\end_inset
+
+ definition:
+\begin_inset Formula 
+\[
+A\left(\lambda x_{y}+\left(1-\lambda\right)x_{z}\right)\in A\left(C\right)
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\forall\lambda\in\left[0,1\right]$
+\end_inset
+
+, 
+\begin_inset Formula $z,y\in A\left(C\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\lambda y+\left(1-\lambda\right)z\in A\left(C\right)
+\]
+
+\end_inset
+
+and therefore 
+\begin_inset Formula $A\left(C\right)$
+\end_inset
+
+ is a convex set by definition.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+prove that the set 
+\begin_inset Formula $A^{-1}\left(D\right)$
+\end_inset
+
+ is convex:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+A^{-1}\left(D\right)=\left\{ x\in\mathbb{R}^{n}:Ax\in D\right\} 
+\]
+
+\end_inset
+
+let 
+\begin_inset Formula $z,y\in A^{-1}\left(D\right)$
+\end_inset
+
+, from 
+\begin_inset Formula $A^{-1}\left(D\right)$
+\end_inset
+
+ definition:
+\begin_inset Formula 
+\[
+Az\in D
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Ay\in D
+\]
+
+\end_inset
+
+for 
+\begin_inset Formula $\lambda\in\left[0,1\right]$
+\end_inset
+
+ let's look at:
+\begin_inset Formula 
+\[
+A\left(\lambda y+\left(1-\lambda\right)z\right)=\lambda Ay+\left(1-\lambda\right)Az
+\]
+
+\end_inset
+
+because 
+\begin_inset Formula $D$
+\end_inset
+
+ is a convex set, and 
+\begin_inset Formula $Az,Ay\in D$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\lambda Ay+\left(1-\lambda\right)Az\in D
+\]
+
+\end_inset
+
+we found that:
+\begin_inset Formula 
+\[
+A\left(\lambda y+\left(1-\lambda\right)z\right)\in D
+\]
+
+\end_inset
+
+thus from 
+\begin_inset Formula $A^{-1}\left(D\right)$
+\end_inset
+
+ definition:
+\begin_inset Formula 
+\[
+\lambda y+\left(1-\lambda\right)z\in A^{-1}\left(D\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\forall\lambda\in\left[0,1\right]$
+\end_inset
+
+, 
+\begin_inset Formula $z,y\in A^{-1}\left(D\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\lambda y+\left(1-\lambda\right)z\in A^{-1}\left(D\right)
+\]
+
+\end_inset
+
+and therefore 
+\begin_inset Formula $A^{-1}\left(D\right)$
+\end_inset
+
+ is a convex set by definition.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang hebrew
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 2:
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $a\neq b\in\mathbb{R}^{n}$
+\end_inset
+
+, Find the values of 
+\begin_inset Formula $\mu\in\mathbb{R}$
+\end_inset
+
+ for which the set 
+\begin_inset Formula $S_{\mu}$
+\end_inset
+
+ is convex.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{\mu}=\left\{ x\in\mathbb{R}^{n}:\left\Vert x-a\right\Vert \leq\mu\left\Vert x-b\right\Vert \right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+for 
+\begin_inset Formula $0<\mu\leq1$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+First, let's try to define the set in a different way:
+\begin_inset Formula 
+\begin{align*}
+ & \left\Vert x-a\right\Vert \leq\mu\left\Vert x-b\right\Vert \\
+\text{all positive}\iff & \left\Vert x-a\right\Vert ^{2}\leq\mu^{2}\left\Vert x-b\right\Vert ^{2}\\
+\iff & x^{T}x-2a^{T}x+a^{T}a\leq\mu^{2}x^{T}x-2\mu^{2}b^{T}x-\mu^{2}b^{T}b\\
+\iff & \underbrace{\left(1-\mu^{2}\right)x^{T}x-2\left(a^{T}-\mu^{2}b^{T}\right)x+a^{T}a-\mu^{2}b^{T}b}_{\triangleq f\left(x\right)}\leq0\\
+\iff & f\left(x\right)\leq0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+S_{\mu}=\left\{ x\in\mathbb{R}^{n}:\left\Vert x-a\right\Vert \leq\mu\left\Vert x-b\right\Vert \right\} =\left\{ x\in\mathbb{R}^{n}:f\left(x\right)\leq0\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Easy way
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+f\left(x\right) & =\left(1-\mu^{2}\right)x^{T}x-2\left(a^{T}-\mu^{2}b^{T}\right)x+a^{T}a-\mu^{2}b^{T}b\\
+ & =x^{T}\underbrace{\left(1-\mu^{2}\right)I}_{\succeq0\text{ (\ensuremath{0<\mu\leq1})}}x-2\left(a^{T}-\mu^{2}b^{T}\right)x+a^{T}a-\mu^{2}b^{T}b
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+hence 
+\begin_inset Formula $S_{\mu}$
+\end_inset
+
+ is ellipsoid which is convex (as shown in the lecture).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Hard way
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $x,y\in S_{\mu}$
+\end_inset
+
+ and define:
+\begin_inset Formula 
+\[
+z=tx+\left(1-t\right)y,\:t\in\left(0,1\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We need to show that:
+\begin_inset Formula 
+\[
+z\in S_{\mu}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Proof:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x,y\in S_{\mu}\Rightarrow f\left(x\right),f\left(y\right)\leq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+f\left(z\right) & =\left(1-\mu^{2}\right)z^{T}z-2\left(a^{T}-\mu^{2}b^{T}\right)z+a^{T}a-\mu^{2}b^{T}b\\
+ & =\left(1-\mu^{2}\right)\left(tx+\left(1-t\right)y\right)^{T}\left(tx+\left(1-t\right)y\right)-2\left(a^{T}-\mu^{2}b^{T}\right)\left(tx+\left(1-t\right)y\right)+a^{T}a-\mu^{2}b^{T}b\\
+ & =\left(1-\mu^{2}\right)\left[t^{2}x^{T}x+\left(1-t\right)^{2}y^{T}y+2t\left(1-t\right)x^{T}y\right]\\
+ & -t\cdot2\left(a^{T}-\mu^{2}b^{T}\right)x-\left(1-t\right)\cdot2\left(a^{T}-\mu^{2}b^{T}\right)y+a^{T}a-\mu^{2}b^{T}b\\
+\left(*\right) & \leq\left(1-\mu^{2}\right)\left[t^{2}x^{T}x+\left(1-t\right)^{2}y^{T}y+t\left(1-t\right)\left(x^{T}x+y^{T}y\right)\right]-...\\
+ & =\left(1-\mu^{2}\right)\left[\left(t^{2}+t\left(1-t\right)\right)x^{T}x+\left(\left(1-t\right)^{2}+t\left(1-t\right)\right)y^{T}y\right]-...\\
+ & =\left(1-\mu^{2}\right)\left[\left(t^{2}+t-t^{2}\right)x^{T}x+\left(\left(1-t\right)\left(1-t+t\right)\right)y^{T}y\right]=...\\
+ & =\left(1-\mu^{2}\right)\left[tx^{T}x+\left(1-t\right)y^{T}y\right]-t\cdot2\left(a^{T}-\mu^{2}b^{T}\right)x-\left(1-t\right)\cdot2\left(a^{T}-\mu^{2}b^{T}\right)y\\
+ & +\left(t+\left(1-t\right)\right)\left(a^{T}a-\mu^{2}b^{T}b\right)\\
+ & =t\left[\left(1-\mu^{2}\right)x^{T}x-2\left(a^{T}-\mu^{2}b^{T}\right)x+a^{T}a-\mu^{2}b^{T}b\right]\\
+ & +\left(1-t\right)\left[\left(1-\mu^{2}\right)y^{T}y-2\left(a^{T}-\mu^{2}b^{T}\right)y+a^{T}a-\mu^{2}b^{T}b\right]\\
+ & =tf\left(x\right)+\left(1-t\right)f\left(y\right)\leq0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f\left(z\right)\leq0\Rightarrow z\in S_{\mu}\Rightarrow S_{\mu}\text{ is convex}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now we need to show why 
+\begin_inset Formula $\left(*\right)$
+\end_inset
+
+ holds :
+\begin_inset Formula 
+\[
+x^{T}y=\left\langle x,y\right\rangle \underbrace{\leq}_{\text{C.S}}\left\Vert x\right\Vert \cdot\left\Vert y\right\Vert =\underbrace{\sqrt{x^{T}x}}_{a}\cdot\underbrace{\sqrt{y^{T}y}}_{b}\leq\frac{1}{2}\left(\underbrace{x^{T}x}_{a^{2}}+\underbrace{y^{T}y}_{b^{2}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Moreover:
+\begin_inset Formula 
+\[
+2\underbrace{\left(1-\mu^{2}\right)}_{>0}\underbrace{t}_{>0}\underbrace{\left(1-t\right)}_{>0}x^{T}y\leq\left(1-\mu^{2}\right)t\left(1-t\right)\left(x^{T}x+y^{T}y\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $1-\mu^{2}\geq0$
+\end_inset
+
+ since 
+\begin_inset Formula $0<\mu<1$
+\end_inset
+
+ (and the same for 
+\begin_inset Formula $t$
+\end_inset
+
+ and 
+\begin_inset Formula $\left(1-t\right)$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Subsubsection*
+for 
+\begin_inset Formula $\mu=0$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+S_{0} & =\left\{ x\in\mathbb{R}^{n}:\left\Vert x-a\right\Vert \leq0\left\Vert x-b\right\Vert \right\} \\
+ & =\left\{ x\in\mathbb{R}^{n}:\left\Vert x-a\right\Vert \leq0\right\} \\
+\left(\text{norms are non-negative}\right) & =\left\{ x\in\mathbb{R}^{n}:\left\Vert x-a\right\Vert =0\right\} \\
+ & =\left\{ a\right\} 
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+which is convex trivially since a convex combination can not be created
+ using only one element.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+for 
+\begin_inset Formula $\mu<0$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+Since all norms are non-negative:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+S_{\mu}=\emptyset
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+which is a convex set trivially (same as above).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+for 
+\begin_inset Formula $\mu>1$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+We will show that 
+\begin_inset Formula $S_{\mu}$
+\end_inset
+
+ is not convex:
+\end_layout
+
+\begin_layout Standard
+define:
+\begin_inset Formula 
+\[
+x=a
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+y=\frac{a-\mu b}{1-\mu}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left\Vert x-a\right\Vert =\left\Vert a-a\right\Vert =0\leq\mu\left\Vert x-b\right\Vert 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+x\in S_{\mu}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+moreover:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\left\Vert y-a\right\Vert  & =\left\Vert \frac{a-\mu b}{1-\mu}-a\right\Vert =\left\Vert \frac{a-\mu b-a+\mu a}{1-\mu}\right\Vert \\
+ & =\left\Vert \frac{-\mu b+\mu a}{1-\mu}\right\Vert =\left|\mu\right|\left\Vert \frac{a-b}{1-\mu}+b-b\right\Vert \\
+ & =\mu\left\Vert \frac{a-b+b-\mu b}{1-\mu}-b\right\Vert =\mu\left\Vert \frac{a-\mu b}{1-\mu}-b\right\Vert \\
+ & =\mu\left\Vert y-b\right\Vert \leq\mu\left\Vert y-b\right\Vert 
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+y\in S_{\mu}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+however, if we choose 
+\begin_inset Formula $\lambda=\frac{1}{\mu}\in\left[0,1\right]$
+\end_inset
+
+ we get:
+\begin_inset Formula 
+\begin{align*}
+z & =\lambda x+\left(1-\lambda\right)y=\frac{a}{\mu}+\left(1-\frac{1}{\mu}\right)\cdot\left(\frac{a-\mu b}{1-\mu}\right)\\
+ & =\frac{a}{\mu}-\left(\frac{1-\mu}{\mu}\right)\cdot\left(\frac{a-\mu b}{1-\mu}\right)=\frac{a}{\mu}-\frac{a-\mu b}{\mu}\\
+ & =\frac{a}{\mu}-\frac{a}{\mu}+b=b
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $z$
+\end_inset
+
+ is attained by a convex combination of 
+\begin_inset Formula $x,y\in S_{\mu}$
+\end_inset
+
+ but:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left\Vert z-a\right\Vert =\left\Vert b-a\right\Vert \underbrace{>}_{a\neq b}0=\left\Vert b-b\right\Vert =\mu\left\Vert z-b\right\Vert 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+z\notin S_{\mu}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+we found 
+\begin_inset Formula $x,y\in S_{\mu}$
+\end_inset
+
+ and a scalar 
+\begin_inset Formula $\lambda\in\left[0,1\right]$
+\end_inset
+
+ such that 
+\begin_inset Formula $\lambda x+\left(1-\lambda\right)y\notin S_{\mu}$
+\end_inset
+
+, hence 
+\begin_inset Formula $S_{\mu}$
+\end_inset
+
+ is not convex by definition.
+\end_layout
+
+\end_inset
+
+the intuition for that is that we showed earlier that the set is in fact
+ an ellipsoid.
+ for 
+\begin_inset Formula $\mu\in\left(0,1\right]$
+\end_inset
+
+ we got the interior of the ellipsoid, which is a convex set, for 
+\begin_inset Formula $\mu>1$
+\end_inset
+
+ we get the exterior of the ellipsoid, which of course is non convex.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+To conclude:
+\begin_inset Formula 
+\[
+\begin{cases}
+S_{\mu}\text{ is convex} & \mu\leq1\\
+S_{\mu}\text{ is not convex} & \mu>1
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 3:
+\end_layout
+
+\begin_layout Standard
+show that the conic hull of the set:
+\begin_inset Formula 
+\[
+S=\left\{ x\in\mathbb{R}^{2}:\left(x_{1}-1\right)^{2}+x_{2}^{2}=1\right\} 
+\]
+
+\end_inset
+
+is the set 
+\begin_inset Formula $\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+first direction:
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $y\in cone\left(S\right)$
+\end_inset
+
+, and let's prove that 
+\begin_inset Formula $y\in\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $y$
+\end_inset
+
+ can be 
+\begin_inset Formula $\left(0,0\right)$
+\end_inset
+
+ as the zero vector always belongs to the conic hull.
+\end_layout
+
+\begin_layout Standard
+in this case it's trivial that 
+\begin_inset Formula $y\in\left\{ x\in R^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let's assume 
+\begin_inset Formula $y\neq\left(0,0\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+such 
+\begin_inset Formula $y$
+\end_inset
+
+ does exist, for example 
+\begin_inset Formula $y=\left(2,0\right)\in cone\left(S\right)$
+\end_inset
+
+ because:
+\begin_inset Formula 
+\[
+y=\underbrace{1}_{\geq0}\cdot\underbrace{\left(2,0\right)}_{\in S}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+because 
+\begin_inset Formula $y\in cone\left(S\right)$
+\end_inset
+
+ it can be written as:
+\begin_inset Formula 
+\[
+y=\sum_{i=1}^{k}\lambda_{i}x_{i}:x_{1},x_{2},...,x_{k}\in S,\lambda_{1},\lambda_{2},...,\lambda_{k}\in\mathbb{R}_{+}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $S$
+\end_inset
+
+ is a circle with a center at 
+\begin_inset Formula $\left(1,0\right)$
+\end_inset
+
+ and a radios of 
+\begin_inset Formula $1$
+\end_inset
+
+, thus:
+\begin_inset Formula 
+\[
+\forall x\in S,x_{1}\geq0
+\]
+
+\end_inset
+
+and equality holds if and only if 
+\begin_inset Formula $x=\left(0,0\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+let's look at the first coordinate of 
+\begin_inset Formula $y$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+y_{1}=\sum_{i=1}^{k}\underbrace{\lambda_{i}}_{\geq0}\underbrace{x_{i_{1}}}_{\geq0}\geq0
+\]
+
+\end_inset
+
+and equality will hold if and only if:
+\begin_inset Formula 
+\[
+\forall\lambda_{i}\neq0\rightarrow x_{i_{1}}=0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\iff\forall\lambda_{i}\neq0\rightarrow x_{i}=\left(0,0\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\iff y_{1}=\left(0,0\right)
+\]
+
+\end_inset
+
+but we assumed 
+\begin_inset Formula $y_{1}\neq\left(0,0\right)$
+\end_inset
+
+ , thus the equality is strict and:
+\begin_inset Formula 
+\[
+y_{1}>0
+\]
+
+\end_inset
+
+hence:
+\begin_inset Formula 
+\[
+y\in\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} 
+\]
+
+\end_inset
+
+we proved that every 
+\begin_inset Formula $y$
+\end_inset
+
+ that belongs to 
+\begin_inset Formula $cons\left(S\right)$
+\end_inset
+
+ also belongs to 
+\begin_inset Formula $\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} $
+\end_inset
+
+ thus:
+\begin_inset Formula 
+\[
+\boxed{cone\left(S\right)\subseteq\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} }
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+second direction:
+\end_layout
+
+\begin_layout Standard
+now let 
+\begin_inset Formula $y\in\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} $
+\end_inset
+
+, and let's prove that 
+\begin_inset Formula $y\in cone\left(S\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $y=\left(0,0\right)$
+\end_inset
+
+ than 
+\begin_inset Formula $y\in cone\left(S\right)$
+\end_inset
+
+ as we said before that the zero vector always belongs to the conic hull.
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $y\in\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} $
+\end_inset
+
+, lets show it can be written as a conic combination of vectors from 
+\begin_inset Formula $S$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+let's assume 
+\begin_inset Formula 
+\[
+y=\lambda v\longrightarrow v=\frac{y}{\lambda}
+\]
+
+\end_inset
+
+for some 
+\begin_inset Formula $v\in S$
+\end_inset
+
+, 
+\begin_inset Formula $\lambda\in\mathbb{R}_{++}$
+\end_inset
+
+ then:
+\begin_inset Formula 
+\[
+\left(v_{1}-1\right)^{2}+v_{2}^{2}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\iff\left(\frac{y_{1}}{\lambda}-1\right)^{2}+\left(\frac{y_{2}}{\lambda}\right)^{2}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\iff\frac{y_{1}^{2}}{\lambda^{2}}-2\frac{y_{1}}{\lambda}+1+\frac{y_{2}^{2}}{\lambda^{2}}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\iff\frac{y_{1}^{2}}{\lambda^{2}}-2\frac{y_{1}}{\lambda}+\frac{y_{2}^{2}}{\lambda^{2}}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+because 
+\begin_inset Formula $\lambda\in\mathbb{R}_{++}$
+\end_inset
+
+ we can multiply by 
+\begin_inset Formula $\lambda^{2}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\iff y_{1}^{2}-2y_{1}\lambda+y_{2}^{2}=0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\iff2y_{1}\lambda=y_{1}^{2}+y_{2}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $y\in\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} $
+\end_inset
+
+ thus 
+\begin_inset Formula $y_{1}>0$
+\end_inset
+
+ and we can divide by it:
+\begin_inset Formula 
+\[
+\iff\lambda=\frac{y_{1}^{2}+y_{2}^{2}}{2y_{1}}
+\]
+
+\end_inset
+
+looking at what we did in the opposite direction, if we choose:
+\begin_inset Formula 
+\[
+\lambda=\frac{y_{1}^{2}+y_{2}^{2}}{2y_{1}}>0
+\]
+
+\end_inset
+
+then the vector 
+\begin_inset Formula $v=\frac{y}{\lambda}$
+\end_inset
+
+ satisfies:
+\begin_inset Formula 
+\[
+\left(v_{1}-1\right)^{2}+v_{2}^{2}=1
+\]
+
+\end_inset
+
+thus 
+\begin_inset Formula $v\in S$
+\end_inset
+
+ and for 
+\begin_inset Formula $\lambda\in\mathbb{R}_{+}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+y=\lambda v
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+therefore 
+\begin_inset Formula $y$
+\end_inset
+
+ is a conic combination of vectors from 
+\begin_inset Formula $S$
+\end_inset
+
+, and by definition:
+\begin_inset Formula 
+\[
+y\in con\left(S\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we proved that every 
+\begin_inset Formula $y$
+\end_inset
+
+ that belongs to 
+\begin_inset Formula $\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} $
+\end_inset
+
+ also belongs to 
+\begin_inset Formula $cone\left(S\right)$
+\end_inset
+
+ thus:
+\begin_inset Formula 
+\[
+\boxed{\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} \subseteq cone\left(S\right)}
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+combining both the directions we have proved, we get:
+\begin_inset Formula 
+\[
+cone\left(S\right)=\left\{ x\in\mathbb{R}^{2}:x_{1}>0\right\} \cup\left\{ \left(0,0\right)\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+\noindent
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 4:
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $\emptyset\neq S\subseteq\mathbb{R}^{n}$
+\end_inset
+
+ and let 
+\begin_inset Formula $\bar{x}\in S$
+\end_inset
+
+.
+ Consider the set:
+\begin_inset Formula 
+\[
+C_{\bar{x}}=\left\{ y\in\mathbb{R}^{n}:y=\lambda\left(x-\bar{x}\right),\lambda\geq0,x\in S\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+Show that 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is a cone and interpret it geometrically.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+from a geometrical perspective 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is a set of all the points on rays from the origin such that if those rays
+ were taken from 
+\begin_inset Formula $\bar{x}$
+\end_inset
+
+, they would have an intersection with at least one point in 
+\begin_inset Formula $S$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $z\in C_{\bar{x}}$
+\end_inset
+
+ , than by the set definition:
+\begin_inset Formula 
+\[
+z=\lambda_{z}\left(x_{z}-\bar{x}\right),\lambda_{z}\geq0,x_{z}\in S
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let's look at 
+\begin_inset Formula $\lambda z$
+\end_inset
+
+ for some 
+\begin_inset Formula $\lambda\in\mathbb{R}_{+}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\lambda z=\underbrace{\lambda\lambda_{z}}_{\tilde{\lambda}}\left(x_{z}-\bar{x}\right)=\tilde{\lambda}\left(x_{z}-\bar{x}\right)
+\]
+
+\end_inset
+
+since 
+\begin_inset Formula $\lambda_{z},\lambda\in\mathbb{R}_{+}$
+\end_inset
+
+ than also 
+\begin_inset Formula $\tilde{\lambda}\in\mathbb{R}_{+}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\tilde{\lambda}\in\mathbb{R}_{+}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{z}\in S$
+\end_inset
+
+ thus by 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ definition:
+\begin_inset Formula 
+\[
+\lambda z=\tilde{\lambda}\left(x_{z}-\bar{x}\right)\in C_{\bar{x}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+we proved that 
+\begin_inset Formula $\forall z\in C_{\bar{x}},\lambda\in\mathbb{R}_{+}\rightarrow$
+\end_inset
+
+ 
+\begin_inset Formula $\lambda z\in C_{\bar{x}}$
+\end_inset
+
+ , thus 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is a cone by definition.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+Show that if 
+\begin_inset Formula $S$
+\end_inset
+
+ is convex than 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is convex.
+\end_layout
+
+\begin_layout Standard
+since we already showed that 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is a cone, using the lemma from the lecture, we just need to show that:
+\begin_inset Formula 
+\[
+z_{1},z_{2}\in C_{\bar{x}}\Rightarrow z_{1}+z_{2}\in C_{\bar{x}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $z_{1},z_{2}\in C_{\bar{x}}$
+\end_inset
+
+ , than by the 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ definition:
+\begin_inset Formula 
+\[
+z_{1}=\lambda_{z_{1}}\left(x_{z_{1}}-\bar{x}\right),\lambda_{z_{1}}\geq0,x_{z_{1}}\in S
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+z_{2}=\lambda_{z_{2}}\left(x_{z_{2}}-\bar{x}\right),\lambda_{z_{2}}\geq0,x_{z_{2}}\in S
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+now let's look at 
+\begin_inset Formula $z_{1}+z_{2}$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+z_{1}+z_{2} & =\lambda_{z_{1}}\left(x_{z_{1}}-\bar{x}\right)+\lambda_{z_{2}}\left(x_{z_{2}}-\bar{x}\right)=\\
+ & =\lambda_{z_{1}}x_{z_{1}}-\lambda_{z_{1}}\bar{x}+\lambda_{z_{2}}x_{z_{2}}-\lambda_{z_{2}}\bar{x}=\\
+ & =\lambda_{z_{1}}x_{z_{1}}+\lambda_{z_{2}}x_{z_{2}}-\left(\lambda_{z_{1}}+\lambda_{z_{2}}\right)\bar{x}=\\
+ & \overset{\left\{ *\right\} }{=}\left(\lambda_{z_{1}}+\lambda_{z_{2}}\right)\left(\frac{\lambda_{z_{1}}x_{z_{1}}+\lambda_{z_{2}}x_{z_{2}}}{\lambda_{z_{1}}+\lambda_{z_{2}}}-\bar{x}\right)=\\
+ & =\left(\lambda_{z_{1}}+\lambda_{z_{2}}\right)\left(\frac{\lambda_{z_{1}}}{\lambda_{z_{1}}+\lambda_{z_{2}}}x_{z_{1}}+\frac{\lambda_{z_{2}}}{\lambda_{z_{1}}+\lambda_{z_{2}}}x_{z_{2}}-\bar{x}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+if we denote:
+\begin_inset Formula 
+\[
+\tilde{\lambda}=\frac{\lambda_{z_{1}}}{\lambda_{z_{1}}+\lambda_{z_{2}}}\in\left[0,1\right]
+\]
+
+\end_inset
+
+then:
+\begin_inset Formula 
+\[
+1-\tilde{\lambda}=1-\frac{\lambda_{z_{1}}}{\lambda_{z_{1}}+\lambda_{z_{2}}}=\frac{\lambda_{z_{1}}+\lambda_{z_{2}}-\lambda_{z_{1}}}{\lambda_{z_{1}}+\lambda_{z_{2}}}=\frac{\lambda_{z_{2}}}{\lambda_{z_{1}}+\lambda_{z_{2}}}
+\]
+
+\end_inset
+
+hence:
+\begin_inset Formula 
+\[
+z_{1}+z_{2}=\left(\lambda_{z_{1}}+\lambda_{z_{2}}\right)\left(\tilde{\lambda}x_{z_{1}}+\left(1-\tilde{\lambda}\right)x_{z_{2}}-\bar{x}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula $x_{z_{1}},x_{z_{2}}\in S$
+\end_inset
+
+ and 
+\begin_inset Formula $\tilde{\lambda}\in\left[0,1\right]$
+\end_inset
+
+, then because 
+\begin_inset Formula $S$
+\end_inset
+
+ is convex:
+\begin_inset Formula 
+\[
+v=\tilde{\lambda}x_{z_{1}}+\left(1-\tilde{\lambda}\right)x_{z_{2}}\in S
+\]
+
+\end_inset
+
+in addition 
+\begin_inset Formula $\bar{\lambda}=\lambda_{z_{1}}+\lambda_{z_{2}}\in\mathbb{R}_{+}$
+\end_inset
+
+ since each one of terms belongs to 
+\begin_inset Formula $\mathbb{R}_{+}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+now from 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ definition:
+\begin_inset Formula 
+\[
+z_{1}+z_{2}=\bar{\lambda}\left(v-\bar{x}\right)\in C_{\bar{x}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\left\{ *\right\} $
+\end_inset
+
+ this equality is true only if 
+\begin_inset Formula $\lambda_{z_{1}}+\lambda_{z_{2}}>0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $\lambda_{z_{1}},\lambda_{z_{2}}\in\mathbb{R}_{+}$
+\end_inset
+
+ , it always holds that 
+\begin_inset Formula $\lambda_{z_{1}}+\lambda_{z_{2}}\geq0$
+\end_inset
+
+.
+ if 
+\begin_inset Formula $\lambda_{z_{1}}+\lambda_{z_{2}}=0$
+\end_inset
+
+ , it means 
+\begin_inset Formula $\lambda_{z_{1}}=\lambda_{z_{2}}=0.$
+\end_inset
+
+ in this case 
+\begin_inset Formula $z_{1}+z_{2}=0$
+\end_inset
+
+ and 
+\begin_inset Formula $0\in C_{\bar{x}}$
+\end_inset
+
+ and the proof still holds.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is a cone, and 
+\begin_inset Formula $z_{1},z_{2}\in C_{\bar{x}}\Rightarrow z_{1}+z_{2}\in C_{\bar{x}}$
+\end_inset
+
+ , hence 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is a convex cone.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+c)
+\end_layout
+
+\begin_layout Standard
+Suppose that 
+\begin_inset Formula $S$
+\end_inset
+
+ is closed, it is not necessarily means that 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is closed.
+\end_layout
+
+\begin_layout Standard
+let's take for example the set from pre-lecture 6 quiz in 
+\begin_inset Formula $\mathbb{R}^{2}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+S=\left\{ \left(x,y\right):y=e^{-x},x\geq0\right\} \cup\left\{ \left(0,0\right)\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+this is a closed set.
+\end_layout
+
+\begin_layout Standard
+let's take 
+\begin_inset Formula $\bar{x}=\left(0,0\right)\in S$
+\end_inset
+
+.
+\begin_inset Formula 
+\[
+C_{\bar{x}}=\left\{ y\in\mathbb{R}^{2}:y=\lambda x,\lambda\geq0,x\in S\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+in this case 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is the entire first quadrant but without the positive 
+\begin_inset Formula $x$
+\end_inset
+
+ axis, thus 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is not closed.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+conditions under which 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ will be closed:
+\end_layout
+
+\begin_layout Subsubsection*
+1)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+if 
+\begin_inset Formula $S$
+\end_inset
+
+ is a finite set, than 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is close.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+proof:
+\end_layout
+
+\begin_layout Standard
+first every finite set is closed, so the condition holds.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $S$
+\end_inset
+
+ is finite, thus it has 
+\begin_inset Formula $k$
+\end_inset
+
+ elements for some 
+\begin_inset Formula $k\in\mathcal{\mathbb{N}}$
+\end_inset
+
+.
+ (
+\begin_inset Formula $k$
+\end_inset
+
+ can't be zero because 
+\begin_inset Formula $S$
+\end_inset
+
+ is non empty)
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $\bar{x}\in S$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+denote the elements of 
+\begin_inset Formula $S$
+\end_inset
+
+ as 
+\begin_inset Formula $\left\{ a_{i}\right\} _{i=1}^{k}$
+\end_inset
+
+, and define the set that contains 
+\begin_inset Formula $a_{i}-\bar{x}$
+\end_inset
+
+ solely:
+\begin_inset Formula 
+\[
+S_{i}=\left\{ a_{i}-\bar{x}\right\} 
+\]
+
+\end_inset
+
+
+\begin_inset Formula $cone\left(S_{i}\right)$
+\end_inset
+
+ is the set 
+\begin_inset Formula $\left\{ y\in\mathbb{R}^{n}:y=\lambda\left(a_{i}-\bar{x}\right),\lambda\geq0\right\} $
+\end_inset
+
+ and is a closed set using the theorem from the lecture about a conic hull
+ of finite sets.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ can be written as:
+\begin_inset Formula 
+\[
+C_{\bar{x}}=\bigcup_{i=1}^{k}cone\left(S_{i}\right)
+\]
+
+\end_inset
+
+a finite union of closed sets is closed, thus 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is closed.
+\end_layout
+
+\begin_layout Subsubsection*
+2)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+if 
+\begin_inset Formula $\bar{x}\in int\left(S\right)$
+\end_inset
+
+ then 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is closed.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+proof:
+\end_layout
+
+\begin_layout Standard
+we will show that 
+\begin_inset Formula $C_{\bar{x}}=\mathbb{R}^{n}$
+\end_inset
+
+ hence 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ is closed.
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $y\in C_{\bar{x}}$
+\end_inset
+
+, then by the definition of 
+\begin_inset Formula $C_{\bar{x}}$
+\end_inset
+
+ , 
+\begin_inset Formula $y\in\mathbb{R}^{n}\longrightarrow C_{\bar{x}}\subseteq\mathbb{R}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $y\in\mathbb{R}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $y=0_{n}$
+\end_inset
+
+ then for 
+\begin_inset Formula $x=\bar{x}\in S$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda=\sqrt{\pi}\geq0$
+\end_inset
+
+ we get:
+\begin_inset Formula 
+\[
+y=\lambda\left(x-\bar{x}\right)
+\]
+
+\end_inset
+
+hence 
+\begin_inset Formula $y\in C_{\bar{x}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $y\neq0_{n}$
+\end_inset
+
+ then:
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $\bar{x}\in int\left(S\right)$
+\end_inset
+
+ then:
+\begin_inset Formula 
+\[
+\exists r>0:B\left(\bar{x},r\right)\subseteq S
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+define:
+\begin_inset Formula 
+\[
+z\overset{\left\Vert y\right\Vert >0}{=}\bar{x}+\frac{r}{2\left\Vert y\right\Vert }y
+\]
+
+\end_inset
+
+notice that:
+\begin_inset Formula 
+\[
+\left\Vert z-\bar{x}\right\Vert =\left\Vert \bar{x}+\frac{r}{2\left\Vert y\right\Vert }y-\bar{x}\right\Vert =\left\Vert \frac{r}{2\left\Vert y\right\Vert }y\right\Vert =\frac{r}{2}\left\Vert \frac{y}{\left\Vert y\right\Vert }\right\Vert =\frac{r}{2}<r
+\]
+
+\end_inset
+
+hence:
+\begin_inset Formula 
+\[
+z\in B\left(\bar{x},r\right)\subseteq S\longrightarrow z\in S
+\]
+
+\end_inset
+
+if we choose:
+\begin_inset Formula 
+\[
+\lambda=\frac{2\left\Vert y\right\Vert }{r}\geq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+then:
+\begin_inset Formula 
+\[
+\lambda\left(z-\bar{x}\right)=\frac{2\left\Vert y\right\Vert }{r}\left(\bar{x}+\frac{r}{2\left\Vert y\right\Vert }y-\bar{x}\right)=\frac{2\left\Vert y\right\Vert }{r}\left(\frac{r}{2\left\Vert y\right\Vert }y\right)=y
+\]
+
+\end_inset
+
+therefore 
+\begin_inset Formula $y\in C_{\bar{x}}\longrightarrow\mathbb{R}^{n}\subseteq C_{\bar{x}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+to conclude 
+\begin_inset Formula $C_{\bar{x}}=R^{n}$
+\end_inset
+
+ which is a closed set
+\end_layout
+
+\begin_layout Subsection*
+\noindent
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 5:
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $a_{1},a_{2}\in K$
+\end_inset
+
+, by 
+\begin_inset Formula $K$
+\end_inset
+
+ definition:
+\begin_inset Formula 
+\[
+x^{*}=\arg\min_{x\in S}\left\{ a_{1}^{T}x\right\} =\arg\min_{x\in S}\left\{ a_{2}^{T}x\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+note: we use the terminology 
+\begin_inset Formula $\arg\min$
+\end_inset
+
+ in this question, although the minimum doesn't have to be unique, by saying
+ this we mean 
+\begin_inset Formula $x^{*}$
+\end_inset
+
+ is one of the arguments that minimizes the expression.
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $\lambda\in\left[0,1\right]$
+\end_inset
+
+, notice that both 
+\begin_inset Formula $\lambda\geq0$
+\end_inset
+
+ and 
+\begin_inset Formula $\left(1-\lambda\right)\geq0$
+\end_inset
+
+ hence:
+\begin_inset Formula 
+\[
+\left(\lambda a_{1}+\left(1-\lambda\right)a_{2}\right)^{T}x=\lambda a_{1}^{T}x+\left(1-\lambda\right)a_{2}^{T}x\geq\lambda a_{1}^{T}x^{*}+\left(1-\lambda\right)a_{2}^{T}x^{*}=\left(\lambda a_{1}+\left(1-\lambda\right)a_{2}\right)^{T}x^{*}
+\]
+
+\end_inset
+
+and of course for 
+\begin_inset Formula $x=x^{*}\in S$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\left(\lambda a_{1}+\left(1-\lambda\right)a_{2}\right)^{T}x=\left(\lambda a_{1}+\left(1-\lambda\right)a_{2}\right)^{T}x^{*}
+\]
+
+\end_inset
+
+thus:
+\begin_inset Formula 
+\[
+x^{*}=\arg\min_{x\in S}\left\{ \left(\lambda a_{1}+\left(1-\lambda\right)a_{2}\right)^{T}x\right\} 
+\]
+
+\end_inset
+
+meaning 
+\begin_inset Formula $\lambda a_{1}+\left(1-\lambda\right)a_{2}\in K$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+we proved that 
+\begin_inset Formula $\forall a_{1},a_{2}\in K,\lambda\in\left[0,1\right]\rightarrow$
+\end_inset
+
+ 
+\begin_inset Formula $\lambda a_{1}+\left(1-\lambda\right)a_{2}\in K$
+\end_inset
+
+ , thus 
+\begin_inset Formula $K$
+\end_inset
+
+ is convex by definition.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $\lambda_{2}\in\mathbb{R}_{+}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $\lambda_{2}=0$
+\end_inset
+
+ then 
+\begin_inset Formula $\left(\lambda_{2}a_{1}\right)^{T}x=0$
+\end_inset
+
+ and every vector 
+\begin_inset Formula $x\in S$
+\end_inset
+
+ is an optimal solution for 
+\begin_inset Formula $\min_{x\in S}\left\{ \left(\lambda_{2}a_{1}\right)^{T}x\right\} ,$
+\end_inset
+
+specifically 
+\begin_inset Formula $x^{*}$
+\end_inset
+
+ is also an optimal solution and thus 
+\begin_inset Formula $\lambda_{2}a_{1}\in K$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $\lambda_{2}>0$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\arg\min_{x\in S}\left\{ \left(\lambda_{2}a_{1}\right)^{T}x\right\} =\arg\min_{x\in S}\left\{ \lambda_{2}a_{1}^{T}x\right\} \overset{\lambda_{2}\geq0}{=}\arg\min_{x\in S}\left\{ a_{1}^{T}x\right\} =x^{*}
+\]
+
+\end_inset
+
+thus again 
+\begin_inset Formula $\lambda_{2}a_{1}\in K$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+we proved that 
+\begin_inset Formula $\forall a_{1}\in K,\lambda_{2}\in\mathbb{R}_{+}\rightarrow$
+\end_inset
+
+ 
+\begin_inset Formula $\lambda_{2}a_{1}\in K$
+\end_inset
+
+ , thus 
+\begin_inset Formula $K$
+\end_inset
+
+ is a cone by definition.
+\end_layout
+
+\begin_layout Plain Layout
+we proved 
+\begin_inset Formula $K$
+\end_inset
+
+ is both a cone and convex, therefore 
+\begin_inset Formula $K$
+\end_inset
+
+ is a convex cone.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we could have made things easier, since 
+\begin_inset Formula $K$
+\end_inset
+
+ is a cone we could have just check if 
+\begin_inset Formula $a_{1}+a_{2}\in K$
+\end_inset
+
+ which indeed holds:
+\begin_inset Formula 
+\[
+\left(a_{1}+a_{2}\right)^{T}x=a_{1}^{T}x+a_{2}^{T}x\geq a_{1}^{T}x^{*}+a_{2}^{T}x^{*}=\left(a_{1}+a_{2}\right)^{T}x^{*}
+\]
+
+\end_inset
+
+and for 
+\begin_inset Formula $x=x^{*}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\left(a_{1}+a_{2}\right)^{T}x=x^{*}
+\]
+
+\end_inset
+
+thus:
+\begin_inset Formula 
+\[
+x^{*}=\arg\min_{x\in S}\left\{ \left(a_{1}+a_{2}\right)^{T}x\right\} 
+\]
+
+\end_inset
+
+meaning 
+\begin_inset Formula $a_{1}+a_{2}\in K$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+\noindent
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 6:
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+Show that the extreme points of 
+\begin_inset Formula $B_{\infty}\left[0_{n},1\right]=\left\{ x\in\mathbb{R}^{n}:\left\Vert x\right\Vert _{\infty}\leq1\right\} $
+\end_inset
+
+ are 
+\begin_inset Formula $\left\{ -1,1\right\} ^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $x\in\left\{ -1,1\right\} ^{n}\subseteq B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let's assume by contradiction that 
+\begin_inset Formula $x$
+\end_inset
+
+ is not an extreme point of 
+\begin_inset Formula $B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+, thus: 
+\begin_inset Formula 
+\[
+\exists z_{1}\neq z_{2}\in B_{\infty}\left[0_{n},1\right],\lambda\in\left(0,1\right):x=\lambda z_{1}+\left(1-\lambda\right)z_{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula $z_{1}\neq z_{2}\in B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+ therefore:
+\begin_inset Formula 
+\[
+\left\Vert z_{1}\right\Vert _{\infty}\leq1\rightarrow\forall j:\left|z_{1_{j}}\right|\leq1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left\Vert z_{2}\right\Vert _{\infty}\leq1\rightarrow\forall j:\left|z_{2_{j}}\right|\leq1
+\]
+
+\end_inset
+
+all the coordinates of 
+\begin_inset Formula $x$
+\end_inset
+
+ are either 
+\begin_inset Formula $1$
+\end_inset
+
+ or 
+\begin_inset Formula $-1$
+\end_inset
+
+ hence :
+\begin_inset Formula 
+\[
+\forall j:\lambda z_{1_{j}}+\left(1-\lambda\right)z_{2_{j}}=\pm1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $z_{1}\neq z_{2}$
+\end_inset
+
+ there exists at least one coordinate which satisfies 
+\begin_inset Formula $z_{1_{k}}\neq z_{2_{k}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $z_{1_{k}}$
+\end_inset
+
+ and 
+\begin_inset Formula $z_{2_{k}}$
+\end_inset
+
+ can't be the negative of one another because than:
+\begin_inset Formula 
+\begin{align*}
+\left|\lambda z_{1_{k}}+\left(1-\lambda\right)z_{2_{k}}\right| & =\left|\lambda z_{1_{k}}-\left(1-\lambda\right)z_{1_{k}}\right|=\left|\left(\lambda-1+\lambda\right)z_{1_{k}}\right|=\left|\left(2\lambda-1\right)z_{1_{k}}\right|\\
+ & =\left|\left(2\lambda-1\right)\right|\left|z_{1_{k}}\right|\overset{\lambda\in\left(0,1\right)}{\overset{\left|z_{1_{k}}\right|\leq1}{<}}1\cdot1=1
+\end{align*}
+
+\end_inset
+
+since 
+\begin_inset Formula $\left|z_{1_{k}}\right|\leq1,\left|z_{2_{k}}\right|\leq1,z_{1_{k}}\neq\pm z_{2_{k}},$
+\end_inset
+
+ at least one of them as to be strictly smaller than one:
+\begin_inset Formula 
+\[
+\left|z_{1_{k}}\right|<1\quad or\quad\left|z_{2_{k}}\right|<1
+\]
+
+\end_inset
+
+in this case:
+\begin_inset Formula 
+\begin{align*}
+\left|\lambda z_{1_{k}}+\left(1-\lambda\right)z_{2_{k}}\right| & \leq\left|\lambda z_{1_{k}}\right|+\left|\left(1-\lambda\right)z_{2_{k}}\right|=\left|\lambda\right|\left|z_{1_{k}}\right|+\left|\left(1-\lambda\right)\right|\left|z_{2_{k}}\right|\\
+ & \overset{\left|z_{1_{k}}\right|<1\quad or\quad\left|z_{2_{k}}\right|<1}{<}\left|\lambda\right|+\left|\left(1-\lambda\right)\right|\overset{\lambda\in\left(0,1\right)}{\overset{1-\lambda\in\left(0,1\right)}{=}}\lambda+1-\lambda=1
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left|\lambda z_{1_{k}}+\left(1-\lambda\right)z_{2_{k}}\right|<1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+and that is a contradiction to the fact that: 
+\begin_inset Formula 
+\[
+\lambda z_{1_{k}}+\left(1-\lambda\right)z_{2_{k}}=\pm1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+thus 
+\begin_inset Formula $\left\{ -1,1\right\} ^{n}$
+\end_inset
+
+ are extreme points of 
+\begin_inset Formula $B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+this doesn't finish the proof though, as we didn't prove that their aren't
+ any other extreme points.
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $x\in B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+, 
+\begin_inset Formula $x\notin\left\{ -1,1\right\} ^{n}$
+\end_inset
+
+ and let's show it is not an extreme point of 
+\begin_inset Formula $B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $x\notin\left\{ -1,1\right\} ^{n}$
+\end_inset
+
+ there exist at least one coordinate of 
+\begin_inset Formula $x$
+\end_inset
+
+ which is not 
+\begin_inset Formula $1$
+\end_inset
+
+ or 
+\begin_inset Formula $-1$
+\end_inset
+
+ , let's denote it 
+\begin_inset Formula $x_{k}$
+\end_inset
+
+, and since 
+\begin_inset Formula $x\in B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+ this coordinate value must be between them, meaning:
+\begin_inset Formula 
+\[
+\left|x_{k}\right|<1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+define two new vectors 
+\begin_inset Formula $z_{1},z_{2}\in\mathbb{R}^{n}$
+\end_inset
+
+ such that:
+\begin_inset Formula 
+\[
+\forall j\in\left\{ 1,2,...,n\right\} \setminus\left\{ k\right\} :z_{1_{j}}=z_{2_{j}}=x_{j}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+z_{1_{k}}=1,\hspace{1em}z_{2_{k}}=-1
+\]
+
+\end_inset
+
+first of all since 
+\begin_inset Formula $x\in B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+ than 
+\begin_inset Formula $\forall j\in\left\{ 1,2,...,n\right\} \setminus\left\{ k\right\} :\left|z_{1_{j}}\right|=\left|z_{2_{j}}\right|=\left|x_{j}\right|\leq1$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+in addition:
+\begin_inset Formula 
+\[
+\left|z_{1_{k}}\right|=\left|z_{2_{k}}\right|=1\leq1
+\]
+
+\end_inset
+
+hence 
+\begin_inset Formula $z_{1}\neq z_{2}\in B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+notice that for 
+\begin_inset Formula $\lambda=\frac{x_{k}+1}{2}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\forall j\in\left\{ 1,2,...,n\right\} \setminus\left\{ k\right\} :\lambda z_{1_{j}}+\left(1-\lambda\right)z_{2_{j}}=\lambda x_{j}+\left(1-\lambda\right)x_{j}=x_{j}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\lambda z_{1_{k}}+\left(1-\lambda\right)z_{2_{k}}=\lambda-1+\lambda=2\lambda-1=2\cdot\frac{x_{k}+1}{2}-1=x_{k}+1-1=x_{k}
+\]
+
+\end_inset
+
+thus:
+\begin_inset Formula 
+\[
+\lambda z_{1}+\left(1-\lambda\right)z_{2}=x
+\]
+
+\end_inset
+
+and:
+\begin_inset Formula 
+\[
+\lambda=\frac{x_{k}+1}{2}\overset{\left|x_{k}\right|<1}{<}\frac{1+1}{2}=\frac{2}{2}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\lambda=\frac{x_{k}+1}{2}\overset{\left|x_{k}\right|<1}{>}\frac{-1+1}{2}=\frac{0}{2}=0
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+we have found two vectors 
+\begin_inset Formula $z_{1}\neq z_{2}\in B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+ and a scalar 
+\begin_inset Formula $\lambda\in\left(0,1\right)$
+\end_inset
+
+ such that the vector 
+\begin_inset Formula $x\in B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+ can be written as:
+\begin_inset Formula 
+\[
+x=\lambda z_{1}+\left(1-\lambda\right)z_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+thus 
+\begin_inset Formula $x$
+\end_inset
+
+ is not an extreme point of 
+\begin_inset Formula $B_{\infty}\left[0_{n},1\right]$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $X_{i}\subseteq\mathbb{R}^{n},i=1,2,...,k.$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Prove that:
+\begin_inset Formula 
+\[
+ext\left(X_{1}\times X_{2}\times...\times X_{k}\right)=ext\left(X_{1}\right)\times ext\left(X_{2}\right)\times...\times ext\left(X_{k}\right)
+\]
+
+\end_inset
+
+let 
+\begin_inset Formula $y\in ext\left(X_{1}\right)\times ext\left(X_{2}\right)\times...\times ext\left(X_{k}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+first notice that:
+\begin_inset Formula 
+\[
+\forall j:ext\left(X_{j}\right)\subseteq X_{j}
+\]
+
+\end_inset
+
+thus:
+\begin_inset Formula 
+\[
+ext\left(X_{1}\right)\times ext\left(X_{2}\right)\times...\times ext\left(X_{k}\right)\subseteq X_{1}\times X_{2}\times...\times X_{k}
+\]
+
+\end_inset
+
+therefore 
+\begin_inset Formula $y\in X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let's assume by contradiction that 
+\begin_inset Formula $y$
+\end_inset
+
+ is not an extreme point of 
+\begin_inset Formula $X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+, thus:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\exists z_{1}\neq z_{2}\in X_{1}\times X_{2}\times...\times X_{k},\lambda\in\left(0,1\right):y=\lambda z_{1}+\left(1-\lambda\right)z_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+denote 
+\begin_inset Formula $v^{j}\in\mathbb{R}^{n}$
+\end_inset
+
+ as a sub vector consisting of coordinates 
+\begin_inset Formula $\left(j-1\right)n+1$
+\end_inset
+
+ to 
+\begin_inset Formula $jn$
+\end_inset
+
+ of vector 
+\begin_inset Formula $v$
+\end_inset
+
+, for example 
+\begin_inset Formula $v^{1}$
+\end_inset
+
+ is the vector consisting of the first 
+\begin_inset Formula $n$
+\end_inset
+
+ coordinates of 
+\begin_inset Formula $v$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+because 
+\begin_inset Formula $z_{1}\neq z_{2}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\exists j\in\left\{ 1,2,..,k\right\} :z_{1}^{j}\neq z_{2}^{j}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let's look at the vector 
+\begin_inset Formula $y^{j}$
+\end_inset
+
+ , from the equation above:
+\begin_inset Formula 
+\[
+y^{j}=\lambda z_{1}^{j}+\left(1-\lambda\right)z_{2}^{j}
+\]
+
+\end_inset
+
+since 
+\begin_inset Formula $z_{1},z_{2}\in X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+ than 
+\begin_inset Formula $z_{1}^{j},z_{2}^{j}\in X_{j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $y\in ext\left(X_{1}\right)\times ext\left(X_{2}\right)\times...\times ext\left(X_{k}\right)$
+\end_inset
+
+ than 
+\begin_inset Formula $y^{j}\in ext\left(X_{j}\right)\subseteq X_{j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+we have found two vectors 
+\begin_inset Formula $z_{1}^{j}\neq z_{2}^{j}\in X_{j}$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda\in\left(0,1\right)$
+\end_inset
+
+ such that 
+\begin_inset Formula $y^{j}\in X_{j}$
+\end_inset
+
+ can be written as:
+\begin_inset Formula 
+\[
+y^{j}=\lambda z_{1}^{j}+\left(1-\lambda\right)z_{2}^{j}
+\]
+
+\end_inset
+
+this is a contradiction to the fact that 
+\begin_inset Formula $y^{j}\in ext\left(X_{j}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+thus 
+\begin_inset Formula $ext\left(X_{1}\right)\times ext\left(X_{2}\right)\times...\times ext\left(X_{k}\right)$
+\end_inset
+
+ are extreme points of 
+\begin_inset Formula $X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+now we need to prove that their aren't any other extreme points.
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $y\in X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+ ,
+\begin_inset Formula $y\notin ext\left(X_{1}\right)\times ext\left(X_{2}\right)\times...\times ext\left(X_{k}\right)$
+\end_inset
+
+ and let's prove it's not an extreme point.
+\end_layout
+
+\begin_layout Standard
+because 
+\begin_inset Formula $y\notin ext\left(X_{1}\right)\times ext\left(X_{2}\right)\times...\times ext\left(X_{k}\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\exists j\in\left\{ 1,2,...,k\right\} :y^{j}\notin ext\left(X_{j}\right)
+\]
+
+\end_inset
+
+of course 
+\begin_inset Formula $y^{j}\in X_{j}$
+\end_inset
+
+ because 
+\begin_inset Formula $y\in X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+ thus:
+\begin_inset Formula 
+\[
+\exists z_{1}\neq z_{2}\in X_{j},\lambda\in\left(0,1\right):y^{j}=\lambda z_{1}+\left(1-\lambda\right)z_{2}
+\]
+
+\end_inset
+
+define two new vectors 
+\begin_inset Formula $v_{1},v_{2}\in\mathbb{R}^{n^{2}}$
+\end_inset
+
+ in the below manner:
+\begin_inset Formula 
+\[
+\forall i\in\left\{ 1,2,...,k\right\} \setminus\left\{ j\right\} :v_{1}^{i}=v_{2}^{i}=y^{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+v_{1}^{j}=z_{1}\hspace{1em}v_{2}^{j}=z_{2}
+\]
+
+\end_inset
+
+notice that because 
+\begin_inset Formula $y\in X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+ :
+\begin_inset Formula 
+\[
+\forall i\in\left\{ 1,2,...,k\right\} \setminus\left\{ j\right\} :v_{1}^{i}=v_{2}^{i}=y^{i}\in X_{i}
+\]
+
+\end_inset
+
+and:
+\begin_inset Formula 
+\[
+v_{1}^{j}=z_{1}\in X_{j}\hspace{1em}v_{2}^{j}=z_{2}\in X_{j}
+\]
+
+\end_inset
+
+thus 
+\begin_inset Formula $v_{1},v_{2}\in X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+ and 
+\begin_inset Formula $v_{1}\neq v_{2}$
+\end_inset
+
+ because 
+\begin_inset Formula $v_{1}^{j}\neq v_{2}^{j}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+also notice that:
+\begin_inset Formula 
+\[
+\forall i\in\left\{ 1,2,...,k\right\} \setminus\left\{ j\right\} :\lambda v_{1}^{i}+\left(1-\lambda\right)v_{2}^{i}=\lambda y^{i}+\left(1-\lambda\right)y^{i}=y_{i}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\lambda v_{1}^{j}+\left(1-\lambda\right)v_{2}^{j}=\lambda z_{1}+\left(1-\lambda\right)z_{2}=y^{j}
+\]
+
+\end_inset
+
+hence 
+\begin_inset Formula $\lambda v_{1}+\left(1-\lambda\right)v_{2}=y$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+we have found two vectors 
+\begin_inset Formula $v_{1}\neq v_{2}\in X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+ and a scalar 
+\begin_inset Formula $\lambda\in\left(0,1\right)$
+\end_inset
+
+ such that 
+\begin_inset Formula $y\in X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+ can be written as:
+\begin_inset Formula 
+\[
+y=\lambda v_{1}+\left(1-\lambda\right)v_{2}
+\]
+
+\end_inset
+
+thus 
+\begin_inset Formula $y$
+\end_inset
+
+ is not an extreme point of 
+\begin_inset Formula $X_{1}\times X_{2}\times...\times X_{k}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

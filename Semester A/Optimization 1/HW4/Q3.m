@@ -2,6 +2,7 @@
 clc;
 close all;
 clear all;
+warning('off','all');
 
 %% define functions and gradiants
 f1 = @(x) -13 + x(1) + ((5-x(2))*x(2)-2)*x(2);

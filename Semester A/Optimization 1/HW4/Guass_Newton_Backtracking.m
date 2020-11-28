@@ -3,7 +3,7 @@ function [x_k,iterations,converged] = Guass_Newton_Backtracking(func,grad_func,j
     converged = 1;
     
     % maximum allowed number of iterations
-    max_iterations = 1000000;
+    max_iterations = 10000;
     
     % set initial point
     x_k = x0;
@@ -17,7 +17,7 @@ function [x_k,iterations,converged] = Guass_Newton_Backtracking(func,grad_func,j
         t_k = s;
         
         % compute the jacobian matrix
-        J = jacob_func(x_k)';
+        J = jacob_func(x_k);
         
         % compute the decent direction
         d_k = (J'*J)\grad_func(x_k);
