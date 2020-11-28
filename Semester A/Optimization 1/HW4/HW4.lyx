@@ -1668,8 +1668,8 @@ to summarize:
 \[
 \begin{cases}
 \left(5,4\right) & \text{global minimizer}\\
-\left(\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3}\right) & \text{strict local minimum}\\
-\left(\frac{53+4\sqrt{22}}{3},\frac{2+\sqrt{22}}{3}\right) & \text{saddle}
+\frac{53-4\sqrt{22}}{3},\frac{2-\sqrt{22}}{3} & \text{strict local minimum}\\
+\frac{53+4\sqrt{22}}{3},\frac{2+\sqrt{22}}{3} & \text{saddle}
 \end{cases}
 \]
 
