@@ -3,7 +3,7 @@ function [x_k,iterations,converged] = Gradiant_Backtracking(func,grad_func,s,alp
     converged = 1;
     
     % maximum allowed number of iterations
-    max_iterations = 1000000;
+    max_iterations = 10000;
     
     % set initial point
     x_k = x0;
