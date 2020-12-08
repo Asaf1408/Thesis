@@ -1,0 +1,2781 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+% Hebrew does not work unless I use this. 
+\usepackage{culmus}
+
+\usepackage{fancyhdr}
+\fancyhf{}               % Clear fancy header/footer
+\fancyhead[C]{
+\begin{otherlanguage}{English}
+Technion, Faculty of Industrial Engineering and Management
+\end{otherlanguage}
+}   
+\fancyfoot[C]{\thepage}  % Page number in Right footer
+\makeatletter
+\let\ps@plain\ps@fancy   % Plain page style = fancy page style
+\makeatother
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package auto
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 12
+\spacing other 1.5
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\noindent
+Optimization 1 - 098311
+\lang hebrew
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lang english
+Winter 2021 - HW 6
+\end_layout
+
+\begin_layout Author
+\noindent
+Ido Czerninski 312544596, Asaf Gendler 301727715
+\lang hebrew
+ 
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang hebrew
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\bar under
+Problem 1:
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+We will show that 
+\begin_inset Formula $g\left(x\right)\triangleq f\left(x\right)-\sigma\frac{\left|\left|x\right|\right|^{2}}{2}$
+\end_inset
+
+ is convex if and only if: 
+\begin_inset Formula 
+\[
+f\left(\lambda x+\left(1-\lambda\right)y\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)-\frac{\sigma}{2}\lambda\left(1-\lambda\right)\left|\left|x-y\right|\right|^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+by the convex function definition it means that for every 
+\begin_inset Formula $x,y\in C$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda\in\left[0,1\right]$
+\end_inset
+
+:
+\size scriptsize
+
+\begin_inset Formula 
+\[
+g\left(\lambda x+\left(1-\lambda\right)y\right)\leq\lambda g\left(x\right)+\left(1-\lambda\right)g\left(y\right)\iff f\left(\lambda x+\left(1-\lambda\right)y\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)-\frac{\sigma}{2}\lambda\left(1-\lambda\right)\left|\left|x-y\right|\right|^{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+ & g\left(\lambda x+\left(1-\lambda\right)y\right)\leq\lambda g\left(x\right)+\left(1-\lambda\right)g\left(y\right)\\
+\iff & f\left(\left(\lambda x+\left(1-\lambda\right)y\right)\right)-\sigma\frac{\left|\left|\left(\lambda x+\left(1-\lambda\right)y\right)\right|\right|^{2}}{2}\leq\lambda\left(f\left(x\right)-\sigma\frac{\left|\left|x\right|\right|^{2}}{2}\right)+\left(1-\lambda\right)\left(f\left(y\right)-\sigma\frac{\left|\left|y\right|\right|^{2}}{2}\right)\\
+\iff & f\left(\left(\lambda x+\left(1-\lambda\right)y\right)\right)\leq\sigma\frac{\left|\left|\left(\lambda x+\left(1-\lambda\right)y\right)\right|\right|^{2}}{2}+\lambda f\left(x\right)-\frac{\lambda\sigma}{2}\left|\left|x\right|\right|^{2}+\left(1-\lambda\right)f\left(y\right)-\frac{\left(1-\lambda\right)\sigma}{2}\left|\left|y\right|\right|^{2}\\
+\left(\lambda\in\left[0,1\right]\right)\iff & f\left(\left(\lambda x+\left(1-\lambda\right)y\right)\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)+\frac{\sigma}{2}\left(\left|\left|\left(\lambda x+\left(1-\lambda\right)y\right)\right|\right|^{2}-\lambda\left|\left|x\right|\right|^{2}-\left(1-\lambda\right)\left|\left|y\right|\right|^{2}\right)\\
+\iff & f\left(\left(\lambda x+\left(1-\lambda\right)y\right)\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)+\frac{\sigma}{2}\left(\lambda^{2}\left|\left|x\right|\right|^{2}+2\lambda\left(1-\lambda\right)\left\langle x,y\right\rangle +\left(1-\lambda\right)^{2}\left|\left|y\right|\right|^{2}-\lambda\left|\left|x\right|\right|^{2}-\left(1-\lambda\right)\left|\left|y\right|\right|^{2}\right)\\
+\iff & f\left(\left(\lambda x+\left(1-\lambda\right)y\right)\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)+\frac{\sigma}{2}\left(\left(\lambda^{2}-\lambda\right)\left|\left|x\right|\right|^{2}+2\lambda\left(1-\lambda\right)\left\langle x,y\right\rangle +\left(1-2\lambda+\lambda^{2}-1+\lambda\right)\left|\left|y\right|\right|^{2}\right)\\
+\iff & f\left(\left(\lambda x+\left(1-\lambda\right)y\right)\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)-\frac{\sigma}{2}\left(\lambda\left(1-\lambda\right)\left|\left|x\right|\right|^{2}-2\lambda\left(1-\lambda\right)\left\langle x,y\right\rangle +\lambda\left(1-\lambda\right)\left|\left|y\right|\right|^{2}\right)\\
+\iff & f\left(\left(\lambda x+\left(1-\lambda\right)y\right)\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)-\frac{\sigma}{2}\lambda\left(1-\lambda\right)\left(\left|\left|x\right|\right|^{2}-2\left\langle x,y\right\rangle +\left|\left|y\right|\right|^{2}\right)\\
+\iff & f\left(\left(\lambda x+\left(1-\lambda\right)y\right)\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)-\frac{\sigma}{2}\lambda\left(1-\lambda\right)\left(\left|\left|x\right|\right|^{2}-2\left\langle x,y\right\rangle +\left|\left|y\right|\right|^{2}\right)\\
+\iff & f\left(\left(\lambda x+\left(1-\lambda\right)y\right)\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)-\frac{\sigma}{2}\lambda\left(1-\lambda\right)\left|\left|x-y\right|\right|^{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\forall x,y\in C,\lambda\in\left[0,1\right]:
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\size footnotesize
+\begin_inset Formula 
+\[
+g\left(\lambda x+\left(1-\lambda\right)y\right)\leq\lambda g\left(x\right)+\left(1-\lambda\right)g\left(y\right)\iff f\left(\lambda x+\left(1-\lambda\right)y\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)-\frac{\sigma}{2}\lambda\left(1-\lambda\right)\left|\left|x-y\right|\right|^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+which means 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is strongly convex if and only if:
+\begin_inset Formula 
+\[
+f\left(\lambda x+\left(1-\lambda\right)y\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)-\frac{\sigma}{2}\lambda\left(1-\lambda\right)\left|\left|x-y\right|\right|^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $x,y\in\mathbb{R}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is continuously differentiable over 
+\begin_inset Formula $C$
+\end_inset
+
+ and 
+\begin_inset Formula $-\sigma\frac{\left\Vert x\right\Vert ^{2}}{2}$
+\end_inset
+
+ is continuously differentiable over all 
+\begin_inset Formula $\mathbb{R}^{n}$
+\end_inset
+
+, hence 
+\begin_inset Formula $g\left(x\right)$
+\end_inset
+
+ is continuously differentiable over 
+\begin_inset Formula $C$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+therefore:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+ & f\left(x\right)\text{ is strongly convex}\\
+\text{by definition:}\iff & g\left(x\right)\text{ is convex}\\
+\overset{\left(*\right)}{\iff} & g\left(y\right)\geq g\left(x\right)+\nabla g\left(x\right)^{T}\left(y-x\right)\\
+\iff & f\left(y\right)-\sigma\frac{\left\Vert y\right\Vert ^{2}}{2}\geq f\left(x\right)-\sigma\frac{\left\Vert x\right\Vert ^{2}}{2}+\nabla\left(f\left(x\right)-\sigma\frac{\left\Vert x\right\Vert ^{2}}{2}\right)^{T}\left(y-x\right)\\
+\iff & f\left(y\right)-\sigma\frac{\left\Vert y\right\Vert ^{2}}{2}\geq f\left(x\right)-\sigma\frac{\left\Vert x\right\Vert ^{2}}{2}+\nabla f\left(x\right)^{T}\left(y-x\right)-\sigma x^{T}\left(y-x\right)\\
+\iff & f\left(y\right)\geq f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right)-\sigma\frac{\left\Vert x\right\Vert ^{2}}{2}+\sigma\frac{\left\Vert y\right\Vert ^{2}}{2}-\sigma x^{T}y+\sigma\left\Vert x\right\Vert ^{2}\\
+\iff & f\left(y\right)\geq f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right)+\frac{\sigma}{2}\left(\left\Vert x\right\Vert ^{2}-2x^{T}y+\left\Vert y\right\Vert ^{2}\right)\\
+\iff & f\left(y\right)\geq f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right)+\frac{\sigma}{2}\left\Vert x-y\right\Vert ^{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\left(*\right)$
+\end_inset
+
+ 
+\begin_inset Formula $g\left(x\right)\text{ is continuously differentiable over }C$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+c)
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $x,y\in\mathbb{R}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+ & f\left(x\right)\text{ is strongly convex}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\text{from section b:}\iff\begin{cases}
+f\left(y\right)\geq f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right)+\frac{\sigma}{2}\left\Vert x-y\right\Vert ^{2}\\
+f\left(x\right)\geq f\left(y\right)+\nabla f\left(y\right)^{T}\left(x-y\right)+\frac{\sigma}{2}\left\Vert x-y\right\Vert ^{2}
+\end{cases}
+\]
+
+\end_inset
+
+summing both inequalities:
+\begin_inset Formula 
+\begin{align*}
+\iff & f\left(x\right)+f\left(y\right)\geq f\left(x\right)+f\left(y\right)+\nabla f\left(x\right)^{T}\left(y-x\right)-\nabla f\left(y\right)^{T}\left(y-x\right)+\sigma\left\Vert x-y\right\Vert ^{2}\\
+\iff & 0\geq\left(\nabla f\left(x\right)-\nabla f\left(y\right)\right)^{T}\left(y-x\right)+\sigma\left\Vert x-y\right\Vert ^{2}\\
+\iff & -\left(\nabla f\left(x\right)-\nabla f\left(y\right)\right)^{T}\left(y-x\right)\geq\sigma\left\Vert x-y\right\Vert ^{2}\\
+\iff & \left(\nabla f\left(y\right)-\nabla f\left(x\right)\right)^{T}\left(y-x\right)\geq\sigma\left\Vert x-y\right\Vert ^{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang hebrew
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 2:
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+denote:
+\begin_inset Formula 
+\[
+v=\left(\begin{array}{c}
+x\\
+y\\
+z
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+f\left(v\right)=f\left(x,y,z\right) & =\sqrt{2x^{2}+2y^{2}+5z^{2}+2xy+2xz+4yz-4y+64}\\
+ & =\sqrt{v^{T}\underbrace{\left(\begin{array}{ccc}
+2 & 1 & 1\\
+1 & 2 & 2\\
+1 & 2 & 5
+\end{array}\right)}_{Q}v+2\cdot\underbrace{\left(0,-2,0\right)}_{c^{T}}v+64}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let's first find the domain of 
+\begin_inset Formula $f\left(v\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+first let's show that 
+\begin_inset Formula $Q$
+\end_inset
+
+ is a positive definite matrix:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+M_{1}\left(Q\right)=2>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+M_{2}\left(Q\right)=4-1=3>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+M_{3}\left(Q\right) & =2\cdot\left(10-4\right)-1\cdot\left(10-1\right)+1\cdot\left(2-2\right)\\
+ & =12-9=3>0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since all the moments of 
+\begin_inset Formula $Q$
+\end_inset
+
+ are positive:
+\begin_inset Formula 
+\[
+Q\succ0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $Q$
+\end_inset
+
+ is positive definite, the function under the square root is a quadratic
+ function that has a strict global minimum at 
+\begin_inset Formula $v=-A^{-1}b$
+\end_inset
+
+ , let's find the minimum value attained:
+\begin_inset Formula 
+\begin{align*}
+b^{T}A^{-1}b-2b^{T}A^{-1}b+c & =c-b^{T}A^{-1}b\\
+ & =64-\left(0,2,0\right)\left(\begin{array}{ccc}
+\frac{2}{3} & -\frac{1}{3} & 0\\
+-\frac{1}{3} & 1 & -\frac{1}{3}\\
+0 & -\frac{1}{3} & \frac{1}{3}
+\end{array}\right)\left(0,2,0\right)^{T}\\
+ & =64-2\cdot1\cdot2=60>0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+hence the function under the square root is always positive meaning that
+ the domain of 
+\begin_inset Formula $f\left(v\right)$
+\end_inset
+
+ is 
+\begin_inset Formula $\mathbb{R}^{3}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+now for some 
+\begin_inset Formula $A\in\mathbb{R}^{3x3}$
+\end_inset
+
+ and 
+\begin_inset Formula $b\in\mathbb{R}^{3}$
+\end_inset
+
+ we can write:
+\begin_inset Formula 
+\[
+\left\Vert Av+b\right\Vert ^{2}=\left(Av+b\right)^{T}\left(Av+b\right)=v^{T}A^{T}Av+2b^{T}Av+b^{T}b
+\]
+
+\end_inset
+
+let's find a matrix 
+\begin_inset Formula $A$
+\end_inset
+
+ and a vector 
+\begin_inset Formula $b$
+\end_inset
+
+ such that:
+\begin_inset Formula 
+\[
+A^{T}A=Q
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+b^{T}A=c^{T}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $Q$
+\end_inset
+
+ is positive definite we can wright it using the Cholescky Decomposition:
+\begin_inset Formula 
+\[
+Q=LL^{T}
+\]
+
+\end_inset
+
+since 
+\begin_inset Formula $Q$
+\end_inset
+
+ is positive definite then its invertible, hence 
+\begin_inset Formula $L$
+\end_inset
+
+ is invertible.
+\end_layout
+
+\begin_layout Standard
+define:
+\begin_inset Formula 
+\[
+A=L^{T}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+b=L^{-1}c
+\]
+
+\end_inset
+
+then:
+\begin_inset Formula 
+\[
+A^{T}A=LL^{T}=Q
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+b^{T}A=c^{T}\left(L^{-1}\right)^{T}L^{T}=c^{T}\left(LL^{-1}\right)^{T}=c^{T}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+b^{T}b & =\left(L^{-1}c\right)^{T}\left(L^{-1}c\right)=c^{T}\left(L^{-1}\right)^{T}L^{-1}c=c^{T}\left(LL^{T}\right)^{-1}c=c^{T}Q^{-1}c=\\
+ & =\left(\begin{array}{ccc}
+0 & -2 & 0\end{array}\right)\left(\begin{array}{ccc}
+2 & 1 & 1\\
+1 & 2 & 2\\
+1 & 2 & 5
+\end{array}\right)^{-1}\left(\begin{array}{c}
+0\\
+-2\\
+0
+\end{array}\right)=\left(\begin{array}{ccc}
+0 & -2 & 0\end{array}\right)\left(\begin{array}{ccc}
+\frac{2}{3} & -\frac{1}{3} & 0\\
+-\frac{1}{3} & 1 & -\frac{1}{3}\\
+0 & -\frac{1}{3} & \frac{1}{3}
+\end{array}\right)\left(\begin{array}{c}
+0\\
+-2\\
+0
+\end{array}\right)=4
+\end{align*}
+
+\end_inset
+
+now we can write:
+\begin_inset Formula 
+\begin{align*}
+f\left(v\right) & =\sqrt{v^{T}Qv+2\cdot c^{T}v+64}=\sqrt{v^{T}A^{T}Av+2\cdot b^{T}Av+b^{T}b+60}=\\
+ & =\sqrt{\left\Vert Av+b\right\Vert ^{2}+60}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+in the same way we showed in the tutorial that 
+\begin_inset Formula $f\left(x\right)=\sqrt{\left\Vert x\right\Vert ^{2}+1}$
+\end_inset
+
+ is convex we can show that 
+\begin_inset Formula $f\left(x\right)=\sqrt{\left\Vert x\right\Vert ^{2}+60}$
+\end_inset
+
+ is convex.
+ thus also 
+\begin_inset Formula $f\left(v\right)=\sqrt{\left\Vert Av+b\right\Vert ^{2}+60}$
+\end_inset
+
+ is convex as a linear change in the coordinates of a convex function.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+notice that:
+\begin_inset Formula 
+\[
+f\left(v\right)=\left\Vert \left(\begin{array}{c}
+I\\
+0
+\end{array}\right)\left(Av+b\right)+\underbrace{\left(\begin{array}{c}
+0\\
+0\\
+.\\
+.\\
+.\\
+\sqrt{60}
+\end{array}\right)}_{d}\right\Vert 
+\]
+
+\end_inset
+
+let's look at 
+\begin_inset Formula $Lev\left(-f\left(v\right),-2\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\left\{ v:-\left\Vert \left(\begin{array}{c}
+I\\
+0
+\end{array}\right)\left(Av+b\right)+d\right\Vert \leq-2\right\} 
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left\{ v:\left\Vert \left(\begin{array}{c}
+I\\
+0
+\end{array}\right)\left(Av+b\right)+d\right\Vert \geq2\right\} 
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+this is a complement of an ellipsoid, hence it is not convex, thus 
+\begin_inset Formula $f\left(v\right)$
+\end_inset
+
+ is not quasi concave.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+The given function over 
+\begin_inset Formula $\mathbb{R}_{++}^{2}$
+\end_inset
+
+ is given by:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+f\left(x\right) & =\frac{x_{1}^{4}}{x_{2}^{2}}+\frac{x_{2}^{4}}{x_{1}^{2}}+2x_{1}x_{2}-\min\left\{ \ln\left(x_{1}+x_{2},\right),\ln\left(2x_{1}+\frac{1}{2}x_{2}\right)\right\} \\
+ & =\underbrace{\left(\frac{x_{1}^{2}}{x_{2}}+\frac{x_{2}^{2}}{x_{1}}\right)^{2}}_{f_{1}\left(x\right)}+\underbrace{\left(-\min\left\{ \ln\left(x_{1}+x_{2},\right),\ln\left(2x_{1}+\frac{1}{2}x_{2}\right)\right\} \right)}_{f_{2}\left(x\right)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We will show that 
+\begin_inset Formula $f_{1}\left(x\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $f_{2}\left(x\right)$
+\end_inset
+
+ are convex to conclude that 
+\begin_inset Formula $f$
+\end_inset
+
+ is convex as a summation of convex function
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $f_{1}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+f_{1}\left(x\right) & =\left(\frac{x_{1}^{2}}{x_{2}}+\frac{x_{2}^{2}}{x_{1}}\right)^{2}=\left(\frac{\left|\left|\left(\begin{array}{cc}
+1 & 0\\
+0 & 0
+\end{array}\right)\left(\begin{array}{c}
+x_{1}\\
+x_{2}
+\end{array}\right)+0_{2}\right|\right|^{2}}{\left(0,1\right)\left(\begin{array}{c}
+x_{1}\\
+x_{2}
+\end{array}\right)+0}+\frac{\left|\left|\left(\begin{array}{cc}
+0 & 0\\
+0 & 1
+\end{array}\right)\left(\begin{array}{c}
+x_{1}\\
+x_{2}
+\end{array}\right)+0_{2}\right|\right|^{2}}{\left(1,0\right)\left(\begin{array}{c}
+x_{1}\\
+x_{2}
+\end{array}\right)+0}\right)^{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we got a summation of two generalized quadratic-over-linear function which
+ both are defined at the appropriate domain (
+\begin_inset Formula $x_{1}>0,x_{2}>0$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Hence, each one of them is convex and the summation is convex.
+\end_layout
+
+\begin_layout Standard
+Since 
+\begin_inset Formula $x_{1},x_{2}>0$
+\end_inset
+
+: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{x_{1}^{2}}{x_{2}}+\frac{x_{2}^{2}}{x_{1}}>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the image of the function inside the Parenthesis is contained in 
+\begin_inset Formula $\mathbb{R}_{+}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Moreover, as we saw in the lecture, 
+\begin_inset Formula $\left(\cdot\right)^{2}$
+\end_inset
+
+ is a one-dimensional non-decreasing convex function when defined over 
+\begin_inset Formula $\mathbb{R_{++}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Thus, 
+\begin_inset Formula $f_{1}\left(x\right)$
+\end_inset
+
+ is convex.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $f_{2}$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+f_{2}\left(x\right) & =-\min\left\{ \ln\left(x_{1}+x_{2},\right),\ln\left(2x_{1}+\frac{1}{2}x_{2}\right)\right\} \\
+\left(*\right) & =\max\left\{ -\ln\left(x_{1}+x_{2}\right),-\ln\left(2x_{1}+\frac{1}{2}x_{2}\right)\right\} \\
+ & =\max\left\{ \underbrace{-\ln\left(\left(\begin{array}{cc}
+1 & 1\end{array}\right)\left(\begin{array}{c}
+x_{1}\\
+x_{2}
+\end{array}\right)\right)}_{f_{3}\left(x\right)},\underbrace{-\ln\left(\left(\begin{array}{cc}
+2 & \frac{1}{2}\end{array}\right)\left(\begin{array}{c}
+x_{1}\\
+x_{2}
+\end{array}\right)\right)}_{f_{4}\left(x\right)}\right\} 
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\left(*\right)$
+\end_inset
+
+ let 
+\begin_inset Formula $a,b\in\mathbb{R}$
+\end_inset
+
+ such that 
+\begin_inset Formula $a\geq b$
+\end_inset
+
+ (without the loss of generality):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+-\min\left\{ a,b\right\} \overset{a\geq b}{=}-a
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\max\left\{ -a,-b\right\} \overset{-a\geq-b}{=}-a=-\min\left\{ a,b\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here as well, the image of of the argument of both 
+\begin_inset Formula $\ln$
+\end_inset
+
+'s is contained in 
+\begin_inset Formula $\mathbb{R}_{+}$
+\end_inset
+
+(
+\begin_inset Formula $x_{1},x_{2}>0)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+first, let's show that 
+\begin_inset Formula $-\ln\left(\cdot\right)$
+\end_inset
+
+ is a convex function over 
+\begin_inset Formula $\mathbb{R}_{+}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{d\left(-\ln\left(s\right)\right)}{ds}=-\frac{1}{s}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{d^{2}\left(-\ln\left(s\right)\right)}{ds^{2}}=\frac{1}{s^{2}}>0,\forall s\in\mathbb{R_{+}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence, 
+\begin_inset Formula $-\ln\left(\cdot\right)$
+\end_inset
+
+ is convex and since convexity is preserved under affine change of variables
+ 
+\begin_inset Formula $f_{3},f_{4}$
+\end_inset
+
+ are convex as well.
+\end_layout
+
+\begin_layout Standard
+finally, discrete 
+\begin_inset Formula $\max$
+\end_inset
+
+ over convex functions is a convex function hence, 
+\begin_inset Formula $f_{2}$
+\end_inset
+
+ is convex.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $\Rightarrow f\left(x\right)$
+\end_inset
+
+ is convex as a summation over two convex function
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let's check if the function is quasi-concave:
+\end_layout
+
+\begin_layout Standard
+for:
+\begin_inset Formula 
+\[
+x=\left(\begin{array}{c}
+t\\
+t
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+ & f\left(x\right)=\left(\frac{t^{2}}{t}+\frac{t^{2}}{t}\right)^{2}-\min\left\{ \ln\left(2t\right),\ln\left(2.5t\right)\right\} \\
+ & =4t^{2}-\ln\left(2t\right)\\
+\Rightarrow & -f\left(x\right)=\ln\left(2t\right)-4t^{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+lets choose:
+\begin_inset Formula 
+\[
+x=\left(\begin{array}{c}
+\frac{1}{2}\\
+\frac{1}{2}
+\end{array}\right),y=\left(\begin{array}{c}
+0.225\\
+0.225
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we know:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+-f\left(x\right)=\ln\left(1\right)-1=-1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and:
+\begin_inset Formula 
+\[
+-f\left(y\right)=\ln\left(0.45\right)-4\cdot0.225^{2}=-1.001
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+but for:
+\begin_inset Formula 
+\[
+z=\frac{1}{2}x+\frac{1}{2}y=\left(\begin{array}{c}
+0.3625\\
+0.3625
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+-f\left(z\right) & =\ln\left(0.725\right)-4\cdot0.3625^{2}=-0.847\\
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+so for 
+\begin_inset Formula $a=-0.9:$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+x,y\in\text{Lev}\left(-f,a\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+but the convex combination:
+\begin_inset Formula 
+\[
+z=\frac{1}{2}x+\frac{1}{2}y\notin\text{Lev}\left(-f,a\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence 
+\begin_inset Formula $\text{Lev}\left(-f,a\right)$
+\end_inset
+
+ is not a convex set
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+There is an 
+\begin_inset Formula $a\in\mathbb{R}$
+\end_inset
+
+ such that 
+\begin_inset Formula $\text{Lev}\left(-f,a\right)$
+\end_inset
+
+ is not a convex set thus, 
+\begin_inset Formula $f$
+\end_inset
+
+ is not quasi concave
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+c)
+\end_layout
+
+\begin_layout Standard
+We will show that the following function is convex over 
+\begin_inset Formula $\mathbb{R}_{++}^{n}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+f\left(x\right) & =\sum_{i=1}^{n}x_{i}\ln\left(x_{i}\right)-\left(\sum_{i=1}^{n}x_{i}\right)\ln\left(\sum_{i=1}^{n}x_{i}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the partial derivatives are given by:
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f\left(x\right)}{\partial x_{j}} & =x_{j}\cdot\frac{1}{x_{j}}+\ln\left(x_{j}\right)-1\cdot\ln\left(\sum_{i=1}^{n}x_{i}\right)-\left(\sum_{i=1}^{n}x_{i}\right)\cdot\frac{1}{\left(\sum_{i=1}^{n}x_{i}\right)}\cdot1\\
+ & =1+\ln\left(x_{j}\right)-\ln\left(\sum_{i=1}^{n}x_{i}\right)-1=\ln\left(x_{j}\right)-\ln\left(\sum_{i=1}^{n}x_{i}\right)\\
+ & =\ln\left(\frac{x_{j}}{\sum_{i=1}^{n}x_{i}}\right)
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\ln\left(\sum_{j=1}^{n}\frac{x_{j}}{\sum_{i=1}^{n}x_{i}}\right)\geq\sum_{j=1}^{n}\ln\left(\frac{x_{j}}{\sum_{i=1}^{n}x_{i}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\partial^{2}f\left(x\right)}{\partial x_{k}\partial x_{j}}=\frac{1}{x_{j}}\cdot\mathbb{I}\left(x_{j}=x_{k}\right)-\frac{1}{\sum_{i=1}^{n}x_{i}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\nabla^{2}f\left(x\right)=\text{diag}\left(\frac{1}{x}\right)-1_{n}1_{n}^{T}\frac{1}{\sum_{i=1}^{n}x_{i}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $v\in\mathbb{R}^{n}\backslash\left\{ 0_{n}\right\} :$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+v^{T}\nabla^{2}f\left(x\right)v & =v^{T}\left(\text{diag}\left(\frac{1}{x}\right)-1_{n}1_{n}^{T}\frac{1}{\sum_{i=1}^{n}x_{i}}\right)v\\
+ & =v^{T}\text{diag}\left(\frac{1}{x}\right)v-v^{T}\left(1_{n}1_{n}^{T}\frac{1}{\sum_{i=1}^{n}x_{i}}\right)v\\
+ & =\sum_{i=1}^{n}v_{i}^{2}\cdot\frac{1}{x_{i}}-\frac{1}{\sum_{i=1}^{n}x_{i}}v^{T}\left(1_{n}1_{n}^{T}\right)v\\
+ & =\sum_{i=1}^{n}v_{i}^{2}\cdot\frac{1}{x_{i}}-\frac{1}{\sum_{i=1}^{n}x_{i}}v^{T}\left(\begin{array}{c}
+\sum_{i=1}^{n}v_{i}\\
+\sum_{i=1}^{n}v_{i}\\
+|\\
+|\\
+\sum_{i=1}^{n}v_{i}
+\end{array}\right)\\
+ & =\sum_{i=1}^{n}v_{i}^{2}\cdot\frac{1}{x_{i}}-\frac{1}{\sum_{i=1}^{n}x_{i}}\left(\sum_{i=1}^{n}v_{i}\right)^{2}\\
+\left(*\right) & \geq0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+define 
+\begin_inset Formula $f:\mathbb{R}\times\mathbb{R}_{++}\rightarrow\mathbb{R}$
+\end_inset
+
+ as follows:
+\begin_inset Formula 
+\[
+f\left(z\right)=\frac{z_{1}^{2}}{z_{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $f$
+\end_inset
+
+ is convex as a quadratic over linear function at the proper domain.
+\end_layout
+
+\begin_layout Standard
+define:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+z_{i}=\left(\begin{array}{c}
+v_{i}\\
+x_{i}
+\end{array}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+using Jensen inequality of convex function:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f\left(\frac{1}{n}z_{1}+\frac{1}{n}z_{2}+...+\frac{1}{n}z_{n}\right)\leq\frac{1}{n}f\left(z_{1}\right)+\frac{1}{n}f\left(z_{2}\right)+...+\frac{1}{n}f\left(z_{n}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f\left(\frac{1}{n}\sum_{i=1}^{n}z_{i}\right)\leq\frac{1}{n}\sum_{i=1}^{n}f\left(z_{i}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{\left(\frac{1}{n}\sum_{i=1}^{n}v_{i}\right)^{2}}{\frac{1}{n}\sum_{i=1}^{n}x_{i}}\leq\frac{1}{n}\sum_{i=1}^{n}\frac{v_{i}^{2}}{x_{i}}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\frac{1}{n}\sum_{i=1}^{n}\frac{v_{i}^{2}}{x_{i}}-\frac{1}{n}\frac{\left(\sum_{i=1}^{n}v_{i}\right)^{2}}{\sum_{i=1}^{n}x_{i}}\geq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\sum_{i=1}^{n}\frac{v_{i}^{2}}{x_{i}}-\frac{\left(\sum_{i=1}^{n}v_{i}\right)^{2}}{\sum_{i=1}^{n}x_{i}}\geq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence, the hessian of 
+\begin_inset Formula $f$
+\end_inset
+
+ is positive definite by definition.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+Since 
+\begin_inset Formula $f$
+\end_inset
+
+ is twice continuously differentiable at the proper 
+\series bold
+open 
+\series default
+domain we can conclude its convexity.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+the function is not quasi concave, let's show a counter example:
+\end_layout
+
+\begin_layout Standard
+\noindent
+we will show that 
+\begin_inset Formula $Lev\left(-f\left(x\right),0\right)$
+\end_inset
+
+ is not convex.
+ 
+\end_layout
+
+\begin_layout Standard
+\noindent
+let's take for example the vectors 
+\begin_inset Formula $x,y\in\mathbb{R}_{++}^{n}$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+x=\text{\left(\begin{array}{c}
+2\\
+0\\
+0\\
+.\\
+.\\
+.\\
+0
+\end{array}\right)},y=\left(\begin{array}{c}
+0\\
+2\\
+0\\
+.\\
+.\\
+.\\
+0
+\end{array}\right)
+\]
+
+\end_inset
+
+then:
+\begin_inset Formula 
+\[
+-f\left(x\right)=-2\cdot\ln\left(2\right)+2\cdot\ln\left(2\right)=0\leq0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-f\left(y\right)=-2\cdot\ln\left(2\right)+2\cdot\ln\left(2\right)=0\leq0
+\]
+
+\end_inset
+
+thus 
+\begin_inset Formula $x,y\in Lev\left(-f\left(x\right),0\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+however:
+\begin_inset Formula 
+\[
+\frac{1}{2}x+\frac{1}{2}y=\text{\left(\begin{array}{c}
+1\\
+1\\
+0\\
+.\\
+.\\
+.\\
+0
+\end{array}\right)}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+-f\left(\frac{1}{2}x+\frac{1}{2}y\right)=-1\cdot\ln\left(1\right)-1\cdot\ln\left(1\right)+2\cdot\ln\left(2\right)=2\ln\left(2\right)>0
+\]
+
+\end_inset
+
+thus 
+\begin_inset Formula $\frac{1}{2}x+\frac{1}{2}y\notin Lev\left(-f\left(x\right),0\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\noindent
+we found 2 vectors 
+\begin_inset Formula $x,y\in Lev\left(-f\left(x\right),0\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda\in$
+\end_inset
+
+
+\begin_inset Formula $\left[0,1\right]$
+\end_inset
+
+ for which 
+\begin_inset Formula $\lambda x+\left(1-\lambda\right)y\notin Lev\left(-f\left(x\right),0\right)$
+\end_inset
+
+, therefore 
+\begin_inset Formula $Lev\left(-f\left(x\right),0\right)$
+\end_inset
+
+ is not convex.
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+hence by definition, 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is not quasi concave.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+d)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f\left(x,y,z\right),\,C=\mathbb{R}_{+}^{n}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+f\left(x\right) & =-\sqrt[n]{\prod_{i=1}^{n}x_{i}}=-\left(\prod_{i=1}^{n}x_{i}\right)^{\frac{1}{n}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+First we will show that 
+\begin_inset Formula $f$
+\end_inset
+
+ is convex in 
+\begin_inset Formula $\mathbb{R}_{++}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $x,y\in\mathbb{R}_{++}^{n},$
+\end_inset
+
+we will show that the gradient inequality holds (
+\begin_inset Formula $f$
+\end_inset
+
+ is continuous differentiable over 
+\begin_inset Formula $\mathbb{R}_{+}$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Let's find the gradient of 
+\begin_inset Formula $f$
+\end_inset
+
+ at point 
+\begin_inset Formula $x\in\mathbb{R}_{++}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{\partial f}{\partial x_{j}}\left(x\right) & =-\frac{1}{n}\left(\prod_{i=1}^{n}x_{i}\right)^{\frac{1}{n}-1}\cdot\frac{\prod_{i=1}^{n}x_{i}}{x_{j}}\\
+ & =-\frac{1}{nx_{j}}\left(\prod_{i=1}^{n}x_{i}\right)^{\frac{1}{n}}=\frac{1}{nx_{j}}f\left(x\right)\\
+ & =\nabla f\left(x\right)_{j}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+f\left(x\right)+\nabla f\left(x\right)^{T}\left(y-x\right) & =f\left(x\right)+\sum_{i=1}^{n}\nabla f\left(x\right)_{i}\left(y_{i}-x_{i}\right)\\
+ & =f\left(x\right)+\sum_{i=1}^{n}\frac{1}{nx_{i}}f\left(x\right)\left(y_{i}-x_{i}\right)\\
+ & =f\left(x\right)\cdot\frac{1}{n}\left(n+\sum_{i=1}^{n}\frac{y_{i}-x_{i}}{x_{i}}\right)\\
+ & =\frac{f\left(x\right)}{n}\left(\sum_{i=1}^{n}1+\sum_{i=1}^{n}\frac{y_{i}-x_{i}}{x_{i}}\right)\\
+ & =\frac{f\left(x\right)}{n}\left(\sum_{i=1}^{n}\frac{y_{i}-x_{i}}{x_{i}}+1\right)\\
+ & =f\left(x\right)\left(\frac{1}{n}\sum_{i=1}^{n}\frac{y_{i}}{x_{i}}\right)\\
+\left(*\right) & \leq f\left(x\right)\left(\prod_{i=1}^{n}\frac{y_{i}}{x_{i}}\right)^{\frac{1}{n}}\\
+ & =f\left(x\right)\cdot\frac{-\left(\prod_{i=1}^{n}y_{i}\right)^{\frac{1}{n}}}{-\left(\prod_{i=1}^{n}x_{i}\right)^{\frac{1}{n}}}\\
+ & =f\left(x\right)\cdot\frac{f\left(y\right)}{f\left(x\right)}=f\left(y\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\left(*\right)$
+\end_inset
+
+ holds for two reasons:
+\end_layout
+
+\begin_layout Standard
+1) since 
+\begin_inset Formula $\forall x\in\mathbb{R}_{++}^{n}:f\left(x\right)<0$
+\end_inset
+
+ as a negative multiplication of positive numbers.
+\end_layout
+
+\begin_layout Standard
+2) since 
+\begin_inset Formula $\forall x_{i},y_{i}\in\mathbb{R}_{++}^{n}:\frac{y_{i}}{x_{i}}>0\Rightarrow\frac{1}{n}\sum_{i=1}^{n}\frac{y_{i}}{x_{i}}\geq f\left(x\right)\left(\prod_{i=1}^{n}\frac{y_{i}}{x_{i}}\right)^{\frac{1}{n}}$
+\end_inset
+
+ (by the AM-GM inequality)
+\end_layout
+
+\begin_layout Standard
+Hence, 
+\begin_inset Formula $f$
+\end_inset
+
+ is convex over 
+\begin_inset Formula $\mathbb{R}_{++}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Denote 
+\begin_inset Formula $S=\mathbb{R}_{+}^{n}\backslash\mathbb{R}_{++}^{n}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+we need to show that 
+\begin_inset Formula $f$
+\end_inset
+
+ is convex over 
+\begin_inset Formula $\mathbb{R}_{+}^{n}=S\cup\mathbb{R}_{++}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $x,y\in\mathbb{R}_{+}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are three cases:
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+1)
+\series default
+ 
+\series bold
+
+\begin_inset Formula $x,y\in\mathbb{R}_{++}^{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+shown above
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+2)
+\series default
+ 
+\begin_inset Formula $x,y\in S$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $\lambda\in\left[0,1\right]:$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+f\left(\lambda x+\left(1-\lambda\right)y\right) & \leq0=\lambda\cdot0+\left(1-\lambda\right)\cdot0\\
+ & =\lambda\cdot f\left(x\right)+\left(1-\lambda\right)\cdot f\left(y\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where the inequality is true since one of the element of each 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ zeroes the multiplication defined by 
+\begin_inset Formula $f$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+3)
+\series default
+ 
+\begin_inset Formula $x\in\mathbb{R}_{++},y\in S$
+\end_inset
+
+ (without the loss of generality)
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $\lambda\in\left(0,1\right)$
+\end_inset
+
+ (for 
+\begin_inset Formula $\lambda=\left\{ 0,1\right\} $
+\end_inset
+
+ the inequality is trivial)
+\end_layout
+
+\begin_layout Standard
+\noindent
+for the same reason stated above:
+\begin_inset Formula 
+\[
+f\left(y\right)=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+hence:
+\begin_inset Formula 
+\begin{align*}
+f\left(\lambda x+\left(1-\lambda\right)y\right) & =-\left(\prod_{i=1}^{n}\left(\underbrace{\lambda x_{i}}_{>0}+\underbrace{\left(1-\lambda\right)y_{i}}_{\geq0}\right)\right)^{\frac{1}{n}}\\
+ & \leq-\left(\prod_{i=1}^{n}\lambda x_{i}\right)^{\frac{1}{n}}=-\left(\lambda^{n}\prod_{i=1}^{n}x_{i}\right)^{\frac{1}{n}}\\
+ & =\lambda f\left(x\right)+\left(1-\lambda\right)\cdot0\\
+ & =\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+The inequality which defined convexity holds in any case, hence:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is convex over 
+\begin_inset Formula $\mathbb{R}_{++}^{n}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Formula $f$
+\end_inset
+
+ is not quasi-concave:
+\end_layout
+
+\begin_layout Standard
+Let's look at the following level set:
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Formula 
+\begin{align*}
+Lev\left(-f,0\right) & =\left\{ x\in\mathbb{R}_{+}^{n}:-f\left(x\right)\leq0\right\} \\
+ & =\left\{ x\in\mathbb{R}_{+}^{n}:\left(\prod_{i=1}^{n}x_{i}\right)^{\frac{1}{n}}\leq0\right\} 
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+denote:
+\begin_inset Formula 
+\[
+x=e_{1},y=e-e_{1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since both 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ have at least one zero element:
+\begin_inset Formula 
+\[
+-f\left(x\right)=-f\left(y\right)=0\leq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+x,y\in Lev\left(-f,0\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+but:
+\begin_inset Formula 
+\begin{align*}
+z & =\frac{1}{2}x+\frac{1}{2}y=\frac{1}{2}e
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we get:
+\begin_inset Formula 
+\begin{align*}
+-f\left(z\right) & =\left(\prod_{i=1}^{n}\frac{1}{2}\right)^{\frac{1}{n}}\\
+ & =\frac{1}{2}>0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+z\notin Lev\left(-f,0\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we found a convex combination of elements in 
+\begin_inset Formula $Lev\left(-f,0\right)$
+\end_inset
+
+ which is not in the set thus:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $Lev\left(-f,0\right)$
+\end_inset
+
+ is not convex and 
+\begin_inset Formula $f$
+\end_inset
+
+ is not quasi-concave
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 3:
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Formula 
+\[
+\left\{ x\in\left(-\frac{1}{2},\infty\right)^{3}:\left(x_{2}+x_{3}+1\right)\left(2x_{1}+2x_{3}+2\right)\left(3x_{1}+3x_{2}+3\right)\geq1\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+define the function:
+\begin_inset Formula 
+\begin{align*}
+f\left(x_{1},x_{2},x_{3}\right) & =-\ln\left(\left(x_{2}+x_{3}+1\right)\left(2x_{1}+2x_{3}+2\right)\left(3x_{1}+3x_{2}+3\right)\right)=\\
+ & =-\ln\left(x_{2}+x_{3}+1\right)-\ln\left(2x_{1}+2x_{3}+2\right)-\ln\left(3x_{1}+3x_{2}+3\right)=\\
+ & =-\ln\left(x_{2}+x_{3}+1\right)-\ln\left(x_{1}+x_{3}+1\right)-\ln\left(x_{1}+x_{2}+1\right)-\ln\left(2\right)-\ln\left(3\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Formula $g\left(x_{1},x_{2},x_{3}\right)=x_{2}+x_{3}+1=\left(0,1,1\right)\left(\begin{array}{c}
+x_{1}\\
+x_{2}\\
+x_{3}
+\end{array}\right)+1$
+\end_inset
+
+ is a convex function in 
+\begin_inset Formula $\left(-\frac{1}{2},\infty\right)^{3}$
+\end_inset
+
+ because it is an affine function.
+\end_layout
+
+\begin_layout Standard
+\noindent
+since 
+\begin_inset Formula $x_{2},x_{3}>-\frac{1}{2}$
+\end_inset
+
+ the image of 
+\begin_inset Formula $g\left(x_{1},x_{2},x_{3}\right)$
+\end_inset
+
+ is 
+\begin_inset Formula $\mathbb{R}_{++}^{3}$
+\end_inset
+
+.
+ In 
+\begin_inset Formula $\mathbb{R}_{++}^{3}$
+\end_inset
+
+ , the function 
+\begin_inset Formula $-\ln\left(x\right)$
+\end_inset
+
+ is a non decreasing convex function, hence 
+\begin_inset Formula $-\ln\left(g\left(x_{1},x_{2},x_{3}\right)\right)$
+\end_inset
+
+ is a convex function.
+\end_layout
+
+\begin_layout Standard
+\noindent
+in a similar matter we can show that 
+\begin_inset Formula $-\ln\left(x_{1}+x_{3}+1\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $-\ln\left(x_{1}+x_{2}+1\right)$
+\end_inset
+
+ are convex functions in 
+\begin_inset Formula $\left(-\frac{1}{2},\infty\right)^{3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+in addition 
+\begin_inset Formula $-\ln\left(2\right)-\ln\left(3\right)$
+\end_inset
+
+ is a convex function in 
+\begin_inset Formula $\left(-\frac{1}{2},\infty\right)^{3}$
+\end_inset
+
+ (an affine function).
+\end_layout
+
+\begin_layout Standard
+\noindent
+Therefore we can conclude that 
+\begin_inset Formula $f\left(x_{1},x_{2},x_{3}\right)$
+\end_inset
+
+ is a convex function in 
+\begin_inset Formula $\left(-\frac{1}{2},\infty\right)^{3}$
+\end_inset
+
+ as a summation of convex function in this domain.
+\end_layout
+
+\begin_layout Standard
+\noindent
+Because 
+\begin_inset Formula $f\left(x_{1},x_{2},x_{3}\right)$
+\end_inset
+
+ is a convex function in 
+\begin_inset Formula $\left(-\frac{1}{2},\infty\right)^{3}$
+\end_inset
+
+ than 
+\begin_inset Formula $Lev\left(f\left(x_{1},x_{2},x_{3}\right),0\right)$
+\end_inset
+
+ is convex in 
+\begin_inset Formula $\left(-\frac{1}{2},\infty\right)^{3}$
+\end_inset
+
+ meaning:
+\begin_inset Formula 
+\[
+\left\{ x\in\left(-\frac{1}{2},\infty\right)^{3}:f\left(x_{1},x_{2},x_{3}\right)\leq0\right\} \text{ is convex}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left\{ x\in\left(-\frac{1}{2},\infty\right)^{3}:-\ln\left(\left(x_{2}+x_{3}+1\right)\left(2x_{1}+2x_{3}+2\right)\left(3x_{1}+3x_{2}+3\right)\right)\leq0\right\} \text{ is convex}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left\{ x\in\left(-\frac{1}{2},\infty\right)^{3}:\ln\left(\left(x_{2}+x_{3}+1\right)\left(2x_{1}+2x_{3}+2\right)\left(3x_{1}+3x_{2}+3\right)\right)\geq0\right\} \text{ is convex}
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\[
+\left\{ x\in\left(-\frac{1}{2},\infty\right)^{3}:\left(x_{2}+x_{3}+1\right)\left(2x_{1}+2x_{3}+2\right)\left(3x_{1}+3x_{2}+3\right)\geq1\right\} \text{ is convex}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+The set 
+\begin_inset Formula $S=\left\{ x\in\mathbb{R}^{n}:x_{1}^{2}\leq x_{2}x_{3},x_{2},x_{3}\geq0\right\} $
+\end_inset
+
+ is convex
+\end_layout
+
+\begin_layout Standard
+lets write the set as a union of two sets:
+\size small
+
+\begin_inset Formula 
+\[
+S=\left\{ x\in\mathbb{R}^{n}:x_{1}^{2}\leq x_{2}x_{3},x_{2},x_{3}\geq0\right\} =\underbrace{\left\{ x\in\mathbb{R}^{n}:x_{1}^{2}\leq x_{2}x_{3},x_{2}>,x_{3}\geq0\right\} }_{A}\cup\underbrace{\left\{ x\in\mathbb{R}^{n}:x_{1}^{2}\leq x_{2}x_{3},x_{2}=0,x_{3}\geq0\right\} }_{B}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+lets show that 
+\begin_inset Formula $A$
+\end_inset
+
+ is a convex set:
+\begin_inset Formula 
+\begin{align*}
+ & x_{1}^{2}\leq x_{2}x_{3}\\
+\left(x_{2}>0\right)\iff & \frac{x_{1}^{2}}{x_{2}}\leq x_{3}\\
+\iff & \frac{x_{1}^{2}}{x_{2}}-x_{3}\leq0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we got a summation between quadratic over linear function at its proper
+ domain and a linear function which are both convex.
+\end_layout
+
+\begin_layout Standard
+hence the summation is convex and the set 
+\begin_inset Formula $A$
+\end_inset
+
+ is a level set of a convex function.
+\end_layout
+
+\begin_layout Standard
+hence, A is a convex set.
+\end_layout
+
+\begin_layout Standard
+lets show that 
+\begin_inset Formula $B$
+\end_inset
+
+ is a convex set:
+\end_layout
+
+\begin_layout Standard
+if 
+\begin_inset Formula $x_{2}$
+\end_inset
+
+ is zero the only valid 
+\begin_inset Formula $x_{1}$
+\end_inset
+
+ such that:
+\begin_inset Formula 
+\[
+x_{1}^{2}\leq x_{2}x_{3}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+is:
+\begin_inset Formula 
+\[
+x_{1}=0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+B=\left\{ x\in\mathbb{R}^{n},x_{1}=0,x_{2}=0,x_{3}\geq0\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which is of course a convex set
+\end_layout
+
+\begin_layout Standard
+Now lets show that 
+\begin_inset Formula $S$
+\end_inset
+
+ is a convex set
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $x,y\in\mathbb{S},\lambda\in\left[0,1\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+denote:
+\begin_inset Formula 
+\[
+z=\lambda x+\left(1-\lambda\right)y
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are three cases:
+\end_layout
+
+\begin_layout Subsubsection*
+Case 1
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $x\in A,y\in A$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $A$
+\end_inset
+
+ is a convex set:
+\begin_inset Formula 
+\[
+z\in A\Rightarrow z\in A\cup B=S
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Case 2
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $x\in B,y\in B$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $B$
+\end_inset
+
+ is a convex set:
+\begin_inset Formula 
+\[
+z\in B\Rightarrow z\in A\cup B=S
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Case 3
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $x\in A,y\in B$
+\end_inset
+
+ (without the loss of generality)
+\begin_inset Formula 
+\[
+x\in A\Rightarrow x_{1}^{2}\leq x_{2}x_{3},x_{2}>0,x_{3}\geq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+y\in B\Rightarrow y_{1}=y_{2}=0,y_{3}\geq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+z_{1}=\lambda x_{1}+\left(1-\lambda\right)y_{1}=\lambda x_{1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+z_{2}=\lambda x_{2}+\left(1-\lambda\right)y_{2}=\lambda x_{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+z_{3}=\lambda x_{3}+\left(1-\lambda\right)y_{3}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+z_{1}^{2} & =\lambda^{2}x_{1}^{2}\leq\lambda^{2}x_{2}x_{3}\leq\lambda x_{2}\left[\lambda x_{3}+\underbrace{\left(1-\lambda\right)y_{3}}_{\geq0}\right]\\
+ & =z_{2}z_{3}\Rightarrow z\in S
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+in each one of the cases we got that the convex combination of 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ is inside 
+\begin_inset Formula $S$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+Thus, we can conclude that 
+\begin_inset Formula $S$
+\end_inset
+
+ is a convex set.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Section c
+\end_layout
+
+\begin_layout Standard
+The set 
+\begin_inset Formula $\left\{ x\in\mathbb{R}^{n}:\left|\left|x-u\right|\right|\leq\left|\left|x-v\right|\right|\right\} $
+\end_inset
+
+ is convex
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Proof
+\end_layout
+
+\begin_layout Standard
+First, let's try to define the set in a different way:
+\begin_inset Formula 
+\begin{align*}
+ & \left|\left|x-u\right|\right|\leq\left|\left|x-v\right|\right|\\
+\text{all positive}\iff & \left|\left|x-u\right|\right|^{2}\leq\left|\left|x-v\right|\right|^{2}\\
+\iff & x^{T}x-2u^{T}x+a^{T}a\leq x^{T}x-2v^{T}x-v^{T}v\\
+\iff & -2\left(u^{T}-v^{T}\right)x+u^{T}u-v^{T}v\leq0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+\left\{ x\in\mathbb{R}^{n}:\left|\left|x-u\right|\right|\leq\left|\left|x-v\right|\right|\right\} =\left\{ x\in\mathbb{R}^{n}:-2\left(u^{T}-v^{T}\right)x+u^{T}u-v^{T}v\leq0\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+hence the set is half space which is convex 
+\end_layout
+
+\begin_layout Plain Layout
+note:
+\end_layout
+
+\begin_layout Plain Layout
+if 
+\begin_inset Formula $u=v$
+\end_inset
+
+ the inequality holds 
+\begin_inset Formula $\forall x\in\mathbb{R}^{n}$
+\end_inset
+
+ and we know it is a convex set.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

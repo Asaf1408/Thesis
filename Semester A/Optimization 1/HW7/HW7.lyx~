@@ -1,0 +1,2539 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+% Hebrew does not work unless I use this. 
+\usepackage{culmus}
+
+\usepackage{fancyhdr}
+\fancyhf{}               % Clear fancy header/footer
+\fancyhead[C]{
+\begin{otherlanguage}{English}
+Technion, Faculty of Industrial Engineering and Management
+\end{otherlanguage}
+}   
+\fancyfoot[C]{\thepage}  % Page number in Right footer
+\makeatletter
+\let\ps@plain\ps@fancy   % Plain page style = fancy page style
+\makeatother
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package auto
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 12
+\spacing other 1.5
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 2
+\use_package amssymb 2
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\noindent
+Optimization 1 - 098311
+\lang hebrew
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lang english
+Winter 2021 - HW 6
+\end_layout
+
+\begin_layout Author
+\noindent
+Ido Czerninski 312544596, Asaf Gendler 301727715
+\lang hebrew
+ 
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang hebrew
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+
+\bar under
+Problem 1:
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $f:\mathbb{R}^{n}\longrightarrow\mathbb{R}\cup\left\{ \infty\right\} $
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsection*
+Direction 1:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is a convex function.
+\end_layout
+
+\begin_layout Standard
+by definition:
+\begin_inset Formula 
+\[
+epi\left(f\right)=\left\{ \left(x;t\right):f\left(x\right)\leq t\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $\left(x;t_{x}\right)$
+\end_inset
+
+
+\begin_inset Formula $,\left(y;t_{y}\right)\in epi\left(f\right)$
+\end_inset
+
+ ,
+\begin_inset Formula $\lambda\in\left[0,1\right]$
+\end_inset
+
+ and denote:
+\begin_inset Formula 
+\[
+z=\lambda x+\left(1-\lambda\right)y
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+t=\lambda t_{x}+\left(1-\lambda\right)t_{y}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we will show that 
+\begin_inset Formula $\left(z;t\right)\in epi\left(f\right)$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+because 
+\begin_inset Formula $\left(x;t_{x}\right),\left(y;t_{y}\right)\in epi\left(f\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+f\left(x\right) & \leq t_{x}\\
+f\left(y\right) & \leq t_{y}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and because 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is convex
+\begin_inset Formula 
+\[
+f\left(\lambda x+\left(1-\lambda\right)y\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\begin{align*}
+f\left(z\right) & =f\left(\lambda x+\left(1-\lambda\right)y\right)\leq\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)\\
+ & \leq\lambda t_{x}+\left(1-\lambda\right)t_{y}=t
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+thus by definition 
+\begin_inset Formula $\left(z;t\right)\in epi\left(f\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+hence, 
+\begin_inset Formula $epi\left(f\right)$
+\end_inset
+
+ is a convex set
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Direction 2:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $epi\left(f\right)$
+\end_inset
+
+ is a convex set.
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $x,y\in\mathbb{R}^{n},\lambda\in\left(0,1\right)$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+if one or both of 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $f\left(y\right)$
+\end_inset
+
+ is 
+\begin_inset Formula $\infty$
+\end_inset
+
+ (W.L.O.G 
+\begin_inset Formula $f\left(x\right)=\infty$
+\end_inset
+
+):
+\begin_inset Formula 
+\begin{align*}
+f\left(\lambda x+\left(1-\lambda\right)y\right) & \leq\infty=f\left(x\right)=\lambda f\left(x\right)=\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)\\
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+otherwise 
+\begin_inset Formula $f\left(x\right),f\left(y\right)<\infty$
+\end_inset
+
+ hence we can choose:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+t_{x}=f\left(x\right),t_{y}=f\left(y\right)\in\mathbb{R}
+\]
+
+\end_inset
+
+that satisfies:
+\begin_inset Formula 
+\begin{align*}
+ & f\left(x\right)\leq t_{x}\\
+ & f\left(y\right)\leq t_{y}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+\left(f\left(x\right);t_{x}\right),\left(f\left(y\right);t_{y}\right)\in epi\left(f\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+from the convexity of 
+\begin_inset Formula $epi\left(f\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\lambda\left(x;t_{x}\right)+\left(1-\lambda\right)\left(x;t_{y}\right)=\left(\lambda x+\left(1-\lambda\right)y;\lambda t_{x}+\left(1-\lambda\right)t_{y}\right)\in epi\left(f\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+by the definition of 
+\begin_inset Formula $epi\left(f\right)$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+f\left(\lambda x+\left(1-\lambda\right)y\right) & \leq\lambda t_{x}+\left(1-\lambda\right)t_{y}\\
+ & =\lambda f\left(x\right)+\left(1-\lambda\right)f\left(y\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+Thus 
+\begin_inset Formula $f$
+\end_inset
+
+ is convex by definition.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+
+\lang hebrew
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 2:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f:\mathbb{R}^{n}\longrightarrow\mathbb{R}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+h:\mathbb{R}^{m}\longrightarrow\mathbb{R}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+A\in\mathbb{R}^{mxn}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+h\left(y\right) & =\inf_{x\in\mathbb{R}^{n}}\left\{ f\left(x\right):Ax=y\right\} 
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+h\left(y\right)+\epsilon>f\left(x\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+Ax_{1}=y
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+Ax_{2}=y
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+A\left(\lambda x_{1}+\left(1-\lambda x_{2}\right)\right)=y
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+prove that 
+\begin_inset Formula $h\left(y\right)$
+\end_inset
+
+ is a convex function.
+\end_layout
+
+\begin_layout Standard
+\noindent
+let 
+\begin_inset Formula $y_{1},y_{2}\in\mathbb{R}^{m},\lambda\in\left[0,1\right]$
+\end_inset
+
+=
+\begin_inset Formula 
+\begin{align*}
+h\left(\lambda y_{1}+\left(1-\lambda\right)y_{2}\right) & =\inf_{x\in\mathbb{R}^{n}}\left\{ f\left(x\right):Ax=\lambda y_{1}+\left(1-\lambda\right)y_{2}\right\} \\
+ & =\inf_{x\in\mathbb{R}^{n}}\left\{ f\left(x\right):A^{T}Ax=A^{T}\left(\lambda y_{1}+\left(1-\lambda\right)y_{2}\right)\right\} \\
+ & \leq\inf_{x\in\mathbb{R}^{n}}\left\{ f\left(A^{T}Ax\right):A^{T}Ax=A^{T}\left(\lambda y_{1}+\left(1-\lambda\right)y_{2}\right)\right\} \\
+ & =\inf_{x\in\mathbb{R}^{n}}\left\{ f\left(A^{T}\left(\lambda y_{1}+\left(1-\lambda\right)y_{2}\right)\right):A^{T}Ax=A^{T}\left(\lambda y_{1}+\left(1-\lambda\right)y_{2}\right)\right\} \\
+\\
+ & \geq\inf_{x\in\mathbb{R}^{n}}\left\{ \lambda f\left(x\right):Ax=y_{1}\right\} +\inf_{x\in\mathbb{R}^{n}}\left\{ \left(1-\lambda\right)f\left(x\right):Ax=y_{2}\right\} \\
+ & =\lambda\inf_{x\in\mathbb{R}^{n}}\left\{ f\left(x\right):Ax=y_{1}\right\} +\left(1-\lambda\right)\inf_{x\in\mathbb{R}^{n}}\left\{ f\left(x\right):Ax=y_{2}\right\} \\
+ & =\lambda h\left(y_{1}\right)+\left(1-\lambda\right)h\left(y_{2}\right)
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 3:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f:\mathbb{R}^{n}\longrightarrow\mathbb{R}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+g:\mathbb{R}^{n}\longrightarrow\mathbb{R}
+\]
+
+\end_inset
+
+
+\begin_inset Formula $f$
+\end_inset
+
+ and 
+\begin_inset Formula $g$
+\end_inset
+
+ are convex functions.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $X\subseteq\mathbb{R}^{n}$
+\end_inset
+
+ is a convex set.
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $x^{*}$
+\end_inset
+
+ be an optimal solution of the first problem such that 
+\begin_inset Formula $g\left(x^{*}\right)<0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+assume by contradiction that 
+\begin_inset Formula $x^{*}$
+\end_inset
+
+ is not an optimal solution for the second problem, meaning that there exists
+ 
+\begin_inset Formula $\hat{x}\neq x^{*}\in X$
+\end_inset
+
+ , which satisfies
+\begin_inset Formula 
+\[
+f\left(\hat{x}\right)<f\left(x^{*}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $g\left(x^{*}\right)<0:$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\exists r:\left\Vert \hat{x}-x^{*}\right\Vert >r>0,B\left(x^{*},r\right)\subseteq\left\{ x:g\left(x\right)<0\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+denote:
+\begin_inset Formula 
+\[
+0<\lambda=\frac{0.5r}{\left\Vert \hat{x}-x^{*}\right\Vert }<\frac{1}{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+z=\lambda\hat{x}+\left(1-\lambda\right)x^{*}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $x^{*},\hat{x}\in X$
+\end_inset
+
+ as valid solutions for the first and second problem, and because 
+\begin_inset Formula $X$
+\end_inset
+
+ is a convex set:
+\begin_inset Formula 
+\[
+z\in X
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+g\left(z\right)=g\left(\lambda\hat{x}+\left(1-\lambda\right)x^{*}\right)=g\left(x^{*}+\lambda\left(\hat{x}-x^{*}\right)\right)=g\left(x^{*}+\frac{0.5r\left(\hat{x}-x^{*}\right)}{\left|\left|\hat{x}-x^{*}\right|\right|}\right)
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left\Vert x^{*}+\frac{0.5r\left(\hat{x}-x^{*}\right)}{\left|\left|\hat{x}-x^{*}\right|\right|}-x^{*}\right\Vert =\left\Vert \frac{0.5r\left(\hat{x}-x^{*}\right)}{\left|\left|\hat{x}-x^{*}\right|\right|}\right\Vert =0.5r<r
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+x^{*}+\frac{0.5r\left(\hat{x}-x^{*}\right)}{\left|\left|\hat{x}-x^{*}\right|\right|}\in B\left(x^{*},r\right)
+\]
+
+\end_inset
+
+and therefore:
+\begin_inset Formula 
+\[
+g\left(z\right)=g\left(x^{*}+\frac{0.5r\left(\hat{x}-x^{*}\right)}{\left|\left|\hat{x}-x^{*}\right|\right|}\right)<0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we can see that 
+\begin_inset Formula $z$
+\end_inset
+
+ is a valid solution for the first problem because 
+\begin_inset Formula $z\in X\cap\left\{ x:g\left(x\right)\leq0\right\} $
+\end_inset
+
+, however:
+\begin_inset Formula 
+\begin{align*}
+f\left(z\right) & =f\left(\lambda\hat{x}+\left(1-\lambda\right)x^{*}\right)\\
+ & \overset{f\text{ is convex}}{\leq}\lambda f\left(\hat{x}\right)+\left(1-\lambda\right)f\left(x^{*}\right)\\
+ & \overset{f\left(\hat{x}\right)<f\left(x^{*}\right)}{<}\lambda f\left(x^{*}\right)+\left(1-\lambda\right)f\left(x^{*}\right)=f\left(x^{*}\right)
+\end{align*}
+
+\end_inset
+
+we have found a solution 
+\begin_inset Formula $z$
+\end_inset
+
+ for the first problem that attains a smaller value than 
+\begin_inset Formula $x^{*}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+this is a contradiction to the fact that 
+\begin_inset Formula $x^{*}$
+\end_inset
+
+ is an optimal solution.
+\end_layout
+
+\begin_layout Plain Layout
+thus 
+\begin_inset Formula $x^{*}$
+\end_inset
+
+ is an optimal solution to the second problem as well.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 4:
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+Show that the extreme points of the unit simplex 
+\begin_inset Formula $\Delta_{n}$
+\end_inset
+
+ are the unit vectors 
+\begin_inset Formula $e_{1},e_{2},...,e_{n}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta_{n}=\left\{ x\in\mathbb{R}^{n}:\sum_{i=1}^{n}x_{i}=1,\forall i:x_{i}\geq0\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+first let's show that the unit simplex is a convex set for the problem to
+ be well defined.
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $x,y\in\Delta_{n}$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda\in\left[0,1\right]$
+\end_inset
+
+ and define:
+\begin_inset Formula 
+\[
+z=\lambda x+\left(1-\lambda\right)y
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $x,y\in\Delta_{n}$
+\end_inset
+
+ then:
+\begin_inset Formula 
+\[
+\sum_{i=1}^{n}x_{i}=\sum_{i=1}^{n}y_{i}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\forall i\in\left\{ 1,2,..,n\right\} :x_{i},y_{i}\geq0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+notice that:
+\begin_inset Formula 
+\[
+\sum_{i=1}^{n}z_{i}=\sum_{i=1}^{n}\lambda x_{i}+\left(1-\lambda\right)y_{i}=\lambda\sum_{i=1}^{n}x_{i}+\left(1-\lambda\right)\sum_{i=1}^{n}y_{i}=\lambda+\left(1-\lambda\right)=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\forall i\in\left\{ 1,2,..,n\right\} :z_{i}=\lambda x_{i}+\left(1-\lambda\right)y_{i}\overset{y_{i}\geq0}{\overset{x_{i}\geq0}{\overset{1-\lambda\geq0}{\overset{\lambda\geq0}{\geq}}}}0
+\]
+
+\end_inset
+
+hence 
+\begin_inset Formula $z\in\Delta_{n}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+therefore the unit simplex is a convex set by definition.
+\end_layout
+
+\begin_layout Subsubsection*
+first direction:
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $x=e_{j}\in\mathbb{R}^{n}$
+\end_inset
+
+ for some 
+\begin_inset Formula $j\in1,2,...,n$
+\end_inset
+
+, lets prove it is an extreme point of 
+\begin_inset Formula $\Delta_{n}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+first:
+\begin_inset Formula 
+\[
+\sum_{i=1}^{n}x_{i}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\forall i:x_{i}\geq0
+\]
+
+\end_inset
+
+hence 
+\begin_inset Formula $x\in\Delta_{n}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+assume by contradiction, it is not an extreme point of 
+\begin_inset Formula $\Delta_{n}$
+\end_inset
+
+, then:
+\begin_inset Formula 
+\[
+\exists y\neq z\in\Delta_{n},\lambda\in\left(0,1\right):x=\lambda y+\left(1-\lambda\right)z
+\]
+
+\end_inset
+
+since 
+\begin_inset Formula $y,z\in\Delta_{n}:$
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\sum_{i=1}^{n}y_{i}=1,\forall i\in\left\{ 1,2,..,n\right\} :y_{i}\geq0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\sum_{i=1}^{n}z_{i}=1,\forall i\in\left\{ 1,2,..,n\right\} :z_{i}\geq0
+\]
+
+\end_inset
+
+in addition since 
+\begin_inset Formula $x=e_{j}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\forall i\neq j:\lambda y_{i}+\left(1-\lambda\right)z_{i}=0
+\]
+
+\end_inset
+
+since 
+\begin_inset Formula $\forall i:y_{i}\geq0,z_{i}\geq0$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda\in\left(0,1\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+\forall i\neq j:\lambda y_{i}+\left(1-\lambda\right)z_{i}=0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\iff\forall i\neq j:y_{i}=z_{i}=0
+\]
+
+\end_inset
+
+but since 
+\begin_inset Formula $\sum_{i=1}^{n}y_{i}=1$
+\end_inset
+
+ and 
+\begin_inset Formula $\sum_{i=1}^{n}z_{i}=1$
+\end_inset
+
+ it means that:
+\begin_inset Formula 
+\[
+\sum_{i=1}^{n}y_{i}=\sum_{\underset{i\neq j}{i=1}}^{n}y_{i}+y_{j}=0+y_{j}=y_{j}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\sum_{i=1}^{n}z_{i}=\sum_{\underset{i\neq j}{i=1}}^{n}z_{i}+z_{j}=0+z_{j}=z_{j}=1
+\]
+
+\end_inset
+
+hence:
+\begin_inset Formula 
+\[
+y=z=e_{j}
+\]
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+this is a contradiction to the fact that 
+\begin_inset Formula $y\neq z$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Therefore 
+\begin_inset Formula $x=e_{j}$
+\end_inset
+
+ is an extreme point of 
+\begin_inset Formula $\Delta_{n}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+second direction:
+\end_layout
+
+\begin_layout Standard
+let 
+\begin_inset Formula $x\in\Delta_{n}$
+\end_inset
+
+ and 
+\begin_inset Formula $x\notin\left\{ e_{1},e_{2},...,e_{n}\right\} $
+\end_inset
+
+.
+ lets show 
+\begin_inset Formula $x$
+\end_inset
+
+ is not an extreme point of 
+\begin_inset Formula $\Delta_{n}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $x\in\Delta_{n}$
+\end_inset
+
+ but 
+\begin_inset Formula $x\notin\left\{ e_{1},e_{2},...,e_{n}\right\} $
+\end_inset
+
+ it means that:
+\begin_inset Formula 
+\[
+\exists k\in\left\{ 1,2,...,n\right\} :0<x_{k}<1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+define:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\lambda_{i}=\frac{x_{i}}{1-x_{k}},i\in\left\{ 1,2,...,n\right\} \setminus\left\{ k\right\} 
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+since 
+\begin_inset Formula $x\in\Delta_{n}$
+\end_inset
+
+ then:
+\begin_inset Formula 
+\[
+\sum_{i=1}^{n}x_{i}=1\Rightarrow\sum_{\underset{i\neq k}{i=1}}^{n}x_{i}=1-x_{k}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\sum_{\underset{i\neq k}{i=1}}^{n}\lambda_{i}=\sum_{\underset{i\neq k}{i=1}}^{n}\frac{x_{i}}{1-x_{k}}=\frac{\sum_{\underset{i\neq k}{i=1}}^{n}x_{i}}{1-x_{k}}=\frac{1-x_{k}}{1-x_{k}}=1
+\]
+
+\end_inset
+
+now define 
+\begin_inset Formula $y\in\mathbb{R}^{n}$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+y=\sum_{\underset{i\neq k}{i=1}}^{n}\lambda_{i}e_{i}
+\]
+
+\end_inset
+
+since 
+\begin_inset Formula $e_{1},e_{2},...,e_{n}\in\Delta_{n}$
+\end_inset
+
+ (we showed that in the first direction) and 
+\begin_inset Formula $\sum_{\underset{i\neq k}{i=1}}^{n}\lambda_{i}=1$
+\end_inset
+
+ then 
+\begin_inset Formula $y$
+\end_inset
+
+ is a convex combination of points from the unit simplex, and since the
+ unit simplex is a convex set it means that:
+\begin_inset Formula 
+\[
+y\in\Delta_{n}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+now notice that for 
+\begin_inset Formula $y,e_{k}\in\Delta_{n}$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda=x_{k}\in\left(0,1\right)$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\lambda e_{k}+\left(1-\lambda\right)y & =\lambda e_{k}+\left(1-\lambda\right)\sum_{\underset{i\neq k}{i=1}}^{n}\lambda_{i}e_{i}=\\
+ & =\lambda e_{k}+\sum_{\underset{i\neq k}{i=1}}^{n}\left(1-\lambda\right)\lambda_{i}e_{i}=\\
+ & =x_{k}e_{k}+\sum_{\underset{i\neq k}{i=1}}^{n}\left(1-x_{k}\right)\frac{x_{i}}{1-x_{k}}e_{i}=\\
+ & =x_{k}e_{k}+\sum_{\underset{i\neq k}{i=1}}^{n}x_{i}e_{i}\\
+ & =x
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+we found two vectors 
+\begin_inset Formula $y,e_{k}\in\Delta_{n}$
+\end_inset
+
+ and a scalar 
+\begin_inset Formula $\lambda\in\left(0,1\right)$
+\end_inset
+
+ such that 
+\begin_inset Formula $x\in\Delta_{n}$
+\end_inset
+
+ can be written as:
+\begin_inset Formula 
+\[
+x=\lambda e_{k}+\left(1-\lambda\right)y
+\]
+
+\end_inset
+
+ hence 
+\begin_inset Formula $x$
+\end_inset
+
+ is not an extreme point of 
+\begin_inset Formula $\Delta_{n}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+Find the optimal solution of the problem:
+\begin_inset Formula 
+\begin{align*}
+\max & f\left(x\right)=57x_{1}^{2}+65x_{2}^{2}+17x_{3}^{2}+96x_{1}x_{2}-32x_{1}x_{3}+8x_{2}x_{3}+27x_{1}-84x_{2}+20x_{3}\\
+s.t & x_{1}+x_{2}+x_{3}=1,\\
+ & x_{1},x_{2},x_{3}\geq0
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+notice the restrictions simply tell us that the solution has to belong to
+ the unit simplex, thus we can rewrite the problem as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\max & f\left(x\right)\\
+s.t & x\in\Delta_{3}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+lets look at 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+:
+\begin_inset Formula 
+\[
+f\left(x\right)=x^{T}\underbrace{\left(\begin{array}{ccc}
+57 & 48 & -16\\
+48 & 65 & 4\\
+-16 & 4 & 17
+\end{array}\right)}_{A}x+2\underbrace{\left(\begin{array}{ccc}
+\frac{27}{2} & -42 & 10\end{array}\right)}_{b^{T}}x+\underbrace{0}_{c}
+\]
+
+\end_inset
+
+this is a quadratic function of 
+\begin_inset Formula $x$
+\end_inset
+
+, let's show 
+\begin_inset Formula $A$
+\end_inset
+
+ is positive definite and hence 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is a convex function.
+\begin_inset Formula 
+\[
+M_{1}\left(A\right)=57>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+M_{2}\left(A\right)=57\cdot65-48^{2}=1401>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+M_{3}\left(A\right) & =57\cdot\left|\begin{array}{cc}
+65 & 4\\
+4 & 17
+\end{array}\right|-48\cdot\left|\begin{array}{cc}
+48 & 4\\
+-16 & 17
+\end{array}\right|-16\cdot\left|\begin{array}{cc}
+48 & 65\\
+-16 & 4
+\end{array}\right|=\\
+ & =57\cdot1089-48\cdot880-16\cdot1232=121>0
+\end{align*}
+
+\end_inset
+
+all the major minors of 
+\begin_inset Formula $A$
+\end_inset
+
+ are strictly positive, hence 
+\begin_inset Formula $A$
+\end_inset
+
+ is a positive definite matrix.
+\end_layout
+
+\begin_layout Standard
+Therefore 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is a quadratic strictly convex function over all 
+\begin_inset Formula $\mathbb{R}^{n}$
+\end_inset
+
+ and also specifically over 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+notice that:
+\end_layout
+
+\begin_layout Standard
+1) 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+ is a convex set as we proved in section a
+\end_layout
+
+\begin_layout Standard
+2) 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+ is not empty, for example 
+\begin_inset Formula $e_{1}\in\Delta_{3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+3) 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+ is bounded because 
+\begin_inset Formula $\forall x\in\Delta_{3}:\left\Vert x\right\Vert _{1}=\sum_{i=1}^{3}\left|x_{i}\right|=\sum_{i=1}^{3}x_{i}=1\leq1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+4) 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+ is closed as we saw in lecture 1
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is a convex function over the non empty convex and compact set 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+, therefore there exists at least one maximizer of 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ over 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+ which is an extreme point of 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+luckily in section a we saw that the extreme points of 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+ are 
+\begin_inset Formula $\left\{ e_{1},e_{2},e_{3}\right\} $
+\end_inset
+
+, we now know that one of them is a maximizer of 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ over 
+\begin_inset Formula $\Delta_{3}$
+\end_inset
+
+, we just need to find out who.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f\left(e_{j}\right)=e_{j}^{T}Ae_{j}+2b^{T}e_{j}=A_{jj}+2b_{j}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f\left(e_{1}\right)=A_{11}+2b_{1}=57+2\cdot\frac{27}{2}=57+27=84
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f\left(e_{2}\right)=A_{22}+2b_{2}=65-2\cdot42=65-84=-19
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+f\left(e_{3}\right)=A_{33}+2b_{3}=17+2\cdot10=17+20=37
+\]
+
+\end_inset
+
+thus we can see that the maximizer is 
+\begin_inset Formula $e_{1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+to conclude, the optimal solution of the problem can be attained at 
+\begin_inset Formula $x^{*}=e_{1}$
+\end_inset
+
+ and it's value is 
+\begin_inset Formula $f\left(x^{*}\right)=84$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 5:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\noindent
+
+\bar under
+Problem 6:
+\end_layout
+
+\begin_layout Subsection*
+a)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\min & f\left(x\right)=\max\left\{ \left|2x_{1}-3x_{2}\right|,\left|x_{2}-x_{1}+x_{3}\right|\right\} +x_{1}^{2}+2x_{2}^{2}+3x_{3}^{2}-2x_{2}x_{3}\\
+s.t & g_{1}\left(x\right)=\left(4x_{1}^{2}+6x_{2}^{2}-8x_{1}x_{2}+0.01\right)^{8}+\frac{x_{3}^{2}}{2x_{1}+3x_{2}}\leq150\\
+ & g_{2}\left(x\right)=x_{1}+x_{2}\geq1-\frac{x_{2}}{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+objective function:
+\begin_inset Formula 
+\[
+\left|2x_{1}-3x_{2}\right|=\left|\left(\begin{array}{ccc}
+2 & -3 & 0\end{array}\right)x+0\right|=\left|Ax+b\right|=\left\Vert Ax+b\right\Vert _{1}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\left|x_{2}-x_{1}+x_{3}\right|=\left|\left(\begin{array}{ccc}
+-1 & 1 & 1\end{array}\right)x+0\right|=\left|Bx+c\right|=\left\Vert Bx+c\right\Vert _{1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\left\Vert x\right\Vert _{1}$
+\end_inset
+
+ is a convex function, hence 
+\begin_inset Formula $\left\Vert Ax+b\right\Vert _{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\left\Vert Bx+c\right\Vert _{1}$
+\end_inset
+
+ are convex function as a linear change in the variables of a convex function.
+\end_layout
+
+\begin_layout Standard
+a maximum between convex functions is a convex functions, hence 
+\begin_inset Formula $\max\left\{ \left|2x_{1}-3x_{2}\right|,\left|x_{2}-x_{1}+x_{3}\right|\right\} $
+\end_inset
+
+ is convex.
+\begin_inset Formula 
+\[
+x_{1}^{2}+2x_{2}^{2}+3x_{3}^{2}-2x_{2}x_{3}=x^{T}\underbrace{\left(\begin{array}{ccc}
+1 & 0 & 0\\
+0 & 2 & -1\\
+0 & -1 & 3
+\end{array}\right)}_{Q}x
+\]
+
+\end_inset
+
+
+\begin_inset Formula $Q$
+\end_inset
+
+ is strictly diagonally dominant with non negative diagonal elements , hence
+ positive definite, therefore 
+\begin_inset Formula $x^{T}Qx$
+\end_inset
+
+ is a convex function as a quadratic function with a positive definite matrix.
+\end_layout
+
+\begin_layout Standard
+we can conclude that 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is a convex function as a summation of convex functions.
+\end_layout
+
+\begin_layout Subsubsection*
+first constraint:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+4x_{1}^{2}+6x_{2}^{2}-8x_{1}x_{2}+0.01=x^{T}\underbrace{\left(\begin{array}{ccc}
+4 & -4 & 0\\
+-4 & 6 & 0\\
+0 & 0 & 0
+\end{array}\right)}_{P}x+0.01
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $P$
+\end_inset
+
+ is diagonally dominant with non negative diagonal elements , hence positive
+ semi definite, therefore 
+\begin_inset Formula $x^{T}Px$
+\end_inset
+
+ is a convex function as a quadratic function with a positive semi definite
+ matrix.
+\end_layout
+
+\begin_layout Standard
+in addition 
+\begin_inset Formula $x^{T}Px+0.01\geq0.01>0$
+\end_inset
+
+ hence the image of 
+\begin_inset Formula $x^{T}Px+0.01$
+\end_inset
+
+ is a subset of 
+\begin_inset Formula $\mathbb{R}_{++}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the function 
+\begin_inset Formula $g\left(x\right)=x^{8}$
+\end_inset
+
+ is a non decreasing convex function over 
+\begin_inset Formula $\mathbb{R}_{++}$
+\end_inset
+
+, therefore we can conclude that 
+\begin_inset Formula $\left(4x_{1}^{2}+6x_{2}^{2}-8x_{1}x_{2}+0.01\right)^{8}$
+\end_inset
+
+ is a convex function.
+\begin_inset Formula 
+\[
+\frac{x_{3}^{2}}{2x_{1}+3x_{2}}=\frac{\left\Vert \left(\begin{array}{ccc}
+0 & 0 & 1\end{array}\right)x+0\right\Vert ^{2}}{\left(\begin{array}{ccc}
+2 & 3 & 0\end{array}\right)x+0}
+\]
+
+\end_inset
+
+thus it is a generalized quadratic-over-linear function, however it is convex
+ only if 
+\begin_inset Formula $\left(\begin{array}{ccc}
+2 & 3 & 0\end{array}\right)x+0>0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+notice that from the second constraint we get:
+\begin_inset Formula 
+\[
+x_{1}+x_{2}\geq1-\frac{x_{2}}{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+x_{1}+\frac{3}{2}x_{2}\geq1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+2x_{1}+3x_{2}\geq1
+\]
+
+\end_inset
+
+hence 
+\begin_inset Formula $\left(\begin{array}{ccc}
+2 & 3 & 0\end{array}\right)x+0>0$
+\end_inset
+
+ and the quadratic-over-linear function is indeed convex.
+\end_layout
+
+\begin_layout Standard
+we can conclude that 
+\begin_inset Formula $g_{1}\left(x\right)$
+\end_inset
+
+ is a convex function as a summation of convex function, thus the first
+ constraint is a convex set as a level set of a convex function.
+\end_layout
+
+\begin_layout Subsubsection*
+second constraint:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x_{1}+x_{2}\geq1-\frac{x_{2}}{2}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\iff-x_{1}-\frac{3}{2}x_{2}\leq-1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\iff\left(\begin{array}{ccc}
+-1 & -\frac{3}{2} & 0\end{array}\right)x\leq-1
+\]
+
+\end_inset
+
+
+\begin_inset Formula $\left(\begin{array}{ccc}
+-1 & -\frac{3}{2} & 0\end{array}\right)x$
+\end_inset
+
+ is a convex function because it is a linear function, hence the second
+ constraint is a convex set as a level set of a convex function.
+\end_layout
+
+\begin_layout Subsubsection*
+solution:
+\end_layout
+
+\begin_layout Standard
+we showed the problem is a minimization problem of a convex function over
+ a convex set(intersection of convex sets is convex), thus this is indeed
+ a convex optimization problem.
+\end_layout
+
+\begin_layout Standard
+attached is the CVX code for solving the problem:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Q6a.jfif
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+b)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\min & f\left(x\right)=5x_{1}^{2}+4x_{2}^{2}+7x_{3}^{2}+4x_{1}x_{2}+2x_{2}x_{3}+\left|x_{1}-x_{2}\right|\\
+s.t & g_{1}\left(x\right)=\frac{x_{1}^{2}}{2x_{1}+x_{2}}+\left(1+e^{\sqrt{x_{1}^{2}+x_{2}^{2}+1}}\right)^{7}\leq200\\
+ & g_{2}\left(x\right)=\max\left\{ 2,e^{\left(x_{1}+x_{2}\right)^{3}}+\frac{x_{2}^{2}+x_{2}x_{3}+x_{3}^{2}}{x_{1}}+x_{2}-x_{1}\right\} -2x_{2}\leq0\\
+ & x_{1}\geq1
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+objective function:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+5x_{1}^{2}+4x_{2}^{2}+7x_{3}^{2}+4x_{1}x_{2}+2x_{2}x_{3}=x^{T}\underbrace{\left(\begin{array}{ccc}
+5 & 2 & 0\\
+2 & 4 & 1\\
+0 & 1 & 7
+\end{array}\right)}_{Q}x
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $Q$
+\end_inset
+
+ is strictly diagonally dominant with non negative diagonal elements , hence
+ positive definite, therefore 
+\begin_inset Formula $x^{T}Qx$
+\end_inset
+
+ is a convex function as a quadratic function with a positive definite matrix.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left|x_{1}-x_{2}\right|=\left|\left(1,-1,0\right)x+0\right|=\left|Ax+b\right|=\left\Vert Ax+b\right\Vert _{1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\left\Vert x\right\Vert _{1}$
+\end_inset
+
+ is a convex function, hence 
+\begin_inset Formula $\left\Vert Ax+b\right\Vert _{1}$
+\end_inset
+
+ is a convex function as a linear change in the variables of a convex function.
+\end_layout
+
+\begin_layout Standard
+we can conclude that 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ is a convex function as a summation of convex functions.
+\end_layout
+
+\begin_layout Subsubsection*
+first constraint:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{x_{1}^{2}}{2x_{1}+x_{2}}=\frac{\left\Vert \left(\begin{array}{ccc}
+1 & 0 & 0\end{array}\right)x+0\right\Vert ^{2}}{\left(\begin{array}{ccc}
+2 & 1 & 0\end{array}\right)x+0}
+\]
+
+\end_inset
+
+thus it is a generalized quadratic-over-linear function, however it is convex
+ only if 
+\begin_inset Formula $\left(\begin{array}{ccc}
+2 & 1 & 0\end{array}\right)x+0>0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+notice that from the second constraint we get:
+\begin_inset Formula 
+\[
+2x_{2}\geq2
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+x_{2}\geq1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and from the third constraint we get:
+\begin_inset Formula 
+\[
+x_{1}\geq1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+\left(\begin{array}{ccc}
+2 & 1 & 0\end{array}\right)x+0=2x_{1}+x_{2}\geq2+1=3>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and the quadratic-over-linear function is indeed convex.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\sqrt{x_{1}^{2}+x_{2}^{2}+1}=\left\Vert \underbrace{\left(\begin{array}{ccc}
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 0
+\end{array}\right)}_{A}x+\underbrace{\left(\begin{array}{c}
+0\\
+0\\
+1
+\end{array}\right)}_{b}\right\Vert _{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\left\Vert x\right\Vert _{2}$
+\end_inset
+
+ is a convex function, thus 
+\begin_inset Formula $\left\Vert Ax+b\right\Vert _{2}$
+\end_inset
+
+ is a convex function as well as a linear change in the variables of a convex
+ function.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\left(x\right)=e^{x}$
+\end_inset
+
+ is a non decreasing convex function over all 
+\begin_inset Formula $\mathbb{R}$
+\end_inset
+
+, therefore 
+\begin_inset Formula $e^{\sqrt{x_{1}^{2}+x_{2}^{2}+1}}$
+\end_inset
+
+ is a convex function.
+ 
+\end_layout
+
+\begin_layout Standard
+a constant function is of course convex, hence 
+\begin_inset Formula $1+e^{\sqrt{x_{1}^{2}+x_{2}^{2}+1}}$
+\end_inset
+
+ is a convex function as a summation of convex function.
+\end_layout
+
+\begin_layout Standard
+notice that:
+\begin_inset Formula 
+\[
+\sqrt{x_{1}^{2}+x_{2}^{2}+1}\geq\sqrt{1}=1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+e^{\sqrt{x_{1}^{2}+x_{2}^{2}+1}}\geq e
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+1+e^{\sqrt{x_{1}^{2}+x_{2}^{2}+1}}\geq1+e>0
+\]
+
+\end_inset
+
+hence the image of 
+\begin_inset Formula $1+e^{\sqrt{x_{1}^{2}+x_{2}^{2}+1}}$
+\end_inset
+
+ is a subset of 
+\begin_inset Formula $\mathbb{R}_{++}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $u\left(x\right)=x^{7}$
+\end_inset
+
+ is a non decreasing convex function over 
+\begin_inset Formula $\mathbb{R}_{++}$
+\end_inset
+
+ , therefore we can conclude that 
+\begin_inset Formula $\left(1+e^{\sqrt{x_{1}^{2}+x_{2}^{2}+1}}\right)^{7}$
+\end_inset
+
+ is a convex function.
+\end_layout
+
+\begin_layout Standard
+we can conclude that 
+\begin_inset Formula $g_{1}\left(x\right)$
+\end_inset
+
+ is a convex function as a summation of convex function, thus the first
+ constraint is a convex set as a level set of a convex function.
+\end_layout
+
+\begin_layout Subsubsection*
+second constraint:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $x_{1}+x_{2}=\left(1,1,0\right)x$
+\end_inset
+
+ is a convex function because it is a linear function.
+ 
+\end_layout
+
+\begin_layout Standard
+in addition as we saw before:
+\begin_inset Formula 
+\[
+x_{1}+x_{2}\geq1+1=2>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence the image of 
+\begin_inset Formula $x_{1}+x_{2}=\left(1,1,0\right)x$
+\end_inset
+
+ is a subset of 
+\begin_inset Formula $\mathbb{R}_{++}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $r\left(x\right)=x^{3}$
+\end_inset
+
+ is a non decreasing convex function over 
+\begin_inset Formula $\mathbb{R}_{++}$
+\end_inset
+
+ , therefore we can conclude that 
+\begin_inset Formula $\left(x_{1}+x_{2}\right)^{3}$
+\end_inset
+
+ is a convex function.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $g\left(x\right)=e^{x}$
+\end_inset
+
+ is a non decreasing convex function over all 
+\begin_inset Formula $\mathbb{R}$
+\end_inset
+
+, therefore 
+\begin_inset Formula $e^{\left(x_{1}+x_{2}\right)^{3}}$
+\end_inset
+
+ is a convex function.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\frac{x_{2}^{2}+x_{2}x_{3}+x_{3}^{2}}{x_{1}} & =\frac{\left(\begin{array}{cc}
+x_{2} & x_{3}\end{array}\right)\underbrace{\left(\begin{array}{cc}
+1 & \frac{1}{2}\\
+\frac{1}{2} & 1
+\end{array}\right)}_{P}\left(\begin{array}{c}
+x_{2}\\
+x_{3}
+\end{array}\right)}{x_{1}}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula $P$
+\end_inset
+
+ is a positive definite matrix because:
+\begin_inset Formula 
+\[
+Tr\left(P\right)=1+1=2>0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+det\left(P\right)=1-\frac{1}{4}=\frac{3}{4}>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+therefore we can find it's Cholesky decomposition:
+\begin_inset Formula 
+\[
+P=LL^{T}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and we can write:
+\begin_inset Formula 
+\begin{align*}
+\frac{x_{2}^{2}+x_{2}x_{3}+x_{3}^{2}}{x_{1}} & =\frac{\left(\begin{array}{cc}
+x_{2} & x_{3}\end{array}\right)P\left(\begin{array}{c}
+x_{2}\\
+x_{3}
+\end{array}\right)}{x_{1}}=\frac{\left(\begin{array}{cc}
+x_{2} & x_{3}\end{array}\right)LL^{T}\left(\begin{array}{c}
+x_{2}\\
+x_{3}
+\end{array}\right)}{x_{1}}=\frac{\left(L^{T}\left(\begin{array}{c}
+x_{2}\\
+x_{3}
+\end{array}\right)\right)^{T}L^{T}\left(\begin{array}{c}
+x_{2}\\
+x_{3}
+\end{array}\right)}{x_{1}}=\\
+ & =\frac{\left\Vert L^{T}\left(\begin{array}{c}
+x_{2}\\
+x_{3}
+\end{array}\right)\right\Vert ^{2}}{x_{1}}=\frac{\left\Vert \underbrace{\left(\begin{array}{ccc}
+0 & L_{1,1} & L_{2,1}\\
+0 & L_{1,2} & L_{2,2}
+\end{array}\right)}_{D}\left(\begin{array}{c}
+x_{1}\\
+x_{2}\\
+x_{3}
+\end{array}\right)\right\Vert ^{2}}{x_{1}}=\frac{\left\Vert Dx+0\right\Vert ^{2}}{\left(1,0,0\right)x+0}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+thus it is a generalized quadratic-over-linear function, which it is convex
+ only if 
+\begin_inset Formula $\left(\begin{array}{ccc}
+1 & 0 & 0\end{array}\right)x+0>0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+but we already saw that
+\begin_inset Formula 
+\[
+x_{1}\geq1
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+hence:
+\begin_inset Formula 
+\[
+\left(\begin{array}{ccc}
+1 & 0 & 0\end{array}\right)x+0=x_{1}>0
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and the quadratic-over-linear function is indeed convex.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $x_{2}-x_{1}=\left(\begin{array}{ccc}
+-1 & 1 & 0\end{array}\right)x$
+\end_inset
+
+ is a convex function since it is a linear function.
+\end_layout
+
+\begin_layout Standard
+thus 
+\begin_inset Formula $e^{\left(x_{1}+x_{2}\right)^{3}}+\frac{x_{2}^{2}+x_{2}x_{3}+x_{3}^{2}}{x_{1}}+x_{2}-x_{1}$
+\end_inset
+
+ is a convex function as a summation of convex functions.
+\end_layout
+
+\begin_layout Standard
+a constant function is of course convex, and a maximum between convex functions
+ is also convex, thus 
+\begin_inset Formula $\max\left\{ 2,e^{\left(x_{1}+x_{2}\right)^{3}}+\frac{x_{2}^{2}+x_{2}x_{3}+x_{3}^{2}}{x_{1}}+x_{2}-x_{1}\right\} $
+\end_inset
+
+is a convex function.
+\end_layout
+
+\begin_layout Standard
+finally 
+\begin_inset Formula $-2x_{2}=\left(\begin{array}{ccc}
+0 & -2 & 0\end{array}\right)x$
+\end_inset
+
+ is a convex function since it is a linear function.
+\end_layout
+
+\begin_layout Standard
+we can conclude that 
+\begin_inset Formula $g_{2}\left(x\right)$
+\end_inset
+
+ is a convex function as a summation of convex functions, thus the second
+ constraint is a convex set as a level set of a convex function.
+\end_layout
+
+\begin_layout Subsubsection*
+third constraint:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $-x_{1}=\left(\begin{array}{ccc}
+-1 & 0 & 0\end{array}\right)x$
+\end_inset
+
+ is a convex function since it is a linear function.
+\end_layout
+
+\begin_layout Standard
+we can conclude that the third constraint is a convex set as a level set
+ of a convex function.
+\end_layout
+
+\begin_layout Subsubsection*
+solution:
+\end_layout
+
+\begin_layout Standard
+we showed the problem is a minimization problem of a convex function over
+ a convex set (intersection of convex sets is convex), thus this is indeed
+ a convex optimization problem.
+\end_layout
+
+\begin_layout Standard
+attached is the CVX code for solving the problem:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Q6b.jfif
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+as you can see CVX couldn't find a feasible solution.
+\end_layout
+
+\begin_layout Standard
+this shouldn't surprise us, we already saw that the second and third constraint
+ force:
+\begin_inset Formula 
+\[
+x_{1}\geq1
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+x_{2}\geq1
+\]
+
+\end_inset
+
+thus if we look on the first constraint we will get:
+\begin_inset Formula 
+\[
+\frac{x_{1}^{2}}{2x_{1}+x_{2}}+\left(1+e^{\sqrt{x_{1}^{2}+x_{2}^{2}+1}}\right)^{7}\geq\left(1+e^{\sqrt{x_{1}^{2}+x_{2}^{2}+1}}\right)^{7}\geq\left(1+e^{\sqrt{1+1+1}}\right)^{7}=\left(1+e^{\sqrt{3}}\right)^{7}=576464>200
+\]
+
+\end_inset
+
+hence the set of constraints defines an empty set.
+\end_layout
+
+\end_body
+\end_document
