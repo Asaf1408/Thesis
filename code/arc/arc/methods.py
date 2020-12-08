@@ -7,6 +7,29 @@ from tqdm import tqdm
 
 from arc.classification import ProbabilityAccumulator as ProbAccum
 
+
+# Generate "num_points" random points in "dimension" that have uniform
+# probability over the unit ball scaled by "radius" (length of points
+# are in range [0, "radius"]).
+def random_in_ball(num_points, dimension, radius=1, norm="l2"):
+    from numpy import random, linalg
+
+    if norm == "l2":
+        # First generate random directions by normalizing the length of a
+        # vector of random-normal values (these distribute evenly on ball).
+        random_directions = random.normal(size=(dimension,num_points))
+        random_directions /= linalg.norm(random_directions, axis=0)
+        # Second generate a random radius with probability proportional to
+        # the surface area of a ball with a given radius.
+        random_radii = random.random(num_points) ** (1/dimension)
+        # Return the list of random (direction & length) points.
+        res = radius * (random_directions * random_radii).T
+
+    elif norm == "infinity":
+        res = random.uniform(low=-radius,high=radius,size=(num_points,dimension))
+
+    return res
+
 class CVPlus:
     def __init__(self, X, Y, black_box, alpha, n_folds=10, random_state=2020, verbose=False):
         X = np.array(X)
@@ -221,4 +244,69 @@ class No_Calibration:
         p_hat = self.black_box.predict_proba(X)
         grey_box = ProbAccum(p_hat)
         S_hat = grey_box.predict_sets(self.alpha, epsilon=epsilon)
+        return S_hat
+
+
+class Split_Lower_Bound_Score:
+    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False,epsilon=0):
+        # Split data into training/calibration sets
+        X_train, X_calib, Y_train, Y_calib = train_test_split(X, Y, test_size=0.5, random_state=random_state)
+
+        # size of the calibration set
+        n_calib = X_calib.shape[0]
+
+        # dimension of data
+        p = X_calib.shape[1]
+
+        # number of permutations to compute lower and upper bounds
+        n_permutations = 100
+
+        self.black_box = black_box
+        self.alpha = alpha
+
+        # Fit model
+        self.black_box.fit(X_train, Y_train)
+
+        # get number of classes
+        tmp = self.black_box.predict_proba(X_calib[0,:])
+        num_of_classes = tmp.shape[1]
+
+        # generate noise perturbations distributed uniformly inside an unit lp ball with radius epsilon
+        noises = random_in_ball(n_permutations,dimension=p, radius=epsilon, norm="l2")
+
+        # create containers for lower and upper bounds for each point
+        Lower_Bounds = np.zeros((n_calib, num_of_classes))
+        Upper_Bounds = np.zeros((n_calib, num_of_classes))
+
+        # estimate bounds for input of classifier for each noisy point
+        for j in range(n_calib):
+
+            # add noise to data point
+            noisy_points = X_calib[j,:] + noises
+
+            # get classifier results for the noisy points
+            noisy_outputs = self.black_box.predict_proba(noisy_points)
+
+            # estimate empirical lower and upper bounds for the point output under this noise
+            Lower_Bounds[j,:] = np.min(noisy_outputs,axis=0)
+            Upper_Bounds[j,:] = np.max(noisy_outputs,axis=0)
+
+        # compute score for each point in the calibration set
+        scores = np.array([Lower_Bounds[i,Y_calib[i]] for i in range(n_calib)])
+
+        # Compute threshold
+        level_adjusted = (1.0 - alpha) * (1.0 + 1.0 / float(n_calib))
+        self.threshold_calibrated = mquantiles(scores, prob=1.0 - level_adjusted)
+
+    def predict(self, X):
+        # get number of points
+        n = X.shape[0]
+
+        # get classifier output for the points
+        p_hat = self.black_box.predict_proba(X)
+
+        # Generate prediction sets using the threshold from the calibration
+        S_hat = [np.where(p_hat[i, :] >= self.threshold_calibrated)[0] for i in range(n)]
+
+        # return predictions sets
         return S_hat

@@ -26,6 +26,12 @@ def wsc(X, y, S, delta=0.1, M=1000, verbose=False):
                 ai_best = ai
                 bi_best = bi_star
                 cover_min = cover_star
+
+        if ai_best == z_sorted.shape[0]:
+            ai_best = ai_best - 1
+        if bi_best ==  z_sorted.shape[0]:
+            bi_best = bi_best - 1
+
         return cover_min, z_sorted[ai_best], z_sorted[bi_best]
 
     def sample_sphere(n, p):

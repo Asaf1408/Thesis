@@ -1,3 +1,4 @@
+
 import numpy as np
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -6,10 +7,6 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import arc
 import multiprocessing as mp
-from arc.methods import random_in_ball
-from experiments_real_data.datasets import GetDataset
-import os
-
 np.random.seed(2020)
 
 
@@ -43,17 +40,14 @@ def run_experiment_pool(args):
     n_test = len(y_test)
     n_train = len(y_train)
 
-    # add noise to test set in a epsilon ball
-    X_test = X_test + random_in_ball(n_test, p, radius=noise_std, norm="l2")
+    # add noise to test set
+    X_test = X_test + (noise_std * np.random.randn(n_test,p))
 
     # get current classifier
     black_box = black_boxes[box_name]
 
     # Train classification method
-    if method_name == "SLB":
-        method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False,epsilon=noise_std)
-    else:
-        method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False)
+    method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False)
 
     # Apply classification method
     S = method.predict(X_test)
@@ -115,57 +109,45 @@ def run_experiment(data_model, n_train, n_test, methods, black_boxes, noises, co
 
 
 if __name__ == '__main__':
-    import warnings
 
-    # close all figures from previous run
     plt.close('all')
 
-    data_type = "generated"     # "generated or "real" data sets
-    dataset_name = "MNIST"      # dataset name if real data is used
-    model_num = 1               # define model num for generating data if generated data is choosed
-    alpha = 0.1                 # define desired conditional coverage (1-\alpha)
-    n_train = 1000              # define number of samples in the training set
-    n_test = 5000               # define number of samples in the test set
-    n_experiments = 10          # define Number of independent experiments
-    condition_on = [0]          # define features to condition on
-    dataset_base_path = os.getcwd()
+    import warnings
+    warnings.filterwarnings("ignore")
 
-    # define vector of additive noises radius
-    epsilons = [0,1e-1,5*(1e-1),1e0,5*(1e0)]
-    epsilons = [0, 0.5, 1, 1.5, 2, 2.5]
+    model_num = 1       # define model for generating data
+    alpha = 0.1         # define desired conditional coverage (1-\alpha)
+    n_train = 1000      # define number of samples in the training set
+    n_test = 5000
+    n_experiments = 10  # define Number of independent experiments
+    condition_on = [0]  # define features to condition on
+    noises = [0,1e-1,5*(1e-1),1e0,5*(1e0)]
 
-    if data_type == "real":
-        # load dataset
-        X, y = GetDataset(dataset_name, dataset_base_path)
-        y = y.astype(np.long)
-
+    # Define data model
+    if model_num == 1:
+        K = 10                                  # number of classes
+        p = 10                                  # dimension of data
+        data_model = arc.models.Model_Ex1(K, p) # create the model
     else:
-        # Define data model
-        if model_num == 1:
-            K = 10                                      # number of classes
-            p = 10                                      # dimension of data
-            data_model = arc.models.Model_Ex1(K, p)     # create model
-        else:
-            K = 4                                       # number of classes
-            p = 5                                       # dimension of data
-            data_model = arc.models.Model_Ex2(K, p)     # create model
+        K = 4                                   # number of classes
+        p = 5                                   # dimension of data
+        data_model = arc.models.Model_Ex2(K, p) # create the model
 
     # List of calibration methods to be compared
     methods = {
         'None': arc.methods.No_Calibration,
-        #'SC': arc.methods.SplitConformal,
-        #'CV+': arc.methods.CVPlus,
+        'SC': arc.methods.SplitConformal,
+        'CV+': arc.methods.CVPlus,
        #'JK+': arc.methods.JackknifePlus,
         'HCC': arc.others.SplitConformalHomogeneous,
        #'CQC': arc.others.CQC
-        'SLB': arc.methods.Split_Lower_Bound_Score
         }
 
     # List of black boxes to be compared
     black_boxes = {
         'Oracle': arc.black_boxes.Oracle(data_model),
         'SVC': arc.black_boxes.SVC(clip_proba_factor=1e-5, random_state=2020),
-        'RFC': arc.black_boxes.RFC(clip_proba_factor=1e-5, n_estimators=1000, max_depth=5, max_features=None,random_state=2020)
+        #'RFC': arc.black_boxes.RFC(clip_proba_factor=1e-5, n_estimators=1000, max_depth=5, max_features=None,random_state=2020)
     }
 
     # create dataframe for storing the results
@@ -177,11 +159,12 @@ if __name__ == '__main__':
         # Random state for this experiment
         random_state = 2020 + experiment
 
-        res = run_experiment(data_model, n_train, n_test, methods, black_boxes, epsilons, condition_on,
+        res = run_experiment(data_model, n_train, n_test, methods, black_boxes, noises, condition_on,
                                        alpha=alpha, experiment=experiment, random_state=random_state)
         results = results.append(res)
 
     # plot marginal coverage results
+    plt.figure()
     ax = sns.catplot(x="Black box", y="Coverage",
                 hue="Method", col="noise_std",
                 data=results, kind="box",
@@ -192,6 +175,7 @@ if __name__ == '__main__':
         graph.axhline(1 - alpha, ls='--', color="red")
 
     # plot conditional coverage results
+    plt.figure()
     ax = sns.catplot(x="Black box", y="Conditional coverage",
                 hue="Method", col="noise_std",
                 data=results, kind="box",
@@ -202,35 +186,36 @@ if __name__ == '__main__':
         graph.axhline(1 - alpha, ls='--', color="red")
 
     # plot interval size results
-    ax = sns.catplot(x="Black box", y="Size",
+    plt.figure()
+    ax = sns.catplot(x="Black box", y="Size cover",
                 hue="Method", col="noise_std",
                 data=results, kind="box",
                 height=4, aspect=.7)
     #ax = sns.boxplot(y="Size cover", x="Black box", hue="Method", data=results)
     for graph in ax.axes[0]:
-        graph.set(xlabel='Method', ylabel='Set Size')
+        graph.set(xlabel='Method', ylabel='Conditional Size')
 
     # plot marginal covarage vs noise
     plt.figure()
     sns.lineplot(data=results, x="noise_std", y="Coverage", hue="Method", style="Black box",err_style="bars", ci=75)
+    plt.xscale('log')
     plt.grid()
     plt.xlabel("noise std")
     plt.ylabel("marginal covarage")
-    plt.title("marginal covarage vs noise")
 
     # plot conditional covarage vs noise
     plt.figure()
     sns.lineplot(data=results, x="noise_std", y="Conditional coverage", hue="Method", style="Black box",err_style="bars", ci=75)
+    plt.xscale('log')
     plt.grid()
     plt.xlabel("noise std")
     plt.ylabel("conditional covarage")
-    plt.title("conditional covarage vs noise")
 
     # plot covarage size vs noise
     plt.figure()
     sns.lineplot(data=results, x="noise_std", y="Size cover", hue="Method", style="Black box",err_style="bars", ci=75)
+    plt.xscale('log')
     plt.grid()
+    plt.show()
     plt.xlabel("noise std")
     plt.ylabel("prediction set size")
-    plt.title("prediction set size vs noise")
-    plt.show()
