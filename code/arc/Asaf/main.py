@@ -7,7 +7,14 @@ from tqdm import tqdm
 import arc
 import multiprocessing as mp
 from arc.methods import random_in_ball
+from arc.methods import random_in_sphere
 from experiments_real_data.datasets import GetDataset
+from scipy.stats import rankdata
+import art
+from art.attacks.evasion import FastGradientMethod
+from art.estimators.classification import SklearnClassifier
+from art.attacks.evasion import universal_perturbation
+from art.attacks.evasion import AutoAttack
 import os
 
 np.random.seed(2020)
@@ -31,27 +38,73 @@ def evaluate_predictions(S, X, y, conditional=True):
     return out
 
 
-def run_experiment_pool(args):
+def class_probability_score(probabilities, labels, u=None):
+    scores = 1-probabilities[:,labels]
+    return scores
 
+def generelized_inverse_quantile_score(probabilities, labels, u=None):
+
+    if u is None:
+        randomized = False
+    else:
+        randomized = True
+
+    # get number of points
+    num_of_points = np.shape(probabilities)[0]
+
+    # sort probabilities from high to low
+    sorted = -np.sort(-probabilities)
+
+    # create matrix of cumulative sum of each row
+    cumulative_sum = np.cumsum(sorted, axis=1)
+
+    # find ranks of each desired label in each row
+    label_ranks = rankdata(-probabilities,method='ordinal', axis=1)[:,labels] - 1
+
+    # compute the scores of each label in each row
+    scores = cumulative_sum[np.arange(num_of_points), label_ranks.T].T
+
+    last_label_prob = sorted[np.arange(num_of_points), label_ranks.T].T
+
+    if not randomized:
+        scores = scores - last_label_prob
+    else:
+        scores = scores - np.diag(u) @ last_label_prob
+
+    return scores
+
+
+def run_experiment_pool(args):
     # get arguments of this check
-    black_boxes, methods, X_train, y_train, X_test, y_test, box_name, method_name, noise_std, alpha ,random_state = args
+    black_boxes, methods, X_train, y_train, X_test, y_test, box_name, method_name, noise_norm, alpha, random_state = args
 
     # get dimension of data
-    p = len(X_train[0,:])
+    p = len(X_train[0, :])
 
     # get size of train and test sets
     n_test = len(y_test)
     n_train = len(y_train)
 
-    # add noise to test set in a epsilon ball
-    X_test = X_test + random_in_ball(n_test, p, radius=noise_std, norm="l2")
-
     # get current classifier
     black_box = black_boxes[box_name]
 
+    # add noise to test set in a epsilon ball
+    #X_test = X_test + random_in_ball(n_test, p, radius=noise_norm, norm="l2")
+
+    clf = SklearnClassifier(model=black_box)
+    y_train_one_hot = np.zeros((y_train.size, y_train.max() + 1))
+    y_train_one_hot[np.arange(y_train.size), y_train] = 1
+    clf.fit(X_train,y_train_one_hot)
+    adv_crafter = FastGradientMethod(estimator=clf, norm=2, eps=noise_norm)
+    X_test = adv_crafter.generate(x=X_test)
+
     # Train classification method
-    if method_name == "SLB":
-        method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False,epsilon=noise_std)
+    if method_name == "HCC_LB" or method_name == "HCC_UB" or method_name == "HCC_Smooth":
+        method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False,
+                                      epsilon=noise_norm, score_func=class_probability_score)
+    elif method_name == "SC_LB" or method_name == "SC_UB" or method_name == "SC_Smooth":
+        method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False,
+                                      epsilon=noise_norm, score_func=generelized_inverse_quantile_score)
     else:
         method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False)
 
@@ -66,37 +119,53 @@ def run_experiment_pool(args):
     res['Nominal'] = 1 - alpha
     res['n_train'] = n_train
     res['n_test'] = n_test
-    res['noise_std'] = noise_std
+    res['noise_norm'] = noise_norm
 
     return res
 
 
-def run_experiment(data_model, n_train, n_test, methods, black_boxes, noises, condition_on,
-                   alpha=0.1, experiment=0, random_state=2020):
-
+def run_experiment(data_model, n_train, n_test, methods, black_boxes, noises_norms, condition_on,
+                   alpha=0.1, experiment=0, random_state=2020, data_type="generated"):
     # Set random seed
     np.random.seed(random_state)
 
     # Total number of samples
     n = n_train + n_test
 
-    # Generate data with labels
-    X = data_model.sample_X(n)
-    y = data_model.sample_Y(X)
+    # create or load data
+    if data_type == "generated":
+        # Generate data with labels
+        X = data_model.sample_X(n)
+        y = data_model.sample_Y(X)
+
+    else:
+        # load dataset
+        dataset_base_path = os.getcwd()
+        X, y = GetDataset(data_model, dataset_base_path)
+        y = y.astype(np.long)
+
+        # reduce number of data points
+        X = X[0:n, :]
+        y = y[0:n]
 
     # Split data into train/test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=n_test, random_state=random_state)
+
+    for box_name in black_boxes:
+        black_boxes[box_name].fit(X_train, y_train)
+
 
     # create parameter list for each run
     parametrs = []
     for box_name in black_boxes:
         for method_name in methods:
-            for noise_std in noises:
-                parametrs.append((black_boxes, methods, X_train, y_train, X_test, y_test, box_name, method_name, noise_std, alpha, random_state))
+            for noise_norm in noises_norms:
+                parametrs.append((black_boxes, methods, X_train, y_train, X_test, y_test, box_name, method_name,
+                                  noise_norm, alpha, random_state))
 
     # check for number of cores
     workers = mp.cpu_count()
-    print("number of workers: "+str(workers))
+    print("number of workers: " + str(workers))
 
     # create pool with number of cores
     pool = mp.Pool(workers)
@@ -107,6 +176,8 @@ def run_experiment(data_model, n_train, n_test, methods, black_boxes, noises, co
 
         # Add information about this experiment
         res['Experiment'] = experiment
+        if data_type == "real":
+            res['Data Set'] = data_model
 
         # Add results to the list
         results = results.append(res)
@@ -120,53 +191,59 @@ if __name__ == '__main__':
     # close all figures from previous run
     plt.close('all')
 
-    data_type = "generated"     # "generated or "real" data sets
-    dataset_name = "MNIST"      # dataset name if real data is used
+    data_type = "generated"          # "generated or "real" data sets
+    dataset_name = "mnist"      # dataset name if real data is used
     model_num = 1               # define model num for generating data if generated data is choosed
-    alpha = 0.1                 # define desired conditional coverage (1-\alpha)
+    alpha = 0.1                 # define desired conditional coverage (1-alpha)
     n_train = 1000              # define number of samples in the training set
     n_test = 5000               # define number of samples in the test set
-    n_experiments = 10          # define Number of independent experiments
+    n_experiments = 1           # define Number of independent experiments
     condition_on = [0]          # define features to condition on
-    dataset_base_path = os.getcwd()
 
     # define vector of additive noises radius
-    epsilons = [0,1e-1,5*(1e-1),1e0,5*(1e0)]
-    epsilons = [0, 0.5, 1, 1.5, 2, 2.5]
+    epsilons = [0, 1e-1, 5 * (1e-1), 1e0, 5 * (1e0)]
+    epsilons = [0,0.5,1,1.5,2,2.5,3]
+    epsilons = [0.1]
 
     if data_type == "real":
-        # load dataset
-        X, y = GetDataset(dataset_name, dataset_base_path)
-        y = y.astype(np.long)
+        data_model = dataset_name
 
     else:
         # Define data model
         if model_num == 1:
-            K = 10                                      # number of classes
-            p = 10                                      # dimension of data
-            data_model = arc.models.Model_Ex1(K, p)     # create model
+            K = 10  # number of classes
+            p = 10  # dimension of data
+            data_model = arc.models.Model_Ex1(K, p)  # create model
         else:
-            K = 4                                       # number of classes
-            p = 5                                       # dimension of data
-            data_model = arc.models.Model_Ex2(K, p)     # create model
+            K = 4  # number of classes
+            p = 5  # dimension of data
+            data_model = arc.models.Model_Ex2(K, p)  # create model
 
     # List of calibration methods to be compared
     methods = {
         'None': arc.methods.No_Calibration,
         #'SC': arc.methods.SplitConformal,
-        #'CV+': arc.methods.CVPlus,
-       #'JK+': arc.methods.JackknifePlus,
-        'HCC': arc.others.SplitConformalHomogeneous,
-       #'CQC': arc.others.CQC
-        'SLB': arc.methods.Split_Lower_Bound_Score
-        }
+        # 'CV+': arc.methods.CVPlus,
+        # 'JK+': arc.methods.JackknifePlus,
+         'HCC': arc.others.SplitConformalHomogeneous,
+        # 'CQC': arc.others.CQC
+         #'HCC_LB': arc.methods.Split_Score_Lower_Bound,
+         #'SC_LB': arc.methods.Split_Score_Lower_Bound,
+         #'HCC_UB': arc.methods.Split_Score_Upper_Bound,
+         #'SC_UB': arc.methods.Split_Score_Upper_Bound,
+        #'SC_Smooth': arc.methods.Split_Smooth_Score,
+        'HCC_Smooth': arc.methods.Split_Smooth_Score
+    }
 
     # List of black boxes to be compared
-    black_boxes = {
-        'Oracle': arc.black_boxes.Oracle(data_model),
-        'SVC': arc.black_boxes.SVC(clip_proba_factor=1e-5, random_state=2020),
-        'RFC': arc.black_boxes.RFC(clip_proba_factor=1e-5, n_estimators=1000, max_depth=5, max_features=None,random_state=2020)
-    }
+    black_boxes = {}
+    if data_type == "generated":
+        black_boxes.update({'Oracle': arc.black_boxes.Oracle(data_model)})
+
+    black_boxes.update({
+        'SVC': arc.black_boxes.SVC(clip_proba_factor=1e-5, random_state=2020)
+        #'RFC': arc.black_boxes.RFC(clip_proba_factor=1e-5, n_estimators=1000, max_depth=5, max_features=None,random_state=2020)
+    })
 
     # create dataframe for storing the results
     results = pd.DataFrame()
@@ -178,59 +255,79 @@ if __name__ == '__main__':
         random_state = 2020 + experiment
 
         res = run_experiment(data_model, n_train, n_test, methods, black_boxes, epsilons, condition_on,
-                                       alpha=alpha, experiment=experiment, random_state=random_state)
+                             alpha=alpha, experiment=experiment, random_state=random_state, data_type=data_type)
         results = results.append(res)
+
+    # compute SNR
+    if data_type == "generated":
+        # Generate data with labels
+        X = data_model.sample_X(5000)
+
+    else:
+        # load dataset
+        dataset_base_path = os.getcwd()
+        X, y = GetDataset(data_model, dataset_base_path)
+
+    # get dimension of data
+    p = len(X[0, :])
+    P_x = np.mean(np.sum(X ** 2, axis=1))
+    SNR = np.zeros(np.size(epsilons))
+    for i in range(np.size(epsilons)):
+        noises = random_in_ball(5000, p, radius=epsilons[i], norm="l2")
+        P_noise = np.mean(np.sum(noises ** 2, axis=1))
+        SNR[i] = round(10 * np.log10(P_x/P_noise),1)
 
     # plot marginal coverage results
     ax = sns.catplot(x="Black box", y="Coverage",
-                hue="Method", col="noise_std",
-                data=results, kind="box",
-                height=4, aspect=.7)
-    #ax = sns.boxplot(y="Coverage", x="Black box", hue="Method", data=results)
-    for graph in ax.axes[0]:
-        graph.set(xlabel='Method', ylabel='Marginal coverage')
+                     hue="Method", col="noise_norm",
+                     data=results, kind="box",
+                     height=4, aspect=.7)
+    # ax = sns.boxplot(y="Coverage", x="Black box", hue="Method", data=results)
+    for i, graph in enumerate(ax.axes[0]):
+        graph.set(xlabel='Method', ylabel='Marginal coverage', title='SNR: '+str(SNR[i])+' db')
         graph.axhline(1 - alpha, ls='--', color="red")
 
     # plot conditional coverage results
     ax = sns.catplot(x="Black box", y="Conditional coverage",
-                hue="Method", col="noise_std",
-                data=results, kind="box",
-                height=4, aspect=.7)
-    #ax = sns.boxplot(y="Conditional coverage", x="Black box", hue="Method", data=results)
-    for graph in ax.axes[0]:
-        graph.set(xlabel='Method', ylabel='Conditional coverage')
+                     hue="Method", col="noise_norm",
+                     data=results, kind="box",
+                     height=4, aspect=.7)
+    # ax = sns.boxplot(y="Conditional coverage", x="Black box", hue="Method", data=results)
+    for i, graph in enumerate(ax.axes[0]):
+        graph.set(xlabel='Method', ylabel='Conditional coverage', title='SNR: '+str(SNR[i])+' db')
         graph.axhline(1 - alpha, ls='--', color="red")
 
     # plot interval size results
     ax = sns.catplot(x="Black box", y="Size",
-                hue="Method", col="noise_std",
-                data=results, kind="box",
-                height=4, aspect=.7)
-    #ax = sns.boxplot(y="Size cover", x="Black box", hue="Method", data=results)
-    for graph in ax.axes[0]:
-        graph.set(xlabel='Method', ylabel='Set Size')
+                     hue="Method", col="noise_norm",
+                     data=results, kind="box",
+                     height=4, aspect=.7)
+    # ax = sns.boxplot(y="Size cover", x="Black box", hue="Method", data=results)
+    for i, graph in enumerate(ax.axes[0]):
+        graph.set(xlabel='Method', ylabel='Set Size',title='SNR: '+str(SNR[i])+' db')
 
     # plot marginal covarage vs noise
     plt.figure()
-    sns.lineplot(data=results, x="noise_std", y="Coverage", hue="Method", style="Black box",err_style="bars", ci=75)
+    sns.lineplot(data=results, x="noise_norm", y="Coverage", hue="Method", style="Black box", err_style="bars", ci=75)
     plt.grid()
-    plt.xlabel("noise std")
+    plt.xlabel("noise_norm")
     plt.ylabel("marginal covarage")
     plt.title("marginal covarage vs noise")
 
     # plot conditional covarage vs noise
     plt.figure()
-    sns.lineplot(data=results, x="noise_std", y="Conditional coverage", hue="Method", style="Black box",err_style="bars", ci=75)
+    sns.lineplot(data=results, x="noise_norm", y="Conditional coverage", hue="Method", style="Black box",
+                 err_style="bars", ci=75)
     plt.grid()
-    plt.xlabel("noise std")
+    plt.xlabel("noise_norm")
     plt.ylabel("conditional covarage")
     plt.title("conditional covarage vs noise")
 
     # plot covarage size vs noise
     plt.figure()
-    sns.lineplot(data=results, x="noise_std", y="Size cover", hue="Method", style="Black box",err_style="bars", ci=75)
+    sns.lineplot(data=results, x="noise_norm", y="Size cover", hue="Method", style="Black box", err_style="bars", ci=75)
     plt.grid()
-    plt.xlabel("noise std")
+    plt.xlabel("noise_norm")
     plt.ylabel("prediction set size")
     plt.title("prediction set size vs noise")
     plt.show()

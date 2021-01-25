@@ -4,6 +4,7 @@ from sklearn.model_selection import KFold
 from scipy.stats.mstats import mquantiles
 import sys
 from tqdm import tqdm
+from scipy.stats import norm
 
 from arc.classification import ProbabilityAccumulator as ProbAccum
 
@@ -28,6 +29,21 @@ def random_in_ball(num_points, dimension, radius=1, norm="l2"):
     elif norm == "infinity":
         res = random.uniform(low=-radius,high=radius,size=(num_points,dimension))
 
+    return res
+
+
+def random_in_sphere(num_points, dimension, radius=1, norm="l2"):
+    from numpy import random, linalg
+
+    if norm == "l2":
+        # First generate random directions by normalizing the length of a
+        # vector of random-normal values (these distribute evenly on ball).
+        random_directions = random.normal(size=(dimension,num_points))
+        random_directions /= linalg.norm(random_directions, axis=0)
+        res = radius * random_directions.T
+
+    #elif norm == "infinity":
+        #res = random.uniform(low=-radius,high=radius,size=(num_points,dimension))
     return res
 
 class CVPlus:
@@ -197,9 +213,6 @@ class SplitConformal:
         # the classifier used
         self.black_box = black_box
 
-        # Fit model on training set
-        self.black_box.fit(X_train, Y_train)
-
         # Form prediction sets on calibration data
 
         # get model  conditional probabilities estimation on calibration set
@@ -231,9 +244,6 @@ class No_Calibration:
         # the classifier used
         self.black_box = black_box
 
-        # Fit model on training set
-        self.black_box.fit(X, Y)
-
         # store alpha
         self.alpha = alpha
 
@@ -247,8 +257,8 @@ class No_Calibration:
         return S_hat
 
 
-class Split_Lower_Bound_Score:
-    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False,epsilon=0):
+class Split_Score_Upper_Bound:
+    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False,epsilon=0,score_func=None):
         # Split data into training/calibration sets
         X_train, X_calib, Y_train, Y_calib = train_test_split(X, Y, test_size=0.5, random_state=random_state)
 
@@ -259,24 +269,161 @@ class Split_Lower_Bound_Score:
         p = X_calib.shape[1]
 
         # number of permutations to compute lower and upper bounds
-        n_permutations = 100
+        self.n_permutations = 100
 
         self.black_box = black_box
         self.alpha = alpha
+        self.score_func = score_func
 
-        # Fit model
-        self.black_box.fit(X_train, Y_train)
 
         # get number of classes
         tmp = self.black_box.predict_proba(X_calib[0,:])
-        num_of_classes = tmp.shape[1]
+        self.num_of_classes = tmp.shape[1]
 
         # generate noise perturbations distributed uniformly inside an unit lp ball with radius epsilon
-        noises = random_in_ball(n_permutations,dimension=p, radius=epsilon, norm="l2")
+        noises = random_in_ball(self.n_permutations,dimension=p, radius=epsilon, norm="l2")
 
-        # create containers for lower and upper bounds for each point
-        Lower_Bounds = np.zeros((n_calib, num_of_classes))
-        Upper_Bounds = np.zeros((n_calib, num_of_classes))
+        # create container for the scores
+        scores = np.zeros(n_calib)
+
+        # estimate bounds for input of classifier for each noisy point
+        for j in range(n_calib):
+
+            # add noise to data point
+            noisy_points = X_calib[j, :] + noises
+
+            # get classifier results for the noisy points
+            noisy_outputs = self.black_box.predict_proba(noisy_points)
+
+            # generate random variable for inverse quantile score
+            u = np.ones(self.n_permutations) * np.random.uniform(low=0.0, high=1.0)
+
+            # estimate empirical upper bound for the point score under this noise
+            scores[j] = np.max(score_func(noisy_outputs,Y_calib[j],u))
+
+        # Compute threshold
+        level_adjusted = (1.0 - alpha) * (1.0 + 1.0 / float(n_calib))
+        self.threshold_calibrated = mquantiles(scores, prob=level_adjusted)
+
+    def predict(self, X):
+        # get number of points
+        n = X.shape[0]
+
+        # get classifier output for the points
+        p_hat = self.black_box.predict_proba(X)
+
+        # generate random variables for inverse quantile score
+        u = np.random.uniform(low=0.0, high=1.0,size=n)
+
+        # Compute scores for all labels
+        scores = self.score_func(p_hat,np.arange(self.num_of_classes),u)
+
+        # Generate prediction sets using the threshold from the calibration
+        S_hat = [np.where(scores[i,:] <= self.threshold_calibrated)[0] for i in range(n)]
+
+        # return predictions sets
+        return S_hat
+
+
+class Split_Score_Lower_Bound:
+    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False,epsilon=0,score_func=None):
+        # Split data into training/calibration sets
+        X_train, X_calib, Y_train, Y_calib = train_test_split(X, Y, test_size=0.5, random_state=random_state)
+
+        # size of the calibration set
+        n_calib = X_calib.shape[0]
+
+        self.black_box = black_box
+        self.alpha = alpha
+        self.score_func = score_func
+        self.epsilon = epsilon
+
+        # get classifier outputs on calibration sets
+        P_hat = self.black_box.predict_proba(X_calib)
+
+        # get number of classes
+        self.num_of_classes = P_hat.shape[1]
+
+        # generate random variable for inverse quantile score
+        u = np.random.uniform(low=0.0, high=1.0,size=n_calib)
+
+        # compute scores for all points in the calibration set
+        scores = self.score_func(P_hat,np.arange(self.num_of_classes),u)[np.arange(n_calib), Y_calib.T].T
+
+        # Compute threshold
+        level_adjusted = (1.0 - alpha) * (1.0 + 1.0 / float(n_calib))
+        self.threshold_calibrated = mquantiles(scores, prob=level_adjusted)
+
+    def predict(self, X):
+        # get number of points
+        n = X.shape[0]
+
+        # dimension of data
+        p = X.shape[1]
+
+        # number of permutations to compute lower and upper bounds
+        self.n_permutations = 100
+
+        # generate noise perturbations distributed uniformly inside an unit lp ball with radius epsilon
+        noises = random_in_ball(self.n_permutations,dimension=p, radius=self.epsilon, norm="l2")
+
+        Scores_Lower_Bounds = np.zeros((n,self.num_of_classes))
+        for j in range(n):
+            # add noise to data point
+            noisy_points = X[j, :] + noises
+
+            # get classifier results for the noisy points
+            noisy_outputs = self.black_box.predict_proba(noisy_points)
+
+            # generate random variable for inverse qunatile score
+            u = np.ones(self.n_permutations) * np.random.uniform(low=0.0, high=1.0)
+
+            # compute score of all labels
+            Scores_Lower_Bounds[j,:] = np.min(self.score_func(noisy_outputs,np.arange(self.num_of_classes),u),axis=0)
+
+
+        # Generate prediction sets using the threshold from the calibration
+        S_hat = [np.where(Scores_Lower_Bounds[i,:] <= self.threshold_calibrated)[0] for i in range(n)]
+
+
+        # return predictions sets
+        return S_hat
+
+
+class Split_Smooth_Score:
+    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False,epsilon=0,score_func=None):
+        # Split data into training/calibration sets
+        X_train, X_calib, Y_train, Y_calib = train_test_split(X, Y, test_size=0.5, random_state=random_state)
+
+        # size of the calibration set
+        n_calib = X_calib.shape[0]
+
+        # dimension of data
+        p = X_calib.shape[1]
+
+        # number of permutations to estimate mean
+        self.n_permutations = 100
+
+        self.black_box = black_box
+        self.alpha = alpha
+        self.score_func = score_func
+        self.epsilon = epsilon
+
+        # get number of classes
+        tmp = self.black_box.predict_proba(X_calib[0,:])
+        self.num_of_classes = tmp.shape[1]
+
+        self.sigma = (1.5)*epsilon
+
+        # set covariance and mean of smoothing function
+        self.mean = np.zeros(p)
+        self.cov = self.sigma**2 * np.eye(p)
+
+        # generate random vectors from the Gaussian distribution
+        noises = np.random.multivariate_normal(self.mean, self.cov, self.n_permutations)
+
+        # create container for the scores
+        scores = np.zeros(n_calib)
 
         # estimate bounds for input of classifier for each noisy point
         for j in range(n_calib):
@@ -287,26 +434,48 @@ class Split_Lower_Bound_Score:
             # get classifier results for the noisy points
             noisy_outputs = self.black_box.predict_proba(noisy_points)
 
-            # estimate empirical lower and upper bounds for the point output under this noise
-            Lower_Bounds[j,:] = np.min(noisy_outputs,axis=0)
-            Upper_Bounds[j,:] = np.max(noisy_outputs,axis=0)
+            # generate random variable for inverse quantile score
+            u = np.ones(self.n_permutations) * np.random.uniform(low=0.0, high=1.0)
 
-        # compute score for each point in the calibration set
-        scores = np.array([Lower_Bounds[i,Y_calib[i]] for i in range(n_calib)])
+            # estimate empirical lower and upper bounds for the point output under this noise
+            scores[j] = np.mean(score_func(noisy_outputs,Y_calib[j],u))
 
         # Compute threshold
         level_adjusted = (1.0 - alpha) * (1.0 + 1.0 / float(n_calib))
-        self.threshold_calibrated = mquantiles(scores, prob=1.0 - level_adjusted)
+        self.threshold_calibrated = mquantiles(scores, prob=level_adjusted)
 
     def predict(self, X):
         # get number of points
         n = X.shape[0]
 
-        # get classifier output for the points
-        p_hat = self.black_box.predict_proba(X)
+        # dimension of data
+        p = X.shape[1]
+
+        # generate random vectors from the Gaussian distribution
+        noises = np.random.multivariate_normal(self.mean, self.cov, self.n_permutations)
+
+        noisy_scores = np.zeros((n,self.num_of_classes))
+        for j in range(n):
+            # add noise to data point
+            noisy_points = X[j, :] + noises
+
+            # get classifier results for the noisy points
+            noisy_outputs = self.black_box.predict_proba(noisy_points)
+
+            # generate random variable for inverse qunatile score
+            u = np.ones(self.n_permutations) * np.random.uniform(low=0.0, high=1.0)
+
+            # compute score of all labels
+            noisy_scores[j,:] = np.mean(self.score_func(noisy_outputs,np.arange(self.num_of_classes),u),axis=0)
+
+        if self.sigma == 0:
+            correction = 0
+        else:
+            #correction = self.epsilon / self.sigma
+            correction = (self.epsilon / self.sigma)*np.sqrt(2/np.pi)
 
         # Generate prediction sets using the threshold from the calibration
-        S_hat = [np.where(p_hat[i, :] >= self.threshold_calibrated)[0] for i in range(n)]
-
+        #S_hat = [np.where(norm.ppf(noisy_scores[i,:],loc=0,scale=1) <= norm.ppf(self.threshold_calibrated,loc=0,scale=1))[0] for i in range(n)]
+        S_hat = [np.where(noisy_scores[i,:] <= self.threshold_calibrated)[0] for i in range(n)]
         # return predictions sets
         return S_hat

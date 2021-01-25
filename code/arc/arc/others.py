@@ -1,68 +1,69 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
-from skgarden import RandomForestQuantileRegressor
+# from skgarden import RandomForestQuantileRegressor
 from scipy.stats.mstats import mquantiles
 import sys
 sys.path.insert(0, '../third_party')
-from third_party.cqr_comparison.qr_net import NeuralNetworkQR
+#from third_party.cqr_comparison.qr_net import NeuralNetworkQR
 import torch
 
 from arc.classification import ProbabilityAccumulator as ProbAccum
 
 
-class NeuralQuantileRegressor:
-    def __init__(self, p, alpha, random_state=2020, verbose=True):
-        # Parameters of the neural network
-        params = dict()
-        params['in_shape'] = p
-        params['epochs'] = 1000
-        params['lr'] = 0.0005
-        params['hidden_size'] = 64
-        params['batch_size'] = 64
-        params['dropout'] = 0.1
-        params['wd'] = 1e-6
-        params['test_ratio'] = 0.05
-        params['random_state'] = random_state
-        
-        # Which quantiles to estimate
-        quantiles_net = [alpha, 1-alpha]
-        
-        np.random.seed(random_state)
-        torch.manual_seed(random_state)
-        
-        self.model = NeuralNetworkQR(params, quantiles_net, verbose=verbose)
-        
-    def fit(self, X, y):
-        # Reshape the data
-        X = np.asarray(X)
-        y = np.asarray(y)
-        self.model.fit(X, y)
-        
-    def predict(self, X):
-        y = self.model.predict(X)
-        return y
+#class NeuralQuantileRegressor:
+#    def __init__(self, p, alpha, random_state=2020, verbose=True):
+#        # Parameters of the neural network
+#        params = dict()
+#        params['in_shape'] = p
+#        params['epochs'] = 1000
+#        params['lr'] = 0.0005
+#        params['hidden_size'] = 64
+#        params['batch_size'] = 64
+#        params['dropout'] = 0.1
+#        params['wd'] = 1e-6
+#        params['test_ratio'] = 0.05
+#        params['random_state'] = random_state
+#
+#        # Which quantiles to estimate
+#        quantiles_net = [alpha, 1-alpha]
+#
+#        np.random.seed(random_state)
+#        torch.manual_seed(random_state)
+#
+#        self.model = NeuralNetworkQR(params, quantiles_net, verbose=verbose)
+#
+#    def fit(self, X, y):
+#        # Reshape the data
+#        X = np.asarray(X)
+#        y = np.asarray(y)
+#        self.model.fit(X, y)
+#
+#    def predict(self, X):
+#        y = self.model.predict(X)
+#        return y
 
 
-class ForestQuantileRegressor:
-    def __init__(self, p, alpha, random_state=2020, verbose=True):
-        # Parameters of the random forest
-        self.alpha = 100*alpha
-                
-        self.model = RandomForestQuantileRegressor(random_state=random_state,
-                                                   min_samples_split=3,
-                                                   n_estimators=100)
-        
-    def fit(self, X, y):
-        # Reshape the data
-        X = np.asarray(X)
-        y = np.asarray(y)
-        self.model.fit(X, y)
-        
-    def predict(self, X):
-        lower = self.model.predict(X, quantile=self.alpha)
-        y = np.concatenate((lower[:,np.newaxis], self.model.predict(X, quantile=100.0-self.alpha)[:,np.newaxis]),1)
-        return y
-      
+#class ForestQuantileRegressor:
+#    def __init__(self, p, alpha, random_state=2020, verbose=True):
+#        # Parameters of the random forest
+#        self.alpha = 100*alpha
+#
+#        self.model = RandomForestQuantileRegressor(random_state=random_state,
+#                                                   min_samples_split=3,
+#                                                   n_estimators=100)
+#
+#    def fit(self, X, y):
+#        # Reshape the data
+#        X = np.asarray(X)
+#        y = np.asarray(y)
+#        self.model.fit(X, y)
+#
+#    def predict(self, X):
+#        lower = self.model.predict(X, quantile=self.alpha)
+#        y = np.concatenate((lower[:,np.newaxis], self.model.predict(X, quantile=100.0-self.alpha)[:,np.newaxis]),1)
+#        return y
+
+
 class SplitConformalHomogeneous:
     def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False):
         # Split data into training/calibration sets
@@ -72,7 +73,7 @@ class SplitConformalHomogeneous:
         self.alpha = alpha
 
         # Fit model
-        self.black_box.fit(X_train, Y_train)
+        #self.black_box.fit(X_train, Y_train)
 
         # Estimate probabilities on calibration data
         p_hat_calib = self.black_box.predict_proba(X_calib)

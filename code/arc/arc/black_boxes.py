@@ -3,12 +3,13 @@ from sklearn import svm
 from sklearn import ensemble
 from sklearn import calibration
 from sklearn.neural_network import MLPClassifier
+from sklearn.base import ClassifierMixin
 
 import copy
 
 
 # the oracle classifier, the one that knows the true conditional probabilities of the model
-class Oracle:
+class Oracle(ClassifierMixin):
     # initiate the classifier
     def __init__(self, model):
         # the oracle only needs the true model of the data
@@ -37,7 +38,7 @@ class Oracle:
 
 
 # support vector classifier
-class SVC:
+class SVC(ClassifierMixin):
     def __init__(self, calibrate=False,
                  kernel='linear',
                  C=1,
@@ -78,7 +79,7 @@ class SVC:
 
 
 # Random forest classification
-class RFC:
+class RFC(ClassifierMixin):
     def __init__(self, calibrate=False,
                  n_estimators=1000,
                  criterion="gini",
