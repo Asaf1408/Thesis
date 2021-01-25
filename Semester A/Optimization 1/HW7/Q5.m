@@ -4,19 +4,14 @@ close all;
 clc;
 
 %% generate data
-m = 50;
+m = 5;
 n = 2;
-outliers_num = 10;
-rand('seed',314);
-A = 3000*rand(n,m);
-A(:,1:outliers_num) = A(:,1:outliers_num)+3000;
-p = round(10*rand(m,1)+10)';
-alpha = 0.01;
-gamma = 1.2;
-eta1 = 20;
-eta2 = 30;
-mu1 = 2;
-mu2 = 5;
+
+randn('seed', 317);
+A = randn(n, m);
+x_real = randn(n,1);
+d = sqrt(sum((A - x*ones(1,m)).^2)) + 0:05*randn(1,m);
+d = d';
 
 %% section a
 
