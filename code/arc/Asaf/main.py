@@ -10,11 +10,11 @@ from arc.methods import random_in_ball
 from arc.methods import random_in_sphere
 from experiments_real_data.datasets import GetDataset
 from scipy.stats import rankdata
-import art
-from art.attacks.evasion import FastGradientMethod
-from art.estimators.classification import SklearnClassifier
-from art.attacks.evasion import universal_perturbation
-from art.attacks.evasion import AutoAttack
+#import art
+#from art.attacks.evasion import FastGradientMethod
+#from art.estimators.classification import SklearnClassifier
+#from art.attacks.evasion import universal_perturbation
+#from art.attacks.evasion import AutoAttack
 import os
 
 np.random.seed(2020)
@@ -213,17 +213,17 @@ if __name__ == '__main__':
     # List of calibration methods to be compared
     methods = {
         'None': arc.methods.No_Calibration,
-        #'SC': arc.methods.SplitConformal,
+        'SC': arc.methods.SplitConformal,
         # 'CV+': arc.methods.CVPlus,
         # 'JK+': arc.methods.JackknifePlus,
-         'HCC': arc.others.SplitConformalHomogeneous,
+         #'HCC': arc.others.SplitConformalHomogeneous,
         # 'CQC': arc.others.CQC
-         'HCC_LB': arc.methods.Split_Score_Lower_Bound,
-         #'SC_LB': arc.methods.Split_Score_Lower_Bound,
-         'HCC_UB': arc.methods.Split_Score_Upper_Bound,
-         #'SC_UB': arc.methods.Split_Score_Upper_Bound,
-        #'SC_Smooth': arc.methods.Split_Smooth_Score
-        'HCC_Smooth': arc.methods.Split_Smooth_Score
+         #'HCC_LB': arc.methods.Split_Score_Lower_Bound,
+         'SC_LB': arc.methods.Split_Score_Lower_Bound,
+         #'HCC_UB': arc.methods.Split_Score_Upper_Bound,
+         'SC_UB': arc.methods.Split_Score_Upper_Bound,
+        'SC_Smooth': arc.methods.Split_Smooth_Score
+        #'HCC_Smooth': arc.methods.Split_Smooth_Score
     }
 
     # List of black boxes to be compared
