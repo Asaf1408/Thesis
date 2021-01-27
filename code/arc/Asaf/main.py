@@ -1,13 +1,10 @@
-import sys
-sys.path.append('../')
-
 import numpy as np
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import arc
+from arc import *
 import multiprocessing as mp
 from arc.methods import random_in_ball
 from arc.methods import random_in_sphere
