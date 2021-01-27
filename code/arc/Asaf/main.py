@@ -76,91 +76,65 @@ def generelized_inverse_quantile_score(probabilities, labels, u=None):
 
 def run_experiment_pool(args):
     # get arguments of this check
-    black_boxes, methods, X_train, y_train, X_test, y_test, box_name, method_name, noise_norm, alpha, random_state = args
+    black_boxes, methods, X_calib, Y_calib, X_test, Y_test, box_name, method_name, noise_norm, alpha, random_state = args
 
     # get dimension of data
-    p = len(X_train[0, :])
+    p = len(X_calib[0, :])
 
-    # get size of train and test sets
-    n_test = len(y_test)
-    n_train = len(y_train)
+    # get size of test and calibration sets
+    n_test = len(Y_test)
+    n_calib = len(Y_calib)
 
     # get current classifier
     black_box = black_boxes[box_name]
 
     # add noise to test set in a epsilon ball
-    #X_test = X_test + random_in_ball(n_test, p, radius=noise_norm, norm="l2")
+    X_test = X_test + random_in_ball(n_test, p, radius=noise_norm, norm="l2")
 
-    clf = SklearnClassifier(model=black_box)
-    y_train_one_hot = np.zeros((y_train.size, y_train.max() + 1))
-    y_train_one_hot[np.arange(y_train.size), y_train] = 1
-    clf.fit(X_train,y_train_one_hot)
-    adv_crafter = FastGradientMethod(estimator=clf, norm=2, eps=noise_norm)
-    X_test = adv_crafter.generate(x=X_test)
+    #clf = SklearnClassifier(model=black_box)
+    #y_train_one_hot = np.zeros((y_train.size, y_train.max() + 1))
+    #y_train_one_hot[np.arange(y_train.size), y_train] = 1
+    #clf.fit(X_train,y_train_one_hot)
+    #adv_crafter = FastGradientMethod(estimator=clf, norm=2, eps=noise_norm)
+    #X_test = adv_crafter.generate(x=X_test)
 
-    # Train classification method
+    # Calibrate model with calibration method
     if method_name == "HCC_LB" or method_name == "HCC_UB" or method_name == "HCC_Smooth":
-        method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False,
-                                      epsilon=noise_norm, score_func=class_probability_score)
+        method = methods[method_name](X_calib, Y_calib, black_box, alpha, epsilon=noise_norm, score_func=class_probability_score)
     elif method_name == "SC_LB" or method_name == "SC_UB" or method_name == "SC_Smooth":
-        method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False,
-                                      epsilon=noise_norm, score_func=generelized_inverse_quantile_score)
+        method = methods[method_name](X_calib, Y_calib, black_box, alpha, epsilon=noise_norm, score_func=generelized_inverse_quantile_score)
     else:
-        method = methods[method_name](X_train, y_train, black_box, alpha, random_state=random_state, verbose=False)
+        method = methods[method_name](X_calib, Y_calib, black_box, alpha, random_state=random_state, verbose=False)
 
-    # Apply classification method
+    # Form prediction sets for test points
     S = method.predict(X_test)
 
     # Evaluate results
-    res = evaluate_predictions(S, X_test, y_test)
+    res = evaluate_predictions(S, X_test, Y_test)
 
     res['Method'] = method_name
     res['Black box'] = box_name
     res['Nominal'] = 1 - alpha
-    res['n_train'] = n_train
     res['n_test'] = n_test
+    res['n_calib'] = n_calib
     res['noise_norm'] = noise_norm
 
     return res
 
 
-def run_experiment(data_model, n_train, n_test, methods, black_boxes, noises_norms, condition_on,
-                   alpha=0.1, experiment=0, random_state=2020, data_type="generated"):
+def run_experiment(X, Y, methods, black_boxes, noises_norms, condition_on, alpha=0.1, experiment=0, random_state=2020):
     # Set random seed
     np.random.seed(random_state)
 
-    # Total number of samples
-    n = n_train + n_test
-
-    # create or load data
-    if data_type == "generated":
-        # Generate data with labels
-        X = data_model.sample_X(n)
-        y = data_model.sample_Y(X)
-
-    else:
-        # load dataset
-        dataset_base_path = os.getcwd()
-        X, y = GetDataset(data_model, dataset_base_path)
-        y = y.astype(np.long)
-
-        # reduce number of data points
-        X = X[0:n, :]
-        y = y[0:n]
-
-    # Split data into train/test sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=n_test, random_state=random_state)
-
-    for box_name in black_boxes:
-        black_boxes[box_name].fit(X_train, y_train)
-
+    # Split test data into calibration and test
+    X_test, X_calib, Y_test, Y_calib = train_test_split(X, Y, test_size=0.8, random_state=random_state)
 
     # create parameter list for each run
     parametrs = []
     for box_name in black_boxes:
         for method_name in methods:
             for noise_norm in noises_norms:
-                parametrs.append((black_boxes, methods, X_train, y_train, X_test, y_test, box_name, method_name,
+                parametrs.append((black_boxes, methods, X_calib, Y_calib, X_test, Y_test, box_name, method_name,
                                   noise_norm, alpha, random_state))
 
     # check for number of cores
@@ -176,8 +150,6 @@ def run_experiment(data_model, n_train, n_test, methods, black_boxes, noises_nor
 
         # Add information about this experiment
         res['Experiment'] = experiment
-        if data_type == "real":
-            res['Data Set'] = data_model
 
         # Add results to the list
         results = results.append(res)
@@ -197,16 +169,28 @@ if __name__ == '__main__':
     alpha = 0.1                 # define desired conditional coverage (1-alpha)
     n_train = 1000              # define number of samples in the training set
     n_test = 5000               # define number of samples in the test set
-    n_experiments = 1           # define Number of independent experiments
+    n_experiments = 10          # define Number of independent experiments
     condition_on = [0]          # define features to condition on
 
     # define vector of additive noises radius
     epsilons = [0, 1e-1, 5 * (1e-1), 1e0, 5 * (1e0)]
     epsilons = [0,0.5,1,1.5,2,2.5,3]
-    epsilons = [0.1]
+    #epsilons = [0, 2]
+
+    # Total number of samples
+    n = n_train + n_test
 
     if data_type == "real":
         data_model = dataset_name
+
+        # load dataset
+        dataset_base_path = os.getcwd()
+        X, Y = GetDataset(data_model, dataset_base_path)
+        Y = Y.astype(np.long)
+
+        # reduce number of data points
+        X = X[0:n, :]
+        Y = Y[0:n]
 
     else:
         # Define data model
@@ -219,6 +203,13 @@ if __name__ == '__main__':
             p = 5  # dimension of data
             data_model = arc.models.Model_Ex2(K, p)  # create model
 
+        # Generate data with labels
+        X = data_model.sample_X(n)
+        Y = data_model.sample_Y(X)
+
+    # Split data into train/test sets
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=n_test)
+
     # List of calibration methods to be compared
     methods = {
         'None': arc.methods.No_Calibration,
@@ -227,11 +218,11 @@ if __name__ == '__main__':
         # 'JK+': arc.methods.JackknifePlus,
          'HCC': arc.others.SplitConformalHomogeneous,
         # 'CQC': arc.others.CQC
-         #'HCC_LB': arc.methods.Split_Score_Lower_Bound,
+         'HCC_LB': arc.methods.Split_Score_Lower_Bound,
          #'SC_LB': arc.methods.Split_Score_Lower_Bound,
-         #'HCC_UB': arc.methods.Split_Score_Upper_Bound,
+         'HCC_UB': arc.methods.Split_Score_Upper_Bound,
          #'SC_UB': arc.methods.Split_Score_Upper_Bound,
-        #'SC_Smooth': arc.methods.Split_Smooth_Score,
+        #'SC_Smooth': arc.methods.Split_Smooth_Score
         'HCC_Smooth': arc.methods.Split_Smooth_Score
     }
 
@@ -245,29 +236,24 @@ if __name__ == '__main__':
         #'RFC': arc.black_boxes.RFC(clip_proba_factor=1e-5, n_estimators=1000, max_depth=5, max_features=None,random_state=2020)
     })
 
+    # fit all models on train data
+    for box_name in black_boxes:
+        black_boxes[box_name].fit(X_train, Y_train)
+
     # create dataframe for storing the results
     results = pd.DataFrame()
 
-    # run experiments with all the methods and black boxes
+    # run experiments with all the calibration methods and black boxes
     for experiment in tqdm(range(n_experiments)):
         print("Experiment " + str(experiment) + ":")
         # Random state for this experiment
         random_state = 2020 + experiment
 
-        res = run_experiment(data_model, n_train, n_test, methods, black_boxes, epsilons, condition_on,
-                             alpha=alpha, experiment=experiment, random_state=random_state, data_type=data_type)
+        res = run_experiment(X_test, Y_test, methods, black_boxes, epsilons, condition_on,
+                             alpha=alpha, experiment=experiment, random_state=random_state)
         results = results.append(res)
 
     # compute SNR
-    if data_type == "generated":
-        # Generate data with labels
-        X = data_model.sample_X(5000)
-
-    else:
-        # load dataset
-        dataset_base_path = os.getcwd()
-        X, y = GetDataset(data_model, dataset_base_path)
-
     # get dimension of data
     p = len(X[0, :])
     P_x = np.mean(np.sum(X ** 2, axis=1))
@@ -287,6 +273,9 @@ if __name__ == '__main__':
         graph.set(xlabel='Method', ylabel='Marginal coverage', title='SNR: '+str(SNR[i])+' db')
         graph.axhline(1 - alpha, ls='--', color="red")
 
+    ax.savefig("Marginal.png")
+
+
     # plot conditional coverage results
     ax = sns.catplot(x="Black box", y="Conditional coverage",
                      hue="Method", col="noise_norm",
@@ -297,6 +286,8 @@ if __name__ == '__main__':
         graph.set(xlabel='Method', ylabel='Conditional coverage', title='SNR: '+str(SNR[i])+' db')
         graph.axhline(1 - alpha, ls='--', color="red")
 
+    ax.savefig("Conditional.png")
+
     # plot interval size results
     ax = sns.catplot(x="Black box", y="Size",
                      hue="Method", col="noise_norm",
@@ -305,6 +296,8 @@ if __name__ == '__main__':
     # ax = sns.boxplot(y="Size cover", x="Black box", hue="Method", data=results)
     for i, graph in enumerate(ax.axes[0]):
         graph.set(xlabel='Method', ylabel='Set Size',title='SNR: '+str(SNR[i])+' db')
+
+    ax.savefig("Size.png")
 
     # plot marginal covarage vs noise
     plt.figure()
@@ -330,4 +323,4 @@ if __name__ == '__main__':
     plt.xlabel("noise_norm")
     plt.ylabel("prediction set size")
     plt.title("prediction set size vs noise")
-    plt.show()
+    #plt.show()

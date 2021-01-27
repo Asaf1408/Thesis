@@ -203,9 +203,7 @@ class JackknifePlus:
 
 # Classical conformal prediction
 class SplitConformal:
-    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False):
-        # Split data into training/calibration sets
-        X_train, X_calib, Y_train, Y_calib = train_test_split(X, Y, test_size=0.5, random_state=random_state)
+    def __init__(self, X_calib, Y_calib, black_box, alpha, random_state=2020, verbose=False):
 
         # size of the calibration set
         n2 = X_calib.shape[0]
@@ -239,7 +237,7 @@ class SplitConformal:
 
 # Classical conformal prediction
 class No_Calibration:
-    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False):
+    def __init__(self, X_calib, Y_calib, black_box, alpha, random_state=2020, verbose=False):
 
         # the classifier used
         self.black_box = black_box
@@ -258,9 +256,7 @@ class No_Calibration:
 
 
 class Split_Score_Upper_Bound:
-    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False,epsilon=0,score_func=None):
-        # Split data into training/calibration sets
-        X_train, X_calib, Y_train, Y_calib = train_test_split(X, Y, test_size=0.5, random_state=random_state)
+    def __init__(self, X_calib, Y_calib, black_box, alpha,epsilon=0,score_func=None):
 
         # size of the calibration set
         n_calib = X_calib.shape[0]
@@ -326,9 +322,7 @@ class Split_Score_Upper_Bound:
 
 
 class Split_Score_Lower_Bound:
-    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False,epsilon=0,score_func=None):
-        # Split data into training/calibration sets
-        X_train, X_calib, Y_train, Y_calib = train_test_split(X, Y, test_size=0.5, random_state=random_state)
+    def __init__(self, X_calib, Y_calib, black_box, alpha, epsilon=0,score_func=None):
 
         # size of the calibration set
         n_calib = X_calib.shape[0]
@@ -391,9 +385,7 @@ class Split_Score_Lower_Bound:
 
 
 class Split_Smooth_Score:
-    def __init__(self, X, Y, black_box, alpha, random_state=2020, verbose=False,epsilon=0,score_func=None):
-        # Split data into training/calibration sets
-        X_train, X_calib, Y_train, Y_calib = train_test_split(X, Y, test_size=0.5, random_state=random_state)
+    def __init__(self, X_calib, Y_calib, black_box, alpha, epsilon=0,score_func=None):
 
         # size of the calibration set
         n_calib = X_calib.shape[0]
