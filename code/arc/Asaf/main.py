@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../')
+
 import numpy as np
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -15,6 +18,8 @@ from scipy.stats import rankdata
 #from art.estimators.classification import SklearnClassifier
 #from art.attacks.evasion import universal_perturbation
 #from art.attacks.evasion import AutoAttack
+import sys
+
 import os
 
 np.random.seed(2020)
