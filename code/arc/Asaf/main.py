@@ -4,7 +4,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from arc import *
+import arc
 import multiprocessing as mp
 from arc.methods import random_in_ball
 from arc.methods import random_in_sphere
