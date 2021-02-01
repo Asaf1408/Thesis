@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import seaborn as sns
@@ -9,7 +10,7 @@ import multiprocessing as mp
 from arc.methods import random_in_ball
 from arc.methods import random_in_sphere
 from experiments_real_data.datasets import GetDataset
-from scipy.stats import rankdata
+import Asaf.Score_Functions as scores
 #import art
 #from art.attacks.evasion import FastGradientMethod
 #from art.estimators.classification import SklearnClassifier
@@ -39,43 +40,6 @@ def evaluate_predictions(S, X, y, conditional=True):
                         'Size': [size], 'Size cover': [size_cover]})
     return out
 
-
-def class_probability_score(probabilities, labels, u=None):
-    scores = 1-probabilities[:,labels]
-    return scores
-
-def generelized_inverse_quantile_score(probabilities, labels, u=None):
-
-    if u is None:
-        randomized = False
-    else:
-        randomized = True
-
-    # get number of points
-    num_of_points = np.shape(probabilities)[0]
-
-    # sort probabilities from high to low
-    sorted = -np.sort(-probabilities)
-
-    # create matrix of cumulative sum of each row
-    cumulative_sum = np.cumsum(sorted, axis=1)
-
-    # find ranks of each desired label in each row
-    label_ranks = rankdata(-probabilities,method='ordinal', axis=1)[:,labels] - 1
-
-    # compute the scores of each label in each row
-    scores = cumulative_sum[np.arange(num_of_points), label_ranks.T].T
-
-    last_label_prob = sorted[np.arange(num_of_points), label_ranks.T].T
-
-    if not randomized:
-        scores = scores - last_label_prob
-    else:
-        scores = scores - np.diag(u) @ last_label_prob
-
-    return scores
-
-
 def run_experiment_pool(args):
     # get arguments of this check
     black_boxes, methods, X_calib, Y_calib, X_test, Y_test, box_name, method_name, noise_norm, alpha, random_state = args
@@ -102,9 +66,9 @@ def run_experiment_pool(args):
 
     # Calibrate model with calibration method
     if method_name == "HCC_LB" or method_name == "HCC_UB" or method_name == "HCC_Smooth":
-        method = methods[method_name](X_calib, Y_calib, black_box, alpha, epsilon=noise_norm, score_func=class_probability_score)
+        method = methods[method_name](X_calib, Y_calib, black_box, alpha, epsilon=noise_norm, score_func=scores.class_probability_score)
     elif method_name == "SC_LB" or method_name == "SC_UB" or method_name == "SC_Smooth":
-        method = methods[method_name](X_calib, Y_calib, black_box, alpha, epsilon=noise_norm, score_func=generelized_inverse_quantile_score)
+        method = methods[method_name](X_calib, Y_calib, black_box, alpha, epsilon=noise_norm, score_func=scores.generelized_inverse_quantile_score)
     else:
         method = methods[method_name](X_calib, Y_calib, black_box, alpha, random_state=random_state, verbose=False)
 
@@ -159,13 +123,77 @@ def run_experiment(X, Y, methods, black_boxes, noises_norms, condition_on, alpha
     return results
 
 
+def run_experiment2(args):
+
+    # get arguments of this check
+    X, Y, methods, black_boxes, noises_norms, condition_on, alpha, experiment, random_state = args
+
+    # Set random seed
+    np.random.seed(random_state)
+
+    # Split test data into calibration and test
+    X_test, X_calib, Y_test, Y_calib = train_test_split(X, Y, test_size=0.8, random_state=random_state)
+
+    # get dimension of data
+    p = len(X_calib[0, :])
+
+    # get size of test and calibration sets
+    n_test = len(Y_test)
+    n_calib = len(Y_calib)
+
+    # create dataframe for storing results
+    results = pd.DataFrame()
+
+    for box_name in black_boxes:
+        for method_name in methods:
+            for noise_norm in noises_norms:
+
+                # get current classifier
+                black_box = black_boxes[box_name]
+
+                # add noise to test set in a epsilon ball
+                X_test = X_test + random_in_ball(n_test, p, radius=noise_norm, norm="l2")
+
+                # Calibrate model with calibration method
+                if method_name == "HCC_LB" or method_name == "HCC_UB" or method_name == "HCC_Smooth":
+                    method = methods[method_name](X_calib, Y_calib, black_box, alpha, epsilon=noise_norm,
+                                                  score_func=scores.class_probability_score)
+                elif method_name == "SC_LB" or method_name == "SC_UB" or method_name == "SC_Smooth":
+                    method = methods[method_name](X_calib, Y_calib, black_box, alpha, epsilon=noise_norm,
+                                                  score_func=scores.generelized_inverse_quantile_score)
+                else:
+                    method = methods[method_name](X_calib, Y_calib, black_box, alpha, random_state=random_state,
+                                                  verbose=False)
+
+                # Form prediction sets for test points
+                S = method.predict(X_test)
+
+                # Evaluate results
+                res = evaluate_predictions(S, X_test, Y_test)
+
+                res['Method'] = method_name
+                res['Black box'] = box_name
+                res['Nominal'] = 1 - alpha
+                res['n_test'] = n_test
+                res['n_calib'] = n_calib
+                res['noise_norm'] = noise_norm
+                res['Experiment'] = experiment
+
+                # Add results to the list
+                results = results.append(res)
+
+    # print how many experiments have finished
+    print("experiment "+str(experiment)+" finished")
+    return results
+
+
 if __name__ == '__main__':
     import warnings
 
     # close all figures from previous run
     plt.close('all')
 
-    data_type = "generated"          # "generated or "real" data sets
+    data_type = "real"          # "generated or "real" data sets
     dataset_name = "mnist"      # dataset name if real data is used
     model_num = 1               # define model num for generating data if generated data is choosed
     alpha = 0.1                 # define desired conditional coverage (1-alpha)
@@ -176,8 +204,8 @@ if __name__ == '__main__':
 
     # define vector of additive noises radius
     epsilons = [0, 1e-1, 5 * (1e-1), 1e0, 5 * (1e0)]
-    epsilons = [0,0.5,1,1.5,2,2.5,3]
-    #epsilons = [0, 2]
+    #epsilons = [0,0.5,1,1.5,2,2.5,3]
+    epsilons = [0.1]
 
     # Total number of samples
     n = n_train + n_test
@@ -214,24 +242,24 @@ if __name__ == '__main__':
 
     # List of calibration methods to be compared
     methods = {
-        'None': arc.methods.No_Calibration,
-        'SC': arc.methods.SplitConformal,
+        #'None': arc.methods.No_Calibration,
+        #'SC': arc.methods.SplitConformal,
         # 'CV+': arc.methods.CVPlus,
         # 'JK+': arc.methods.JackknifePlus,
          #'HCC': arc.others.SplitConformalHomogeneous,
         # 'CQC': arc.others.CQC
          #'HCC_LB': arc.methods.Split_Score_Lower_Bound,
-         'SC_LB': arc.methods.Split_Score_Lower_Bound,
+         #'SC_LB': arc.methods.Split_Score_Lower_Bound,
          #'HCC_UB': arc.methods.Split_Score_Upper_Bound,
-         'SC_UB': arc.methods.Split_Score_Upper_Bound,
+         #'SC_UB': arc.methods.Split_Score_Upper_Bound,
         'SC_Smooth': arc.methods.Split_Smooth_Score
         #'HCC_Smooth': arc.methods.Split_Smooth_Score
     }
 
     # List of black boxes to be compared
     black_boxes = {}
-    if data_type == "generated":
-        black_boxes.update({'Oracle': arc.black_boxes.Oracle(data_model)})
+    #if data_type == "generated":
+    #    black_boxes.update({'Oracle': arc.black_boxes.Oracle(data_model)})
 
     black_boxes.update({
         'SVC': arc.black_boxes.SVC(clip_proba_factor=1e-5, random_state=2020)
@@ -242,8 +270,28 @@ if __name__ == '__main__':
     for box_name in black_boxes:
         black_boxes[box_name].fit(X_train, Y_train)
 
+    # create parameter list for each run
+    parametrs = []
+    for experiment in range(n_experiments):
+        random_state = 2020 + experiment
+        parametrs.append((X_test, Y_test, methods, black_boxes, epsilons, condition_on, alpha, experiment, random_state))
+
+    # check for number of cores
+    workers = mp.cpu_count()
+    print("number of workers: " + str(workers))
+
+    # create pool with number of cores
+    pool = mp.Pool(workers)
+
     # create dataframe for storing the results
     results = pd.DataFrame()
+
+    start = time.time()
+#    # run experiments with all the calibration methods and black boxes
+#    for res in pool.map(run_experiment2, parametrs):
+#        # Add results to the list
+#        results = results.append(res)
+
 
     # run experiments with all the calibration methods and black boxes
     for experiment in tqdm(range(n_experiments)):
@@ -254,6 +302,9 @@ if __name__ == '__main__':
         res = run_experiment(X_test, Y_test, methods, black_boxes, epsilons, condition_on,
                              alpha=alpha, experiment=experiment, random_state=random_state)
         results = results.append(res)
+
+    end = time.time()
+    print(end - start)
 
     # compute SNR
     # get dimension of data

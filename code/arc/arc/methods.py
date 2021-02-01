@@ -405,36 +405,47 @@ class Split_Smooth_Score:
         tmp = self.black_box.predict_proba(X_calib[0,:])
         self.num_of_classes = tmp.shape[1]
 
-        self.sigma = (1.5)*epsilon
+        self.sigma = (1) * epsilon
 
-        # set covariance and mean of smoothing function
-        self.mean = np.zeros(p)
-        self.cov = self.sigma**2 * np.eye(p)
+        while True:
+            print(self.sigma)
+            self.sigma = self.sigma * 2
 
-        # generate random vectors from the Gaussian distribution
-        noises = np.random.multivariate_normal(self.mean, self.cov, self.n_permutations)
+            # set covariance and mean of smoothing function
+            self.mean = np.zeros(p)
+            self.cov = self.sigma**2 * np.eye(p)
 
-        # create container for the scores
-        scores = np.zeros(n_calib)
+            # generate random vectors from the Gaussian distribution
+            noises = np.random.multivariate_normal(self.mean, self.cov, self.n_permutations)
 
-        # estimate bounds for input of classifier for each noisy point
-        for j in range(n_calib):
+            # create container for the scores
+            scores = np.zeros(n_calib)
 
-            # add noise to data point
-            noisy_points = X_calib[j,:] + noises
+            # estimate bounds for input of classifier for each noisy point
+            for j in range(n_calib):
 
-            # get classifier results for the noisy points
-            noisy_outputs = self.black_box.predict_proba(noisy_points)
+                # add noise to data point
+                noisy_points = X_calib[j,:] + noises
 
-            # generate random variable for inverse quantile score
-            u = np.ones(self.n_permutations) * np.random.uniform(low=0.0, high=1.0)
+                # get classifier results for the noisy points
+                noisy_outputs = self.black_box.predict_proba(noisy_points)
 
-            # estimate empirical lower and upper bounds for the point output under this noise
-            scores[j] = np.mean(score_func(noisy_outputs,Y_calib[j],u))
+                # generate random variable for inverse quantile score
+                u = np.ones(self.n_permutations) * np.random.uniform(low=0.0, high=1.0)
 
-        # Compute threshold
-        level_adjusted = (1.0 - alpha) * (1.0 + 1.0 / float(n_calib))
-        self.threshold_calibrated = mquantiles(scores, prob=level_adjusted)
+                # estimate empirical lower and upper bounds for the point output under this noise
+                scores[j] = np.mean(score_func(noisy_outputs,Y_calib[j],u))
+
+            # Compute threshold
+            level_adjusted = (1.0 - alpha) * (1.0 + 1.0 / float(n_calib))
+            self.threshold_calibrated = mquantiles(scores, prob=level_adjusted)
+
+            Lipshictz = (self.epsilon / self.sigma)*np.sqrt(2/np.pi)
+            if np.size(scores[scores <= (self.threshold_calibrated-Lipshictz)])/np.size(scores) > 0.8:
+                break
+        abc = 5
+
+
 
     def predict(self, X):
         # get number of points
