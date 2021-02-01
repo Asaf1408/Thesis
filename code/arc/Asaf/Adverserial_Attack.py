@@ -52,7 +52,7 @@ class Net(nn.Module):
 
 alpha = 0.1
 epsilon = 2
-n_experiments = 5
+n_experiments = 10
 
 # automatically choose device use gpu 0 if it is available o.w. use the cpu
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -64,18 +64,20 @@ print("device: ", device)
 (x_train, y_train), (x_test, y_test), min_pixel_value, max_pixel_value = load_mnist()
 
 # Swap axes to PyTorch's NCHW format nx1x28x28
-x_train = torch.tensor(x_train.transpose((0, 3, 1, 2)).astype(np.float32)).to(device)
-y_train = torch.tensor(y_train).to(device)
-x_test = torch.tensor(x_test.transpose((0, 3, 1, 2)).astype(np.float32)).to(device)
+x_train = x_train.transpose((0, 3, 1, 2)).astype(np.float32)
+x_test = x_test.transpose((0, 3, 1, 2)).astype(np.float32)
 
-
+# get dimension of data
+rows = np.shape(x_train)[2]
+cols = np.shape(x_train)[3]
+channels = np.shape(x_train)[1]
 
 # save the sizes of each on of the sets
 n_train = np.shape(x_train)[0]
 n_test = np.shape(x_test)[0]
 
 # Create the model
-model = Net().to(device)
+model = Net()
 
 # Define the loss function and the optimizer
 criterion = nn.CrossEntropyLoss()
@@ -87,7 +89,7 @@ classifier = PyTorchClassifier(
     clip_values=(min_pixel_value, max_pixel_value),
     loss=criterion,
     optimizer=optimizer,
-    input_shape=(1, 28, 28),
+    input_shape=(channels, rows, cols),
     nb_classes=10,
 )
 
@@ -109,11 +111,11 @@ print("Accuracy on benign test examples: {}%".format(accuracy * 100))
 # Generate adversarial test examples
 attack = FastGradientMethod(estimator=classifier, eps=epsilon, norm=2)
 # attack = AutoProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
-# attack = ProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
+#attack = ProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
 
-x_test_adv = torch.tensor(attack.generate(x=x_test)).to(device)
+x_test_adv = attack.generate(x=x_test)
 
-# Step 7: Evaluate the ART classifier on adversarial test examples
+# Evaluate the ART classifier on adversarial test examples
 #plt.figure()
 #plt.imshow(x_test_adv.transpose((0, 2, 3, 1))[0],cmap='gray')
 #plt.show()
@@ -129,38 +131,36 @@ print("Accuracy on adversarial test examples: {}%".format(accuracy * 100))
 
 # List of calibration methods to be compared
 methods = {
-     #'None': methods.No_Calibration,
+     'None': methods.No_Calibration,
      'SC': methods.Non_Conformity_Score_Calibration,
     # 'CV+': arc.methods.CVPlus,
     # 'JK+': arc.methods.JackknifePlus,
-    # 'HCC': methods.Non_Conformity_Score_Calibration,
+    'HCC': methods.Non_Conformity_Score_Calibration,
     # 'CQC': arc.others.CQC,
     #'HCC_LB': methods.Test_Score_Lower_Bound_Calibration,
     #'SC_LB': methods.Test_Score_Lower_Bound_Calibration
      #'HCC_UB': methods.Upper_Bound_Score_Calibration,
      #'SC_UB': methods.Upper_Bound_Score_Calibration,
-    'SC_Smooth': methods.Smoothed_Score_Calibration
-    # 'HCC_Smooth': methods.Smoothed_Score_Calibration
+    'SC_Smooth': methods.Smoothed_Score_Calibration,
+    'HCC_Smooth': methods.Smoothed_Score_Calibration
 }
+
+#x_test = x_test[0:2000, :, :, :]
+#y_test = y_test[0:2000, :]
 
 # create dataframe for storing results
 results = pd.DataFrame()
 for experiment in tqdm(range(n_experiments)):
 
     # Split test data into calibration and test
-    x_calib, x_test_new, y_calib, y_test_new = train_test_split(x_test, y_test, test_size=0.8, random_state=(2020 + experiment))
+    x_calib, x_test_new, y_calib, y_test_new = train_test_split(x_test, y_test, test_size=0.8)
 
     # save sizes of calibration and test sets
-    n_calib = x_calib.size()[0]
-    n_test = x_test_new.size()[0]
-
-    # send data to device
-    x_calib = x_calib.to(device)
-    y_calib = torch.tensor(y_calib).to(device)
-    x_test_new = x_test_new.to(device)
+    n_calib = np.shape(x_calib)[0]
+    n_test = np.shape(x_test_new)[0]
 
     # Generate adversarial test examples
-    x_test_adv = torch.tensor(attack.generate(x=x_test_new)).to(device)
+    x_test_adv = attack.generate(x=x_test_new)
 
     for method_name in methods:
         # Calibrate model with calibration method
@@ -194,10 +194,10 @@ for experiment in tqdm(range(n_experiments)):
         # Add results to the list
         results = results.append(res)
 
-        # Form prediction sets for dversarial exmaples
+        # Form prediction sets for adversarial examples
         S = method.predict(x_test_adv)
 
-        # Evaluate results on adversarial exmaples
+        # Evaluate results on adversarial examples
         res = scores.evaluate_predictions(S, x_test_new, y_test_new,conditional=False)
 
         res['Method'] = method_name

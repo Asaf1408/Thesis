@@ -24,7 +24,7 @@ class No_Calibration:
     # predict prediction sets
     def predict(self, X):
         # get number of points
-        n = X.shape[0]
+        n = np.shape(X)[0]
 
         # generate random uniform variables for oracle set creation
         rng = default_rng()
@@ -48,10 +48,10 @@ class Non_Conformity_Score_Calibration:
     def __init__(self, X_calib, Y_calib, black_box, alpha, score_func=None):
 
         # size of the calibration set
-        n_calib = X_calib.size()[0]
+        n_calib = np.shape(X_calib)[0]
 
         # turn one hot vectors into single lables
-        Y_calib = torch.argmax(Y_calib, axis=1)
+        Y_calib = np.argmax(Y_calib, axis=1)
 
         # calibrator parameters
         self.black_box = black_box
@@ -81,7 +81,7 @@ class Non_Conformity_Score_Calibration:
     # predict prediction sets
     def predict(self, X):
         # get number of points
-        n = X.size()[0]
+        n = np.shape(X)[0]
 
         # get classifier predictions on test set
         P_hat = self.black_box.predict(X)
@@ -274,22 +274,20 @@ class Test_Score_Lower_Bound_Calibration:
 class Smoothed_Score_Calibration:
     def __init__(self, X_calib, Y_calib, black_box, alpha, epsilon=0, score_func=None):
 
-        # automatically choose device use gpu 0 if it is available o.w. use the cpu
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
         # size of the calibration set
-        n_calib = X_calib.size()[0]
+        n_calib = np.shape(X_calib)[0]
 
         # turn one hot vectors into single labels
-        Y_calib = torch.argmax(Y_calib, axis=1)
+        Y_calib = np.argmax(Y_calib, axis=1)
 
         # get dimension of data
-        rows = X_calib.size()[2]
-        cols = X_calib.size()[3]
+        rows = np.shape(X_calib)[2]
+        cols = np.shape(X_calib)[3]
+        channels = np.shape(X_calib)[1]
         p = rows * cols
 
         # number of permutations to estimate mean
-        self.n_permutations = 100
+        self.n_permutations = 1000
 
         # calibrator parameters
         self.black_box = black_box
@@ -301,23 +299,17 @@ class Smoothed_Score_Calibration:
         tmp = self.black_box.predict(X_calib[0:1, :, :, :])
         self.num_of_classes = tmp.shape[1]
 
-        # set standard deviation for smoothing
+        # set standard deviation and mean for smoothing
         self.sigma = (10) * epsilon
-
-        # set covariance and mean of smoothing function
-        self.mean = np.zeros(p)
-        self.cov = self.sigma**2 * np.eye(p)
+        self.mean = 0
 
         # generate random vectors from the Gaussian distribution
         rng = default_rng()
-        noises = rng.multivariate_normal(self.mean, self.cov, self.n_permutations)
+        noises = rng.normal(0, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32)
 
         # clip to pixel values
         noises[noises < 0] = 0
         noises[noises > 1] = 1
-
-        # bring noises to pytorch form
-        noises = torch.tensor(np.reshape(noises, (self.n_permutations, 1, rows, cols)).astype(np.float32)).to(self.device)
 
         # create container for the scores
         scores = np.zeros(n_calib)
@@ -335,7 +327,6 @@ class Smoothed_Score_Calibration:
             noisy_outputs = softmax(noisy_outputs, axis=1)
 
             # generate random variable for inverse quantile score
-            rng = default_rng()
             u = np.ones(self.n_permutations) * rng.uniform(low=0.0, high=1.0)
 
             # estimate empirical mean of noisy scores
@@ -347,23 +338,21 @@ class Smoothed_Score_Calibration:
 
     def predict(self, X):
         # get number of points
-        n = X.size()[0]
+        n = np.shape(X)[0]
 
         # get dimension of data
-        rows = X.size()[2]
-        cols = X.size()[3]
+        rows = np.shape(X)[2]
+        cols = np.shape(X)[3]
+        channels = np.shape(X)[1]
         p = rows * cols
 
         # generate random vectors from the Gaussian distribution
         rng = default_rng()
-        noises = rng.multivariate_normal(self.mean, self.cov, self.n_permutations)
+        noises = rng.normal(0, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32)
 
         # clip to pixel values
         noises[noises < 0] = 0
         noises[noises > 1] = 1
-
-        # bring noises to pytorch form
-        noises = torch.tensor(np.reshape(noises, (self.n_permutations, 1, rows, cols)).astype(np.float32)).to(self.device)
 
         # create container for the noisy scores
         noisy_scores = np.zeros((n,self.num_of_classes))
@@ -378,13 +367,12 @@ class Smoothed_Score_Calibration:
             noisy_outputs = softmax(noisy_outputs, axis=1)
 
             # generate random variable for inverse quantile score
-            rng = default_rng()
             u = np.ones(self.n_permutations) * rng.uniform(low=0.0, high=1.0)
 
             # compute score of all labels
             noisy_scores[j,:] = np.mean(self.score_func(noisy_outputs,np.arange(self.num_of_classes),u),axis=0)
 
-        # correction based on the Lipshoctiz constant
+        # correction based on the Lipschitz constant
         if self.sigma == 0:
             correction1 = 0
             correction2 = 0
