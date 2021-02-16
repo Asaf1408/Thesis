@@ -10,6 +10,10 @@ from scipy.stats import norm
 from arc.classification import ProbabilityAccumulator as ProbAccum
 from Asaf.Random_Generators import random_in_ball
 import torch
+import time
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 # No_Calibration
 class No_Calibration:
@@ -132,10 +136,6 @@ class Upper_Bound_Score_Calibration:
         # generate noise perturbations distributed uniformly inside an unit lp ball with radius epsilon
         noises = random_in_ball(self.n_permutations,dimension=p, radius=epsilon, norm="l2")
 
-        # clip to pixel values
-        noises[noises < 0] = 0
-        noises[noises > 1] = 1
-
         # bring noises to pytorch form
         noises = np.reshape(noises, (self.n_permutations, 1, rows, cols)).astype(np.float32)
 
@@ -147,6 +147,10 @@ class Upper_Bound_Score_Calibration:
 
             # add noise to data point
             noisy_points = X_calib[j, :, :, :] + noises
+
+            # clip to pixel values
+            noisy_points[noisy_points < 0] = 0
+            noisy_points[noisy_points > 1] = 1
 
             # get classifier results for the noisy points
             noisy_outputs = self.black_box.predict(noisy_points)
@@ -239,10 +243,6 @@ class Test_Score_Lower_Bound_Calibration:
         # generate noise perturbations distributed uniformly inside an unit lp ball with radius epsilon
         noises = random_in_ball(self.n_permutations,dimension=p, radius=self.epsilon, norm="l2")
 
-        # clip to pixel values
-        noises[noises < 0] = 0
-        noises[noises > 1] = 1
-
         # bring noises to pytorch form
         noises = np.reshape(noises, (self.n_permutations, 1, rows, cols)).astype(np.float32)
 
@@ -250,6 +250,10 @@ class Test_Score_Lower_Bound_Calibration:
         for j in range(n):
             # add noise to data point
             noisy_points = X[j, :, :, :] + noises
+
+            # clip to pixel values
+            noisy_points[noisy_points < 0] = 0
+            noisy_points[noisy_points > 1] = 1
 
             # get classifier results for the noisy points
             noisy_outputs = self.black_box.predict(noisy_points)
@@ -287,7 +291,7 @@ class Smoothed_Score_Calibration:
         p = rows * cols
 
         # number of permutations to estimate mean
-        self.n_permutations = 1000
+        self.n_permutations = 100
 
         # calibrator parameters
         self.black_box = black_box
@@ -300,19 +304,17 @@ class Smoothed_Score_Calibration:
         self.num_of_classes = tmp.shape[1]
 
         # set standard deviation and mean for smoothing
-        self.sigma = (10) * epsilon
+        self.sigma = (2) * epsilon
         self.mean = 0
 
         # generate random vectors from the Gaussian distribution
         rng = default_rng()
-        noises = rng.normal(0, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32)
-
-        # clip to pixel values
-        noises[noises < 0] = 0
-        noises[noises > 1] = 1
+        noises = rng.normal(self.mean, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32)
 
         # create container for the scores
         scores = np.zeros(n_calib)
+        new_scores = np.zeros(n_calib)
+        gamma = 15
 
         # estimate mean over all noise added points
         for j in range(n_calib):
@@ -330,11 +332,36 @@ class Smoothed_Score_Calibration:
             u = np.ones(self.n_permutations) * rng.uniform(low=0.0, high=1.0)
 
             # estimate empirical mean of noisy scores
-            scores[j] = np.mean(score_func(noisy_outputs,Y_calib[j],u))
+            tmp_scores = score_func(noisy_outputs, Y_calib[j], u)
+            scores[j] = np.mean(tmp_scores)
+            #tmp_scores = tmp_scores**gamma + 0.25
+            #tmp_scores[tmp_scores > 1] = 1
+            #new_scores[j] = np.mean(tmp_scores)
 
         # Compute threshold
         level_adjusted = (1.0 - alpha) * (1.0 + 1.0 / float(n_calib))
         self.threshold_calibrated = mquantiles(scores, prob=level_adjusted)
+
+        #Q = mquantiles(new_scores, prob=level_adjusted)
+
+        #new_thresh1 = norm.cdf(norm.ppf(self.threshold_calibrated, loc=0, scale=1)+(epsilon/self.sigma), loc=0, scale=1)
+        #new_quntile1 = np.size(scores[scores < new_thresh1])/np.size(scores)
+        #print(str(new_quntile1))
+
+        #new_thresh2 = norm.cdf(norm.ppf(Q, loc=0, scale=1)+(epsilon/self.sigma), loc=0, scale=1)
+        #new_quntile2 = np.size(new_scores[new_scores < new_thresh2])/np.size(new_scores)
+        #print(str(new_quntile2))
+
+        #plt.figure()
+        #sns.histplot(scores, bins=100)
+        #plt.axvline(x=self.threshold_calibrated,color='r')
+        #plt.axvline(x=new_thresh1, color='g')
+
+        #plt.figure()
+        #sns.histplot(new_scores, bins=100)
+        #plt.axvline(x=Q, color='r')
+        #plt.axvline(x=new_thresh2, color='g')
+        #plt.show()
 
     def predict(self, X):
         # get number of points
@@ -349,10 +376,6 @@ class Smoothed_Score_Calibration:
         # generate random vectors from the Gaussian distribution
         rng = default_rng()
         noises = rng.normal(0, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32)
-
-        # clip to pixel values
-        noises[noises < 0] = 0
-        noises[noises > 1] = 1
 
         # create container for the noisy scores
         noisy_scores = np.zeros((n,self.num_of_classes))
@@ -381,7 +404,7 @@ class Smoothed_Score_Calibration:
             correction2 = (self.epsilon / self.sigma)*np.sqrt(2/np.pi)
 
         # Generate prediction sets using the threshold from the calibration
-        S_hat = [np.where(norm.ppf(noisy_scores[i,:],loc=0,scale=1) - correction1 <= norm.ppf(self.threshold_calibrated,loc=0,scale=1))[0] for i in range(n)]
+        S_hat = [np.where(norm.ppf(noisy_scores[i, :], loc=0, scale=1) - correction1 <= norm.ppf(self.threshold_calibrated, loc=0, scale=1))[0] for i in range(n)]
         #S_hat = [np.where(noisy_scores[i, :] - correction2 <= self.threshold_calibrated)[0] for i in range(n)]
         # return predictions sets
         return S_hat

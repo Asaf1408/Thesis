@@ -40,6 +40,44 @@ def generelized_inverse_quantile_score(probabilities, labels, u=None):
     return scores
 
 
+def rank_regularized_score(probabilities, labels, u=None):
+
+    if u is None:
+        randomized = False
+    else:
+        randomized = True
+
+    # get number of points
+    num_of_points = np.shape(probabilities)[0]
+
+    # sort probabilities from high to low
+    sorted = -np.sort(-probabilities)
+
+    # create matrix of cumulative sum of each row
+    cumulative_sum = np.cumsum(sorted, axis=1)
+
+    # find ranks of each desired label in each row
+    label_ranks = rankdata(-probabilities,method='ordinal', axis=1)[:,labels] - 1
+
+    # compute the scores of each label in each row
+    scores = cumulative_sum[np.arange(num_of_points), label_ranks.T].T
+
+    last_label_prob = sorted[np.arange(num_of_points), label_ranks.T].T
+
+    if not randomized:
+        scores = scores - last_label_prob
+    else:
+        scores = scores - np.diag(u) @ last_label_prob
+
+    # get number of classes
+    num_of_classes = np.shape(probabilities)[1]
+
+    # regularize with the ranks
+    alpha = 0.2
+    scores = alpha * scores + (1-alpha) * ((label_ranks+1)/num_of_classes)
+    return scores
+
+
 def evaluate_predictions(S, X, y, conditional=True):
 
     # turn one hot vectors into single lables
