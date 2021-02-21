@@ -86,7 +86,7 @@ class Non_Conformity_Score_Calibration:
         u = rng.uniform(low=0.0, high=1.0, size=n_calib)
 
         # compute scores for all points in the calibration set
-        scores = self.score_func(P_hat,np.arange(self.num_of_classes),u)[np.arange(n_calib), Y_calib.T].T
+        scores = self.score_func(P_hat, np.arange(self.num_of_classes), u)[np.arange(n_calib), Y_calib.T].T
 
         # Compute threshold
         level_adjusted = (1.0 - alpha) * (1.0 + 1.0 / float(n_calib))
@@ -112,7 +112,7 @@ class Non_Conformity_Score_Calibration:
 
         # generate random variable for inverse quantile score
         rng = default_rng()
-        u = rng.uniform(low=0.0, high=1.0,size=n)
+        u = rng.uniform(low=0.0, high=1.0, size=n)
 
         # compute scores for all points in the test set for all labels
         scores = self.score_func(P_hat, np.arange(self.num_of_classes), u)
@@ -322,7 +322,7 @@ class Smoothed_Score_Calibration:
 
         # generate random vectors from the Gaussian distribution
         rng = default_rng()
-        noises = torch.Tensor(rng.normal(self.mean, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32))
+        noises = torch.from_numpy(rng.normal(self.mean, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32))
 
         # create container for the scores
         scores = np.zeros(n_calib)
@@ -399,7 +399,7 @@ class Smoothed_Score_Calibration:
 
         # generate random vectors from the Gaussian distribution
         rng = default_rng()
-        noises = torch.Tensor(rng.normal(0, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32))
+        noises = torch.from_numpy(rng.normal(0, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32))
 
         # create container for the noisy scores
         noisy_scores = np.zeros((n, self.num_of_classes))
@@ -420,15 +420,15 @@ class Smoothed_Score_Calibration:
             u = np.ones(self.n_permutations) * rng.uniform(low=0.0, high=1.0)
 
             # compute score of all labels
-            noisy_scores[j,:] = np.mean(self.score_func(noisy_outputs,np.arange(self.num_of_classes),u),axis=0)
+            noisy_scores[j, :] = np.mean(self.score_func(noisy_outputs, np.arange(self.num_of_classes),u), axis=0)
 
         # correction based on the Lipschitz constant
         if self.sigma == 0:
             correction1 = 0
             correction2 = 0
         else:
-            correction1 = self.epsilon / self.sigma
-            correction2 = (self.epsilon / self.sigma)*np.sqrt(2/np.pi)
+            correction1 = float(self.epsilon) / float(self.sigma)
+            correction2 = (float(self.epsilon) / float(self.sigma))*np.sqrt(2/np.pi)
 
         # Generate prediction sets using the threshold from the calibration
         S_hat = [np.where(norm.ppf(noisy_scores[i, :], loc=0, scale=1) - correction1 <= norm.ppf(self.threshold_calibrated, loc=0, scale=1))[0] for i in range(n)]

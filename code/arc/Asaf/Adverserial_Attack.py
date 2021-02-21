@@ -186,7 +186,7 @@ max_pixel_value = 1.0
 # Create the ART classifier wrapper based on the model
 classifier = PyTorchClassifier(
     model=model,
-    # clip_values=(min_pixel_value, max_pixel_value), # remove clip value because of smoothing
+    clip_values=(min_pixel_value, max_pixel_value),
     loss=criterion,
     optimizer=optimizer,
     input_shape=(channels, rows, cols),
@@ -215,8 +215,11 @@ with torch.no_grad():
 # transform net output into probabilities vector
 predictions = scipy.special.softmax(predictions, axis=1)
 
+print(predictions[0,:])
+print(y_test[0])
+
 # compute accuracy on the adversarial test set
-accuracy = torch.sum(torch.argmax(predictions, axis=1) == y_test) / len(y_test)
+accuracy = torch.sum(torch.argmax(predictions, axis=1) == y_test) / float(len(y_test))
 print("Accuracy on adversarial test examples: {}%".format(accuracy * 100))
 
 # List of calibration methods to be compared
@@ -311,6 +314,7 @@ for i, graph in enumerate(ax.axes[0]):
     graph.axhline(1 - alpha, ls='--', color="red")
 
 ax.savefig("Marginal2.png")
+plt.close(ax)
 
 # plot conditional coverage results
 ax = sns.catplot(x="Black box", y="Conditional coverage",
@@ -323,6 +327,7 @@ for i, graph in enumerate(ax.axes[0]):
     graph.axhline(1 - alpha, ls='--', color="red")
 
 ax.savefig("Conditional.png")
+plt.close(ax)
 
 # plot interval size results
 ax = sns.catplot(x="Black box", y="Size",
@@ -334,3 +339,4 @@ for i, graph in enumerate(ax.axes[0]):
     graph.set(xlabel='Classifier', ylabel='Set Size')
 
 ax.savefig("Size.png")
+plt.close(ax)
