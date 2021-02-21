@@ -80,9 +80,6 @@ def rank_regularized_score(probabilities, labels, u=None):
 
 def evaluate_predictions(S, X, y, conditional=True):
 
-    # turn one hot vectors into single lables
-    y = np.argmax(y, axis=1)
-
     # get numbers of points
     n = np.shape(X)[0]
 

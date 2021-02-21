@@ -14,10 +14,10 @@ import seaborn as sns
 from tqdm import tqdm
 import time
 import torch
+import torchvision
 from numpy.random import default_rng
 
 from torch.utils.data.dataset import random_split
-
 
 from art.attacks.evasion import FastGradientMethod
 from art.attacks.evasion import AutoProjectedGradientDescent
@@ -26,11 +26,32 @@ from art.attacks.evasion import CarliniL2Method
 
 from art.estimators.classification import PyTorchClassifier
 from art.utils import load_mnist
+from art.utils import load_cifar10
 
 import pandas as pd
 import Asaf.Score_Functions as scores
 import Asaf.methods_new as methods
 from sklearn.model_selection import train_test_split
+
+
+# function to calculate accuracy of the model
+def calculate_accuracy(model, dataloader, device):
+    model.eval()  # put in evaluation mode
+    total_correct = 0
+    total_images = 0
+    with torch.no_grad():
+        for data in dataloader:
+            images, labels = data
+            images = images.to(device)
+            labels = labels.to(device)
+            outputs = model(images)
+            _, predicted = torch.max(outputs.data, 1)
+            total_images += labels.size(0)
+            total_correct += (predicted == labels).sum().item()
+
+    model_accuracy = total_correct / total_images
+    return model_accuracy
+
 
 # Define the neural network model,
 # return logits instead of activation in forward method
@@ -53,11 +74,43 @@ class Net(nn.Module):
         return x
 
 
-alpha = 0.1             # desired nominal marginal coverage
-epsilon = 0.5           # L2 bound on the adversarial noise
-n_experiments = 10      # number of experiments to estimate coverage
-n_test = 2000           # number of test points (if larger then available it takes the entire set)
-ratio = 2               # ratio between adversarial noise bound to smoothed noise
+alpha = 0.1  # desired nominal marginal coverage
+epsilon = 0.5  # L2 bound on the adversarial noise
+n_experiments = 10  # number of experiments to estimate coverage
+n_test = 2000  # number of test points (if larger then available it takes the entire set)
+ratio = 2  # ratio between adversarial noise bound to smoothed noise
+
+# hyper-parameters:
+num_epochs = 3
+learning_rate = 0.01
+batch_size = 64
+
+# Load MNIST train set
+train_dataset = torchvision.datasets.MNIST(root='./datasets/',
+                                                 train=True,
+                                                 transform=torchvision.transforms.ToTensor(),
+                                                 download=True)
+# load MNIST test set
+test_dataset = torchvision.datasets.MNIST(root='./datasets',
+                                                train=False,
+                                                transform=torchvision.transforms.ToTensor())
+# cut the size of the test set if necessary
+if n_test < len(test_dataset):
+    test_dataset = torch.utils.data.random_split(test_dataset, [n_test, len(test_dataset)-n_test])[0]
+
+# save the sizes of each one of the sets
+n_train = len(train_dataset)
+n_test = len(test_dataset)
+
+# Create Data loader for train set
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
+                                           batch_size=batch_size,
+                                           shuffle=True,
+                                           drop_last=True)
+# Create Data loader for test set
+test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
+                                          batch_size=n_test,
+                                          shuffle=False)
 
 # automatically choose device use gpu 0 if it is available o.w. use the cpu
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -65,110 +118,123 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # print the chosen device
 print("device: ", device)
 
-# Load the MNIST dataset using art function the data is nx28x28x1
-(x_train, y_train), (x_test, y_test), min_pixel_value, max_pixel_value = load_mnist()
+# set loss criterion
+criterion = nn.CrossEntropyLoss()
 
-# Swap axes to PyTorch's NCHW format nx1x28x28
-x_train = x_train.transpose((0, 3, 1, 2)).astype(np.float32)
-x_test = x_test.transpose((0, 3, 1, 2)).astype(np.float32)
+# build our model and send it to the device
+model = Net().to(device)
+
+# set optimizer
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+# training loop
+for epoch in range(1, num_epochs + 1):
+    model.train()  # put in training mode
+    running_loss = 0.0
+    epoch_time = time.time()
+    for i, data in enumerate(train_loader, 0):
+        # get the inputs
+        inputs, labels = data
+        # send them to device
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+        # forward + backward + optimize
+        outputs = model(inputs)  # forward pass
+        loss = criterion(outputs, labels)  # calculate the loss
+        # always the same 3 steps
+        optimizer.zero_grad()  # zero the parameter gradients
+        loss.backward()  # backpropagation
+        optimizer.step()  # update parameters
+        # print statistics
+        running_loss += loss.data.item()
+    # Normalizing the loss by the total number of train batches
+    running_loss /= len(train_loader)
+    # Calculate training/test set accuracy of the existing model
+    train_accuracy = calculate_accuracy(model, train_loader, device)
+    test_accuracy = calculate_accuracy(model, test_loader, device)
+    log = "Epoch: {} | Loss: {:.4f} | Training accuracy: {:.3f}% | Test accuracy: {:.3f}% | ".format(epoch
+                                                                                                     , running_loss,
+                                                                                                     100*train_accuracy,
+                                                                                                     100*test_accuracy)
+    epoch_time = time.time() - epoch_time
+    log += "Epoch Time: {:.2f} secs".format(epoch_time)
+    print(log)
+
+print('==> Finished Training ...')
 
 # initiate random generator
-rng = default_rng()
-
-# cut the size of the test set if necessary
-if n_test < np.shape(x_test)[0]:
-    choice = rng.choice(np.shape(x_test)[0], n_test)
-    x_test = x_test[choice, :, :, :]
-    y_test = y_test[choice, :]
-
-# get dimension of data
-rows = np.shape(x_train)[2]
-cols = np.shape(x_train)[3]
-channels = np.shape(x_train)[1]
-num_of_classes = np.shape(y_train)[1]
-
-# save the sizes of each one of the sets
-n_train = np.shape(x_train)[0]
-n_test = np.shape(x_test)[0]
+#rng = default_rng()
 
 # generate random vectors from the Gaussian distribution
-noises = rng.normal(0, ratio*epsilon, (n_train, channels, rows, cols)).astype(np.float32)
+# noises = rng.normal(0, ratio*epsilon, (n_train, channels, rows, cols)).astype(np.float32)
 
 # add noise to train data
-#x_train = x_train + noises
+# x_train = x_train + noises
 
-# Create the model
-model = Net()
+# convert test set into tensor
+examples = enumerate(test_loader)
+batch_idx, (x_test, y_test) = next(examples)
 
-# Define the loss function and the optimizer
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.01)
+# get dimension of data
+rows = x_test.size()[2]
+cols = x_test.size()[3]
+channels = x_test.size()[1]
+num_of_classes = len(train_dataset.classes)
+min_pixel_value = 0.0
+max_pixel_value = 1.0
 
 # Create the ART classifier wrapper based on the model
 classifier = PyTorchClassifier(
     model=model,
-    #clip_values=(min_pixel_value, max_pixel_value), # remove clip value because of smoothing
+    # clip_values=(min_pixel_value, max_pixel_value), # remove clip value because of smoothing
     loss=criterion,
     optimizer=optimizer,
     input_shape=(channels, rows, cols),
     nb_classes=num_of_classes,
 )
 
-# Train the ART classifier
-classifier.fit(x_train, y_train, batch_size=64, nb_epochs=3)
 
-# Evaluate the ART classifier on  test examples
+# Generate adversarial test examples
+# attack = FastGradientMethod(estimator=classifier, eps=epsilon, norm=2)
+# attack = AutoProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
+attack = ProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
+# attack = CarliniL2Method(classifier=classifier)
+
+x_test_adv = torch.Tensor(attack.generate(x=x_test.numpy()))
+
+# Evaluate the ART classifier on adversarial test examples
+#plt.figure()
+#plt.imshow(x_test_adv.numpy().transpose((0, 2, 3, 1))[0], cmap='gray')
+#plt.show()
 
 # get classifier predictions
-predictions = classifier.predict(x_test)
+model.eval()  # put in evaluation mode
+with torch.no_grad():
+    x_test_adv = x_test_adv.to(device)
+    predictions = model(x_test_adv).to(torch.device('cpu'))
 
 # transform net output into probabilities vector
 predictions = scipy.special.softmax(predictions, axis=1)
 
-# compute accuracy on the test set
-accuracy = np.sum(np.argmax(predictions, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
-print("Accuracy on test examples: {}%".format(accuracy * 100))
-
-# Generate adversarial test examples
-#attack = FastGradientMethod(estimator=classifier, eps=epsilon, norm=2)
-#attack = AutoProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
-attack = ProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
-#attack = CarliniL2Method(classifier=classifier)
-
-x_test_adv = attack.generate(x=x_test)
-
-# Evaluate the ART classifier on adversarial test examples
-#plt.figure()
-#plt.imshow(x_test_adv.transpose((0, 2, 3, 1))[0], cmap='gray')
-#plt.show()
-
-# get classifier predictions
-predictions = classifier.predict(x_test_adv)
-
-# transform net output into probabilities vector
-predictions = scipy.special.softmax(predictions,axis=1)
-
 # compute accuracy on the adversarial test set
-accuracy = np.sum(np.argmax(predictions, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
+accuracy = torch.sum(torch.argmax(predictions, axis=1) == y_test) / len(y_test)
 print("Accuracy on adversarial test examples: {}%".format(accuracy * 100))
-
 
 # List of calibration methods to be compared
 methods = {
-     'None': methods.No_Calibration,
-     'SC': methods.Non_Conformity_Score_Calibration,
+    'None': methods.No_Calibration,
+    'SC': methods.Non_Conformity_Score_Calibration,
     # 'CV+': arc.methods.CVPlus,
     # 'JK+': arc.methods.JackknifePlus,
     'HCC': methods.Non_Conformity_Score_Calibration,
     # 'CQC': arc.others.CQC,
-    #'HCC_LB': methods.Test_Score_Lower_Bound_Calibration,
-    #'SC_LB': methods.Test_Score_Lower_Bound_Calibration
-     #'HCC_UB': methods.Upper_Bound_Score_Calibration,
-     #'SC_UB': methods.Upper_Bound_Score_Calibration,
+    # 'HCC_LB': methods.Test_Score_Lower_Bound_Calibration,
+    # 'SC_LB': methods.Test_Score_Lower_Bound_Calibration
+    # 'HCC_UB': methods.Upper_Bound_Score_Calibration,
+    # 'SC_UB': methods.Upper_Bound_Score_Calibration,
     'SC_Smooth': methods.Smoothed_Score_Calibration,
     'HCC_Smooth': methods.Smoothed_Score_Calibration
 }
-
 
 # create dataframe for storing results
 results = pd.DataFrame()
@@ -178,32 +244,34 @@ for experiment in tqdm(range(n_experiments)):
     x_calib, x_test_new, y_calib, y_test_new = train_test_split(x_test, y_test, test_size=0.5)
 
     # save sizes of calibration and test sets
-    n_calib = np.shape(x_calib)[0]
-    n_test = np.shape(x_test_new)[0]
+    n_calib = x_calib.size()[0]
+    n_test = x_test_new.size()[0]
 
     # Generate adversarial test examples
-    x_test_adv = attack.generate(x=x_test_new)
+    x_test_adv = torch.Tensor(attack.generate(x=x_test_new.numpy()))
 
     for method_name in methods:
         # Calibrate model with calibration method
         if method_name == "HCC_LB" or method_name == "HCC_UB" or method_name == "HCC_Smooth":
-            method = methods[method_name](x_calib, y_calib, classifier, alpha, epsilon=epsilon,
-                                        score_func=scores.class_probability_score)
+            method = methods[method_name](x_calib, y_calib, model, alpha, epsilon=epsilon,
+                                          score_func=scores.class_probability_score)
         elif method_name == "SC_LB" or method_name == "SC_UB" or method_name == "SC_Smooth":
-            method = methods[method_name](x_calib, y_calib, classifier, alpha, epsilon=epsilon,
-                                        score_func=scores.generelized_inverse_quantile_score)
+            method = methods[method_name](x_calib, y_calib, model, alpha, epsilon=epsilon,
+                                          score_func=scores.generelized_inverse_quantile_score)
         elif method_name == "SC":
-            method = methods[method_name](x_calib, y_calib, classifier, alpha, score_func = scores.generelized_inverse_quantile_score)
+            method = methods[method_name](x_calib, y_calib, model, alpha,
+                                          score_func=scores.generelized_inverse_quantile_score)
         elif method_name == "HCC":
-            method = methods[method_name](x_calib, y_calib, classifier, alpha, score_func = scores.class_probability_score)
+            method = methods[method_name](x_calib, y_calib, model, alpha,
+                                          score_func=scores.class_probability_score)
         else:
-            method = methods[method_name](classifier, alpha)
+            method = methods[method_name](model, alpha)
 
         # Form prediction sets for test points on clean samples
         S = method.predict(x_test_new)
 
         # Evaluate results on clean examples
-        res = scores.evaluate_predictions(S, x_test_new, y_test_new,conditional=False)
+        res = scores.evaluate_predictions(S, x_test_new.numpy(), y_test_new.numpy(), conditional=False)
 
         res['Method'] = method_name
         res['Nominal'] = 1 - alpha
@@ -220,7 +288,7 @@ for experiment in tqdm(range(n_experiments)):
         S = method.predict(x_test_adv)
 
         # Evaluate results on adversarial examples
-        res = scores.evaluate_predictions(S, x_test_new, y_test_new,conditional=False)
+        res = scores.evaluate_predictions(S, x_test_new.numpy(), y_test_new.numpy(), conditional=False)
 
         res['Method'] = method_name
         res['Nominal'] = 1 - alpha
@@ -235,9 +303,9 @@ for experiment in tqdm(range(n_experiments)):
 
 # plot marginal coverage results
 ax = sns.catplot(x="Black box", y="Coverage",
-                hue="Method", col="noise_norm",
-                data=results, kind="box",
-                height=4, aspect=.7)
+                 hue="Method", col="noise_norm",
+                 data=results, kind="box",
+                 height=4, aspect=.7)
 # ax = sns.boxplot(y="Coverage", x="Black box", hue="Method", data=results)
 for i, graph in enumerate(ax.axes[0]):
     graph.set(xlabel='Classifier', ylabel='Marginal coverage')
@@ -245,12 +313,11 @@ for i, graph in enumerate(ax.axes[0]):
 
 ax.savefig("Marginal2.png")
 
-
 # plot conditional coverage results
 ax = sns.catplot(x="Black box", y="Conditional coverage",
-                hue="Method", col="noise_norm",
-                data=results, kind="box",
-                height=4, aspect=.7)
+                 hue="Method", col="noise_norm",
+                 data=results, kind="box",
+                 height=4, aspect=.7)
 # ax = sns.boxplot(y="Conditional coverage", x="Black box", hue="Method", data=results)
 for i, graph in enumerate(ax.axes[0]):
     graph.set(xlabel='Classifier', ylabel='Conditional coverage')
@@ -260,9 +327,9 @@ ax.savefig("Conditional.png")
 
 # plot interval size results
 ax = sns.catplot(x="Black box", y="Size",
-                hue="Method", col="noise_norm",
-                data=results, kind="box",
-                height=4, aspect=.7)
+                 hue="Method", col="noise_norm",
+                 data=results, kind="box",
+                 height=4, aspect=.7)
 # ax = sns.boxplot(y="Size cover", x="Black box", hue="Method", data=results)
 for i, graph in enumerate(ax.axes[0]):
     graph.set(xlabel='Classifier', ylabel='Set Size')
