@@ -199,8 +199,7 @@ classifier = PyTorchClassifier(
 # attack = AutoProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
 attack = ProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
 # attack = CarliniL2Method(classifier=classifier)
-
-x_test_adv = torch.Tensor(attack.generate(x=x_test.numpy()))
+x_test_adv = torch.from_numpy(attack.generate(x=x_test.numpy()))
 
 # Evaluate the ART classifier on adversarial test examples
 #plt.figure()
@@ -248,7 +247,7 @@ for experiment in tqdm(range(n_experiments)):
     n_test = x_test_new.size()[0]
 
     # Generate adversarial test examples
-    x_test_adv = torch.Tensor(attack.generate(x=x_test_new.numpy()))
+    x_test_adv = torch.from_numpy(attack.generate(x=x_test_new.numpy()))
 
     for method_name in methods:
         # Calibrate model with calibration method
