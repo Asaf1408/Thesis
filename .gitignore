@@ -130,3 +130,5 @@ dmypy.json
 
 #ignore folders
 Semester*A/Cuasal*Interface/HW2/
+code/arc/Asaf/datasets/
+code/arc/Asaf/checkpoints

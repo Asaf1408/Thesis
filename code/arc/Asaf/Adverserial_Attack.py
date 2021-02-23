@@ -4,6 +4,7 @@ and creates adversarial examples using the Fast Gradient Sign Method. Here we us
 it would also be possible to provide a pretrained model to the ART classifier.
 The parameters are chosen for reduced computational requirements of the script and not optimised for accuracy.
 """
+
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
@@ -15,6 +16,7 @@ from tqdm import tqdm
 import time
 import torch
 import torchvision
+import os
 from numpy.random import default_rng
 
 from torch.utils.data.dataset import random_split
@@ -55,9 +57,9 @@ def calculate_accuracy(model, dataloader, device):
 
 # Define the neural network model,
 # return logits instead of activation in forward method
-class Net(nn.Module):
+class MnistCNN(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(MnistCNN, self).__init__()
         self.conv_1 = nn.Conv2d(in_channels=1, out_channels=4, kernel_size=5, stride=1)
         self.conv_2 = nn.Conv2d(in_channels=4, out_channels=10, kernel_size=5, stride=1)
         self.fc_1 = nn.Linear(in_features=4 * 4 * 10, out_features=100)
@@ -74,29 +76,97 @@ class Net(nn.Module):
         return x
 
 
+class CifarCNN(nn.Module):
+    """CNN for the CIFAR-10 Datset"""
+    def __init__(self):
+        """CNN Builder."""
+        super(CifarCNN, self).__init__()
+        self.conv_layer = nn.Sequential(
+            # Conv Layer block 1
+            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            # Conv Layer block 2
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout2d(p=0.05),
+
+            # Conv Layer block 3
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+        )
+
+        self.fc_layer = nn.Sequential(
+            nn.Dropout(p=0.1),
+            nn.Linear(4096, 1024),
+            nn.ReLU(inplace=True),
+            nn.Linear(1024, 512),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p=0.1),
+            nn.Linear(512, 10)
+        )
+
+    def forward(self, x):
+        """Perform forward."""
+        # conv layers
+        x = self.conv_layer(x)
+        # flatten
+        x = x.view(x.size(0), -1)
+        # fc layer
+        x = self.fc_layer(x)
+        return x
+
+
 alpha = 0.1  # desired nominal marginal coverage
 epsilon = 0.5  # L2 bound on the adversarial noise
 n_experiments = 10  # number of experiments to estimate coverage
 n_test = 2000  # number of test points (if larger then available it takes the entire set)
 ratio = 2  # ratio between adversarial noise bound to smoothed noise
+train = True
 
 # hyper-parameters:
-num_epochs = 3
-learning_rate = 0.01
-batch_size = 64
+num_epochs = 10
+learning_rate = 0.001
+batch_size = 128
+dataset = "CIFAR10"
 
-# Load MNIST train set
-train_dataset = torchvision.datasets.MNIST(root='./datasets/',
+if dataset == "MNIST":
+    # Load train set
+    train_dataset = torchvision.datasets.MNIST(root='./datasets/',
+                                               train=True,
+                                               transform=torchvision.transforms.ToTensor(),
+                                               download=True)
+    # load test set
+    test_dataset = torchvision.datasets.MNIST(root='./datasets',
+                                              train=False,
+                                              transform=torchvision.transforms.ToTensor())
+
+elif dataset == "CIFAR10":
+    # Load train set
+    train_dataset = torchvision.datasets.CIFAR10(root='./datasets/',
                                                  train=True,
                                                  transform=torchvision.transforms.ToTensor(),
                                                  download=True)
-# load MNIST test set
-test_dataset = torchvision.datasets.MNIST(root='./datasets',
+    # load test set
+    test_dataset = torchvision.datasets.CIFAR10(root='./datasets',
                                                 train=False,
                                                 transform=torchvision.transforms.ToTensor())
+
 # cut the size of the test set if necessary
 if n_test < len(test_dataset):
-    test_dataset = torch.utils.data.random_split(test_dataset, [n_test, len(test_dataset)-n_test])[0]
+    test_dataset = torch.utils.data.random_split(test_dataset, [n_test, len(test_dataset) - n_test])[0]
 
 # save the sizes of each one of the sets
 n_train = len(train_dataset)
@@ -112,65 +182,6 @@ test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                           batch_size=n_test,
                                           shuffle=False)
 
-# automatically choose device use gpu 0 if it is available o.w. use the cpu
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-# print the chosen device
-print("device: ", device)
-
-# set loss criterion
-criterion = nn.CrossEntropyLoss()
-
-# build our model and send it to the device
-model = Net().to(device)
-
-# set optimizer
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-
-# training loop
-for epoch in range(1, num_epochs + 1):
-    model.train()  # put in training mode
-    running_loss = 0.0
-    epoch_time = time.time()
-    for i, data in enumerate(train_loader, 0):
-        # get the inputs
-        inputs, labels = data
-        # send them to device
-        inputs = inputs.to(device)
-        labels = labels.to(device)
-        # forward + backward + optimize
-        outputs = model(inputs)  # forward pass
-        loss = criterion(outputs, labels)  # calculate the loss
-        # always the same 3 steps
-        optimizer.zero_grad()  # zero the parameter gradients
-        loss.backward()  # backpropagation
-        optimizer.step()  # update parameters
-        # print statistics
-        running_loss += loss.data.item()
-    # Normalizing the loss by the total number of train batches
-    running_loss /= len(train_loader)
-    # Calculate training/test set accuracy of the existing model
-    train_accuracy = calculate_accuracy(model, train_loader, device)
-    test_accuracy = calculate_accuracy(model, test_loader, device)
-    log = "Epoch: {} | Loss: {:.4f} | Training accuracy: {:.3f}% | Test accuracy: {:.3f}% | ".format(epoch
-                                                                                                     , running_loss,
-                                                                                                     100*train_accuracy,
-                                                                                                     100*test_accuracy)
-    epoch_time = time.time() - epoch_time
-    log += "Epoch Time: {:.2f} secs".format(epoch_time)
-    print(log)
-
-print('==> Finished Training ...')
-
-# initiate random generator
-#rng = default_rng()
-
-# generate random vectors from the Gaussian distribution
-# noises = rng.normal(0, ratio*epsilon, (n_train, channels, rows, cols)).astype(np.float32)
-
-# add noise to train data
-# x_train = x_train + noises
-
 # convert test set into tensor
 examples = enumerate(test_loader)
 batch_idx, (x_test, y_test) = next(examples)
@@ -183,6 +194,123 @@ num_of_classes = len(train_dataset.classes)
 min_pixel_value = 0.0
 max_pixel_value = 1.0
 
+# automatically choose device use gpu 0 if it is available o.w. use the cpu
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+# print the chosen device
+print("device: ", device)
+
+# set loss criterion
+criterion = nn.CrossEntropyLoss()
+
+# build our model and send it to the device
+if dataset == "MNIST":
+    model = MnistCNN().to(device)
+elif dataset == "CIFAR10":
+    model = CifarCNN().to(device)
+
+# set optimizer
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+# generate random vectors from the Gaussian distribution
+rng = default_rng()
+mean = 0
+sigma = ratio * epsilon
+n_permutations = 50
+robust_epoches = 0
+robust_epoches = np.min([robust_epoches, num_epochs])
+noises = torch.from_numpy(rng.normal(mean, sigma, (n_permutations, channels, rows, cols)).astype(np.float32))
+if (train):
+    # training loop
+    for epoch in range(1, num_epochs + 1):
+        model.train()  # put in training mode
+        running_loss = 0.0
+        epoch_time = time.time()
+        for i, data in enumerate(train_loader, 0):
+            # get the inputs
+            inputs, labels = data
+
+            # send labels to device
+            labels = labels.to(device)
+
+            if epoch > (num_epochs - robust_epoches):
+                # get number of points in the batch
+                points_in_batch = inputs.size()[0]
+
+                # create container for mean outputs
+                outputs = torch.zeros(points_in_batch, num_of_classes).to(device)
+
+                # forward
+                # estimate mean over all noise added points
+                for j in range(points_in_batch):
+                    # add noise to data point
+                    noisy_points = inputs[j, :, :, :] + noises
+
+                    # get classifier predictions
+                    noisy_points = noisy_points.to(device)
+                    noisy_outputs = model(noisy_points)
+
+                    # calculate mean over all outputs
+                    outputs[j, :] = torch.mean(noisy_outputs)
+
+            else:
+                # send inputs to device
+                inputs = inputs.to(device)
+
+                # forward
+                outputs = model(inputs)
+
+            # backward + optimize
+            loss = criterion(outputs, labels)  # calculate the loss
+
+            # always the same 3 steps
+            optimizer.zero_grad()  # zero the parameter gradients
+            loss.backward()  # backpropagation
+            optimizer.step()  # update parameters
+            # print statistics
+            running_loss += loss.data.item()
+        # Normalizing the loss by the total number of train batches
+        running_loss /= len(train_loader)
+        # Calculate training/test set accuracy of the existing model
+        train_accuracy = calculate_accuracy(model, train_loader, device)
+        test_accuracy = calculate_accuracy(model, test_loader, device)
+        log = "Epoch: {} | Loss: {:.4f} | Training accuracy: {:.3f}% | Test accuracy: {:.3f}% | ".format(epoch
+                                                                                                         , running_loss,
+                                                                                                         100 * train_accuracy,
+                                                                                                         100 * test_accuracy)
+        epoch_time = time.time() - epoch_time
+        log += "Epoch Time: {:.2f} secs".format(epoch_time)
+        print(log)
+
+    print('==> Finished Training ...')
+
+    # save model
+    print('==> Saving model ...')
+    state = {'net': model.state_dict(), 'epoch': num_epochs}
+    if not os.path.isdir('checkpoints'):
+        os.mkdir('checkpoints')
+    if dataset == "MNIST":
+        torch.save(state, './checkpoints/MnistCNN.pth')
+    elif dataset == "CIFAR10":
+        torch.save(state, './checkpoints/Cifar10CNN.pth')
+
+else:
+    if dataset == "MNIST":
+        state = torch.load('./checkpoints/MnistCNN.pth', map_location=device)
+    elif dataset == "CIFAR10":
+        state = torch.load('./checkpoints/Cifar10CNN.pth', map_location=device)
+    model.load_state_dict(state['net'])
+
+# initiate random generator
+# rng = default_rng()
+
+# generate random vectors from the Gaussian distribution
+# noises = rng.normal(0, ratio*epsilon, (n_train, channels, rows, cols)).astype(np.float32)
+
+# add noise to train data
+# x_train = x_train + noises
+
+
 # Create the ART classifier wrapper based on the model
 classifier = PyTorchClassifier(
     model=model,
@@ -193,7 +321,6 @@ classifier = PyTorchClassifier(
     nb_classes=num_of_classes,
 )
 
-
 # Generate adversarial test examples
 # attack = FastGradientMethod(estimator=classifier, eps=epsilon, norm=2)
 # attack = AutoProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
@@ -202,9 +329,9 @@ attack = ProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
 x_test_adv = torch.from_numpy(attack.generate(x=x_test.numpy()))
 
 # Evaluate the ART classifier on adversarial test examples
-#plt.figure()
-#plt.imshow(x_test_adv.numpy().transpose((0, 2, 3, 1))[0], cmap='gray')
-#plt.show()
+# plt.figure()
+# plt.imshow(x_test_adv.numpy().transpose((0, 2, 3, 1))[0], cmap='gray')
+# plt.show()
 
 # get classifier predictions
 model.eval()  # put in evaluation mode
@@ -214,9 +341,6 @@ with torch.no_grad():
 
 # transform net output into probabilities vector
 predictions = scipy.special.softmax(predictions, axis=1)
-
-print(predictions[0,:])
-print(y_test[0])
 
 # compute accuracy on the adversarial test set
 accuracy = torch.sum(torch.argmax(predictions, axis=1) == y_test) / float(len(y_test))
@@ -303,6 +427,10 @@ for experiment in tqdm(range(n_experiments)):
         # Add results to the list
         results = results.append(res)
 
+# save results
+results.to_csv('results.csv')
+
+# plot results
 # plot marginal coverage results
 ax = sns.catplot(x="Black box", y="Coverage",
                  hue="Method", col="noise_norm",
@@ -314,7 +442,6 @@ for i, graph in enumerate(ax.axes[0]):
     graph.axhline(1 - alpha, ls='--', color="red")
 
 ax.savefig("Marginal2.png")
-plt.close(ax)
 
 # plot conditional coverage results
 ax = sns.catplot(x="Black box", y="Conditional coverage",
@@ -327,7 +454,6 @@ for i, graph in enumerate(ax.axes[0]):
     graph.axhline(1 - alpha, ls='--', color="red")
 
 ax.savefig("Conditional.png")
-plt.close(ax)
 
 # plot interval size results
 ax = sns.catplot(x="Black box", y="Size",
@@ -339,4 +465,3 @@ for i, graph in enumerate(ax.axes[0]):
     graph.set(xlabel='Classifier', ylabel='Set Size')
 
 ax.savefig("Size.png")
-plt.close(ax)
