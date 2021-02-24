@@ -30,6 +30,9 @@ from art.estimators.classification import PyTorchClassifier
 from art.utils import load_mnist
 from art.utils import load_cifar10
 
+from third_party.smoothing_adversarial.architectures import get_architecture
+
+
 import pandas as pd
 import Asaf.Score_Functions as scores
 import Asaf.methods_new as methods
@@ -134,7 +137,7 @@ epsilon = 0.5  # L2 bound on the adversarial noise
 n_experiments = 10  # number of experiments to estimate coverage
 n_test = 2000  # number of test points (if larger then available it takes the entire set)
 ratio = 2  # ratio between adversarial noise bound to smoothed noise
-train = True
+train = False
 
 # hyper-parameters:
 num_epochs = 10
@@ -300,6 +303,11 @@ else:
     elif dataset == "CIFAR10":
         state = torch.load('./checkpoints/Cifar10CNN.pth', map_location=device)
     model.load_state_dict(state['net'])
+
+# load the base classifier
+checkpoint = torch.load('./pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar')
+model = get_architecture(checkpoint["arch"], "cifar10")
+model.load_state_dict(checkpoint['state_dict'])
 
 # initiate random generator
 # rng = default_rng()
