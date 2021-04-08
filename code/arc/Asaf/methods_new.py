@@ -2,7 +2,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 from scipy.stats.mstats import mquantiles
-from scipy.special import softmax
+#from scipy.special import softmax
+from torch.nn.functional import softmax
 from numpy.random import default_rng
 import sys
 from tqdm import tqdm
@@ -45,7 +46,7 @@ class No_Calibration:
             P_hat = self.black_box(X).to(torch.device('cpu'))
 
         # transform the output into probabilities vector
-        P_hat = softmax(P_hat, axis=1).numpy()
+        P_hat = softmax(P_hat, dim=1).numpy()
 
         # generate prediction sets
         grey_box = ProbAccum(P_hat)
@@ -76,7 +77,7 @@ class Non_Conformity_Score_Calibration:
             P_hat = self.black_box(X_calib).to(torch.device('cpu'))
 
         # transform the output into probabilities vector
-        P_hat = softmax(P_hat, axis=1).numpy()
+        P_hat = softmax(P_hat, dim=1).numpy()
 
         # get number of classes
         self.num_of_classes = P_hat.shape[1]
@@ -108,7 +109,7 @@ class Non_Conformity_Score_Calibration:
             P_hat = self.black_box(X).to(torch.device('cpu'))
 
         # transform the output into probabilities vector
-        P_hat = softmax(P_hat, axis=1).numpy()
+        P_hat = softmax(P_hat, dim=1).numpy()
 
         # generate random variable for inverse quantile score
         rng = default_rng()
@@ -125,7 +126,7 @@ class Non_Conformity_Score_Calibration:
 
 
 class Upper_Bound_Score_Calibration:
-    def __init__(self, X_calib, Y_calib, black_box, alpha,epsilon=0,score_func=None):
+    def __init__(self, X_calib, Y_calib, black_box, alpha,epsilon=0,score_func=None, ratio=0):
 
         # size of the calibration set
         n_calib = X_calib.shape[0]
@@ -173,7 +174,7 @@ class Upper_Bound_Score_Calibration:
             noisy_outputs = self.black_box.predict(noisy_points)
 
             # transform the output into probabilities vector
-            noisy_outputs = softmax(noisy_outputs, axis=1)
+            noisy_outputs = softmax(noisy_outputs, dim=1)
 
             # generate random variable for inverse quantile score
             rng = default_rng()
@@ -194,7 +195,7 @@ class Upper_Bound_Score_Calibration:
         P_hat = self.black_box.predict(X)
 
         # transform the output into probabilities vector
-        P_hat = softmax(P_hat, axis=1)
+        P_hat = softmax(P_hat, dim=1)
 
         # generate random variable for inverse quantile score
         rng = default_rng()
@@ -211,7 +212,7 @@ class Upper_Bound_Score_Calibration:
 
 
 class Test_Score_Lower_Bound_Calibration:
-    def __init__(self, X_calib, Y_calib, black_box, alpha, epsilon=0,score_func=None):
+    def __init__(self, X_calib, Y_calib, black_box, alpha, epsilon=0,score_func=None,ratio=0):
 
         # size of the calibration set
         n_calib = X_calib.shape[0]
@@ -229,7 +230,7 @@ class Test_Score_Lower_Bound_Calibration:
         P_hat = self.black_box.predict(X_calib)
 
         # transform the output into probabilities vector
-        P_hat = softmax(P_hat, axis=1)
+        P_hat = softmax(P_hat, dim=1)
 
         # get number of classes
         self.num_of_classes = P_hat.shape[1]
@@ -276,7 +277,7 @@ class Test_Score_Lower_Bound_Calibration:
             noisy_outputs = self.black_box.predict(noisy_points)
 
             # transform the output into probabilities vector
-            noisy_outputs = softmax(noisy_outputs, axis=1)
+            noisy_outputs = softmax(noisy_outputs, dim=1)
 
             # generate random variable for inverse quantile score
             rng = default_rng()
@@ -293,22 +294,16 @@ class Test_Score_Lower_Bound_Calibration:
 
 
 class Smoothed_Score_Calibration:
-    def __init__(self, X_calib, Y_calib, black_box, alpha, epsilon=0, score_func=None):
+    def __init__(self, X_calib, Y_calib, black_box, noises, alpha, epsilon=0, score_func=None, ratio=2, device='cpu'):
 
-        # automatically choose device use gpu 0 if it is available o.w. use the cpu
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        # set device
+        self.device = device
 
         # size of the calibration set
         n_calib = X_calib.size()[0]
 
-        # get dimension of data
-        rows = X_calib.size()[2]
-        cols = X_calib.size()[3]
-        channels = X_calib.size()[1]
-        p = rows * cols
-
         # number of permutations to estimate mean
-        self.n_permutations = 100
+        self.n_smooth = noises.size()[0]//n_calib
 
         # calibrator parameters
         self.black_box = black_box
@@ -317,121 +312,150 @@ class Smoothed_Score_Calibration:
         self.epsilon = epsilon
 
         # set standard deviation and mean for smoothing
-        self.sigma = (2) * epsilon
-        self.mean = 0
+        self.sigma = ratio * epsilon
 
         # generate random vectors from the Gaussian distribution
         rng = default_rng()
-        noises = torch.from_numpy(rng.normal(self.mean, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32))
 
         # create container for the scores
         scores = np.zeros(n_calib)
-        #new_scores = np.zeros(n_calib)
-        #gamma = 15
 
-        # estimate mean over all noise added points
-        for j in range(n_calib):
+        # calculate maximum batch size according to gpu capacity
+        batch_size = 1024 // self.n_smooth
 
-            # add noise to data point
-            noisy_points = X_calib[j, :, :, :] + noises
+        # calculate number of batches
+        if n_calib % batch_size != 0:
+            num_of_batches = (n_calib // batch_size) + 1
+        else:
+            num_of_batches = (n_calib // batch_size)
 
-            # get classifier predictions
+        for j in range(num_of_batches):
+            # get inputs and labels of batch
+            inputs = X_calib[(j * batch_size):((j + 1) * batch_size)]
+            labels = Y_calib[(j * batch_size):((j + 1) * batch_size)]
+
+            # duplicate batch according to the number of added noises and send to device
+            # the first n_smooth samples will be duplicates of x[0] and etc.
+            tmp = torch.zeros((len(labels) * self.n_smooth, *inputs.shape[1:]))
+            x_tmp = inputs.repeat((1, self.n_smooth, 1, 1)).view(tmp.shape).to(self.device)
+
+            # generate random Gaussian noise for the duplicated batch
+            noise = noises[(j * (batch_size * self.n_smooth)):((j + 1) * (batch_size * self.n_smooth))].to(self.device)
+
+            # add noise to points
+            noisy_points = x_tmp + noise
+
+            # get classifier predictions on noisy points
             self.black_box.eval()  # put in evaluation mode
             with torch.no_grad():
-                noisy_points = noisy_points.to(device)
                 noisy_outputs = self.black_box(noisy_points).to(torch.device('cpu'))
 
             # transform the output into probabilities vector
-            noisy_outputs = softmax(noisy_outputs, axis=1).numpy()
+            noisy_outputs = softmax(noisy_outputs, dim=1).numpy()
 
             # get number of classes
             if j == 0:
                 self.num_of_classes = noisy_outputs.shape[1]
 
-            # generate random variable for inverse quantile score
-            u = np.ones(self.n_permutations) * rng.uniform(low=0.0, high=1.0)
+            # get smoothed score for each point
+            for k in range(len(labels)):
+                # generate random variable for inverse quantile score
+                u = np.ones(self.n_smooth) * rng.uniform(low=0.0, high=1.0)
 
-            # estimate empirical mean of noisy scores
-            tmp_scores = score_func(noisy_outputs, Y_calib[j], u)
-            scores[j] = np.mean(tmp_scores)
-            #tmp_scores = tmp_scores**gamma + 0.25
-            #tmp_scores[tmp_scores > 1] = 1
-            #new_scores[j] = np.mean(tmp_scores)
+                # estimate empirical mean of noisy scores
+                tmp_scores = score_func(noisy_outputs[(k*self.n_smooth):((k+1)*self.n_smooth)], labels[k], u)
+                scores[(j*batch_size)+k] = np.mean(tmp_scores)
 
         # Compute threshold
         level_adjusted = (1.0 - alpha) * (1.0 + 1.0 / float(n_calib))
         self.threshold_calibrated = mquantiles(scores, prob=level_adjusted)
 
-        #Q = mquantiles(new_scores, prob=level_adjusted)
+        # calculate correction based on the Lipschitz constant
+        if self.sigma == 0:
+            self.correction = 0
+        else:
+            self.correction = float(self.epsilon) / float(self.sigma)
 
-        #new_thresh1 = norm.cdf(norm.ppf(self.threshold_calibrated, loc=0, scale=1)+(epsilon/self.sigma), loc=0, scale=1)
-        #new_quntile1 = np.size(scores[scores < new_thresh1])/np.size(scores)
-        #print(str(new_quntile1))
+        # calculate lowe and upper bounds of correction
+        upper_thresh = norm.cdf(norm.ppf(self.threshold_calibrated, loc=0, scale=1)+self.correction, loc=0, scale=1)
+        lower_thresh = norm.cdf(norm.ppf(self.threshold_calibrated, loc=0, scale=1)-self.correction, loc=0, scale=1)
 
-        #new_thresh2 = norm.cdf(norm.ppf(Q, loc=0, scale=1)+(epsilon/self.sigma), loc=0, scale=1)
-        #new_quntile2 = np.size(new_scores[new_scores < new_thresh2])/np.size(new_scores)
-        #print(str(new_quntile2))
+        self.upper_quntile = np.size(scores[scores <= upper_thresh])/np.size(scores)
+        self.lower_quntile = np.size(scores[scores <= lower_thresh])/np.size(scores)
 
-        #plt.figure()
-        #sns.histplot(scores, bins=100)
-        #plt.axvline(x=self.threshold_calibrated,color='r')
-        #plt.axvline(x=new_thresh1, color='g')
+        # plot histogram with bounds
+        # plt.figure()
+        # sns.histplot(scores, bins=100)
+        # plt.axvline(x=self.threshold_calibrated,color='r')
+        # plt.axvline(x=upper_thresh, color='g')
+        # plt.axvline(x=lower_thresh, color='g')
+        #
+        # plt.savefig("Hist.png")
+        # exit(1)
 
-        #plt.figure()
-        #sns.histplot(new_scores, bins=100)
-        #plt.axvline(x=Q, color='r')
-        #plt.axvline(x=new_thresh2, color='g')
-        #plt.show()
-
-    def predict(self, X):
-
-        # automatically choose device use gpu 0 if it is available o.w. use the cpu
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    def predict(self, X, noises, to_correct=True):
 
         # get number of points
         n = X.size()[0]
 
-        # get dimension of data
-        rows = X.size()[2]
-        cols = X.size()[3]
-        channels = X.size()[1]
-        p = rows * cols
-
         # generate random vectors from the Gaussian distribution
         rng = default_rng()
-        noises = torch.from_numpy(rng.normal(0, self.sigma, (self.n_permutations, channels, rows, cols)).astype(np.float32))
 
-        # create container for the noisy scores
-        noisy_scores = np.zeros((n, self.num_of_classes))
-        for j in range(n):
-            # add noise to data point
-            noisy_points = X[j, :, :, :] + noises
+        # create container for the scores
+        scores = np.zeros((n, self.num_of_classes))
 
-            # get classifier results for the noisy points
+        # calculate maximum batch size according to gpu capacity
+        batch_size = 1024 // self.n_smooth
+
+        # calculate number of batches
+        if n % batch_size != 0:
+            num_of_batches = (n // batch_size) + 1
+        else:
+            num_of_batches = (n // batch_size)
+
+        for j in range(num_of_batches):
+            # get inputs and labels of batch
+            inputs = X[(j * batch_size):((j + 1) * batch_size)]
+
+            # duplicate batch according to the number of added noises and send to device
+            # the first n_smooth samples will be duplicates of x[0] and etc.
+            tmp = torch.zeros((inputs.size()[0] * self.n_smooth, *inputs.shape[1:]))
+            x_tmp = inputs.repeat((1, self.n_smooth, 1, 1)).view(tmp.shape).to(self.device)
+
+            # generate random Gaussian noise for the duplicated batch
+            noise = noises[(j * (batch_size * self.n_smooth)):((j + 1) * (batch_size * self.n_smooth))].to(self.device)
+
+            # add noise to points
+            noisy_points = x_tmp + noise
+
+            # get classifier predictions on noisy points
             self.black_box.eval()  # put in evaluation mode
             with torch.no_grad():
-                noisy_points = noisy_points.to(device)
                 noisy_outputs = self.black_box(noisy_points).to(torch.device('cpu'))
 
             # transform the output into probabilities vector
-            noisy_outputs = softmax(noisy_outputs, axis=1).numpy()
+            noisy_outputs = softmax(noisy_outputs, dim=1).numpy()
 
-            # generate random variable for inverse quantile score
-            u = np.ones(self.n_permutations) * rng.uniform(low=0.0, high=1.0)
+            # get smoothed score for each point
+            for k in range(inputs.size()[0]):
+                # generate random variable for inverse quantile score
+                u = np.ones(self.n_smooth) * rng.uniform(low=0.0, high=1.0)
 
-            # compute score of all labels
-            noisy_scores[j, :] = np.mean(self.score_func(noisy_outputs, np.arange(self.num_of_classes),u), axis=0)
-
-        # correction based on the Lipschitz constant
-        if self.sigma == 0:
-            correction1 = 0
-            correction2 = 0
-        else:
-            correction1 = float(self.epsilon) / float(self.sigma)
-            correction2 = (float(self.epsilon) / float(self.sigma))*np.sqrt(2/np.pi)
+                # estimate smoothed score
+                scores[((j*batch_size)+k), :] = np.mean(self.score_func(noisy_outputs[(k*self.n_smooth):((k+1)*self.n_smooth)], np.arange(self.num_of_classes), u), axis=0)
 
         # Generate prediction sets using the threshold from the calibration
-        S_hat = [np.where(norm.ppf(noisy_scores[i, :], loc=0, scale=1) - correction1 <= norm.ppf(self.threshold_calibrated, loc=0, scale=1))[0] for i in range(n)]
+        S_hat = [np.where(norm.ppf(scores[i, :], loc=0, scale=1) <= norm.ppf(self.threshold_calibrated, loc=0, scale=1))[0] for i in range(n)]
+
         #S_hat = [np.where(noisy_scores[i, :] - correction2 <= self.threshold_calibrated)[0] for i in range(n)]
+
+        if to_correct:
+            S_hat_corrected = [np.where(norm.ppf(scores[i, :], loc=0, scale=1) - self.correction <= norm.ppf(self.threshold_calibrated, loc=0, scale=1))[0] for i in range(n)]
+        else:
+            S_hat_corrected = None
+
         # return predictions sets
-        return S_hat
+        return S_hat, S_hat_corrected
+
+    def get_quantile_bounds(self):
+        return self.lower_quntile, self.upper_quntile

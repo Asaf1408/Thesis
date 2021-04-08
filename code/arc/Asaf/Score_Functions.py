@@ -1,15 +1,27 @@
 import numpy as np
 from scipy.stats import rankdata
-import arc
-import pandas as pd
 
-def class_probability_score(probabilities, labels, u=None):
-    scores = 1-probabilities[:, labels]
+
+def class_probability_score(probabilities, labels, u=None, all_combinations=False):
+
+    # get number of points
+    num_of_points = np.shape(probabilities)[0]
+
+    # calculate scores of each point with all labels
+    if all_combinations:
+        scores = 1 - probabilities[:, labels]
+
+    # calculate scores of each point with only one label
+    else:
+        scores = 1 - probabilities[np.arange(num_of_points), labels]
+
+    # return scores
     return scores
 
 
-def generelized_inverse_quantile_score(probabilities, labels, u=None):
+def generalized_inverse_quantile_score(probabilities, labels, u=None, all_combinations=False):
 
+    # whether to do a randomized score or not
     if u is None:
         randomized = False
     else:
@@ -19,85 +31,68 @@ def generelized_inverse_quantile_score(probabilities, labels, u=None):
     num_of_points = np.shape(probabilities)[0]
 
     # sort probabilities from high to low
-    sorted = -np.sort(-probabilities)
+    sorted_probabilities = -np.sort(-probabilities)
 
     # create matrix of cumulative sum of each row
-    cumulative_sum = np.cumsum(sorted, axis=1)
+    cumulative_sum = np.cumsum(sorted_probabilities, axis=1)
 
     # find ranks of each desired label in each row
-    label_ranks = rankdata(-probabilities,method='ordinal', axis=1)[:,labels] - 1
+
+    # calculate scores of each point with all labels
+    if all_combinations:
+        label_ranks = rankdata(-probabilities, method='ordinal', axis=1)[:, labels] - 1
+
+    # calculate scores of each point with only one label
+    else:
+        label_ranks = rankdata(-probabilities, method='ordinal', axis=1)[np.arange(num_of_points), labels] - 1
 
     # compute the scores of each label in each row
     scores = cumulative_sum[np.arange(num_of_points), label_ranks.T].T
 
-    last_label_prob = sorted[np.arange(num_of_points), label_ranks.T].T
+    # compute the probability of the last label that enters
+    last_label_prob = sorted_probabilities[np.arange(num_of_points), label_ranks.T].T
 
+    # remove the last label probability or a multiplier of it in the randomized score
     if not randomized:
         scores = scores - last_label_prob
     else:
         scores = scores - np.diag(u) @ last_label_prob
 
+    # return the scores
     return scores
 
 
-def rank_regularized_score(probabilities, labels, u=None):
+def rank_regularized_score(probabilities, labels, u=None, all_combinations=False):
 
-    if u is None:
-        randomized = False
-    else:
-        randomized = True
-
-    # get number of points
-    num_of_points = np.shape(probabilities)[0]
-
-    # sort probabilities from high to low
-    sorted = -np.sort(-probabilities)
-
-    # create matrix of cumulative sum of each row
-    cumulative_sum = np.cumsum(sorted, axis=1)
-
-    # find ranks of each desired label in each row
-    label_ranks = rankdata(-probabilities,method='ordinal', axis=1)[:,labels] - 1
-
-    # compute the scores of each label in each row
-    scores = cumulative_sum[np.arange(num_of_points), label_ranks.T].T
-
-    last_label_prob = sorted[np.arange(num_of_points), label_ranks.T].T
-
-    if not randomized:
-        scores = scores - last_label_prob
-    else:
-        scores = scores - np.diag(u) @ last_label_prob
+    # get the regular scores
+    scores = generalized_inverse_quantile_score(probabilities, labels, u, all_combinations)
 
     # get number of classes
     num_of_classes = np.shape(probabilities)[1]
 
-    # regularize with the ranks
-    alpha = 0.2
-    scores = alpha * scores + (1-alpha) * ((label_ranks+1)/num_of_classes)
-    return scores
+    # get number of points
+    num_of_points = np.shape(probabilities)[0]
 
+    # find ranks of each desired label in each row
 
-def evaluate_predictions(S, X, y, conditional=True):
+    # calculate scores of each point with all labels
+    if all_combinations:
+        label_ranks = rankdata(-probabilities, method='ordinal', axis=1)[:, labels] - 1
 
-    # get numbers of points
-    n = np.shape(X)[0]
-
-    # get point to a matrix of the format nxp
-    X = np.vstack([X[i, 0, :, :].flatten() for i in range(n)])
-
-    # Marginal coverage
-    marg_coverage = np.mean([y[i] in S[i] for i in range(len(y))])
-    if conditional:
-        # Estimated conditional coverage (worse-case slab)
-        wsc_coverage = arc.coverage.wsc_unbiased(X, y, S, M=100)
+    # calculate scores of each point with only one label
     else:
-        wsc_coverage = None
-    # Size and size conditional on coverage
-    size = np.mean([len(S[i]) for i in range(len(y))])
-    idx_cover = np.where([y[i] in S[i] for i in range(len(y))])[0]
-    size_cover = np.mean([len(S[i]) for i in idx_cover])
-    # Combine results
-    out = pd.DataFrame({'Coverage': [marg_coverage], 'Conditional coverage': [wsc_coverage],
-                        'Size': [size], 'Size cover': [size_cover]})
-    return out
+        label_ranks = rankdata(-probabilities, method='ordinal', axis=1)[np.arange(num_of_points), labels] - 1
+
+    # regularize with the ranks
+    alpha = 0.99
+    k_arg = 25
+    lamda = 0.2
+    #grid = np.linspace(0, num_of_classes, num_of_classes)
+    #scores = alpha * scores + (1-alpha) * ((grid[label_ranks])/num_of_classes)
+    tmp = label_ranks+1-k_arg
+    tmp[tmp < 0] = 0
+    scores = scores + lamda * tmp/(num_of_classes-k_arg)
+    scores[scores > 1] = 1
+
+    # return scores
+    return scores

@@ -1,9 +1,8 @@
-"""
-The script demonstrates a simple example of using ART with PyTorch. The example train a small model on the MNIST dataset
-and creates adversarial examples using the Fast Gradient Sign Method. Here we use the ART classifier to train the model,
-it would also be possible to provide a pretrained model to the ART classifier.
-The parameters are chosen for reduced computational requirements of the script and not optimised for accuracy.
-"""
+from six.moves import urllib
+opener = urllib.request.build_opener()
+opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+urllib.request.install_opener(opener)
+
 
 import torch.nn as nn
 import torch.nn.functional as F
@@ -17,134 +16,64 @@ import time
 import torch
 import torchvision
 import os
+import pickle
+
 from numpy.random import default_rng
 
 from torch.utils.data.dataset import random_split
 
-from art.attacks.evasion import FastGradientMethod
-from art.attacks.evasion import AutoProjectedGradientDescent
-from art.attacks.evasion import ProjectedGradientDescent
-from art.attacks.evasion import CarliniL2Method
+# from art.attacks.evasion import FastGradientMethod
+# from art.attacks.evasion import AutoProjectedGradientDescent
+# from art.attacks.evasion import ProjectedGradientDescent
+#from art.attacks.evasion import CarliniL2Method
+#from art.attacks.evasion import DeepFool
 
-from art.estimators.classification import PyTorchClassifier
-from art.utils import load_mnist
-from art.utils import load_cifar10
+# from art.estimators.classification import PyTorchClassifier
+# from art.utils import load_mnist
+# from art.utils import load_cifar10
 
 from third_party.smoothing_adversarial.architectures import get_architecture
-
+from third_party.smoothing_adversarial.attacks import PGD_L2, DDN
 
 import pandas as pd
 import Asaf.Score_Functions as scores
 import Asaf.methods_new as methods
+from Asaf.My_Models import MnistCNN, Cifar10CNN, Cifar100CNN, ResNet
+from Asaf.utils import calculate_accuracy, Smooth_Adv, evaluate_predictions, calculate_accuracy_smooth, train_loop, smooth_calibration, predict_sets
 from sklearn.model_selection import train_test_split
 
+alpha = 0.1                         # desired nominal marginal coverage
+epsilon = 0.125                     # L2 bound on the adversarial noise
+n_experiments = 50                  # number of experiments to estimate coverage
+n_test = 10000                       # number of test points (if larger then available it takes the entire set)
+ratio = 2                           # ratio between adversarial noise bound to smoothed noise
+train = False                        # whether to train a model or not
+sigma_smooth = ratio * epsilon      # sigma used fro smoothing
+sigma_model = sigma_smooth                 # sigma used for training the model
+n_smooth = 132                        # number of samples used for smoothing
+My_model = True                     # use my model or salman/cohen models
+N_steps = 20                        # number of gradiant steps for PGD attack
+dataset = "CIFAR100"                 # dataset to be used 'MNIST', 'CIFAR100', 'CIFAR10', 'ImageNet'
+calibration_scores = ['HCC', 'SC', 'SC_Reg']  # score function to check 'HCC', 'SC', 'SC_Reg'
 
-# function to calculate accuracy of the model
-def calculate_accuracy(model, dataloader, device):
-    model.eval()  # put in evaluation mode
-    total_correct = 0
-    total_images = 0
-    with torch.no_grad():
-        for data in dataloader:
-            images, labels = data
-            images = images.to(device)
-            labels = labels.to(device)
-            outputs = model(images)
-            _, predicted = torch.max(outputs.data, 1)
-            total_images += labels.size(0)
-            total_correct += (predicted == labels).sum().item()
+# calculate correction based on the Lipschitz constant
+if sigma_smooth == 0:
+    correction = 10000
+else:
+    correction = float(epsilon) / float(sigma_smooth)
 
-    model_accuracy = total_correct / total_images
-    return model_accuracy
+# hyper-parameters for training if we want to train a model
+if train:
+    num_epochs = 20         # number of epochs for training
+    learning_rate = 1e-4   # learning rate of the optimizer
+    batch_size = 128        # batch size of the data loaders
+    robust_epochs = 0       # number of robust epochs for training
 
+# set random seed according to time
+seed = int(time.time())
+torch.manual_seed(seed)
 
-# Define the neural network model,
-# return logits instead of activation in forward method
-class MnistCNN(nn.Module):
-    def __init__(self):
-        super(MnistCNN, self).__init__()
-        self.conv_1 = nn.Conv2d(in_channels=1, out_channels=4, kernel_size=5, stride=1)
-        self.conv_2 = nn.Conv2d(in_channels=4, out_channels=10, kernel_size=5, stride=1)
-        self.fc_1 = nn.Linear(in_features=4 * 4 * 10, out_features=100)
-        self.fc_2 = nn.Linear(in_features=100, out_features=10)
-
-    def forward(self, x):
-        x = F.relu(self.conv_1(x))
-        x = F.max_pool2d(x, 2, 2)
-        x = F.relu(self.conv_2(x))
-        x = F.max_pool2d(x, 2, 2)
-        x = x.view(-1, 4 * 4 * 10)
-        x = F.relu(self.fc_1(x))
-        x = self.fc_2(x)
-        return x
-
-
-class CifarCNN(nn.Module):
-    """CNN for the CIFAR-10 Datset"""
-    def __init__(self):
-        """CNN Builder."""
-        super(CifarCNN, self).__init__()
-        self.conv_layer = nn.Sequential(
-            # Conv Layer block 1
-            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1),
-            nn.BatchNorm2d(32),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-
-            # Conv Layer block 2
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
-            nn.BatchNorm2d(128),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Dropout2d(p=0.05),
-
-            # Conv Layer block 3
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
-            nn.BatchNorm2d(256),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-        )
-
-        self.fc_layer = nn.Sequential(
-            nn.Dropout(p=0.1),
-            nn.Linear(4096, 1024),
-            nn.ReLU(inplace=True),
-            nn.Linear(1024, 512),
-            nn.ReLU(inplace=True),
-            nn.Dropout(p=0.1),
-            nn.Linear(512, 10)
-        )
-
-    def forward(self, x):
-        """Perform forward."""
-        # conv layers
-        x = self.conv_layer(x)
-        # flatten
-        x = x.view(x.size(0), -1)
-        # fc layer
-        x = self.fc_layer(x)
-        return x
-
-
-alpha = 0.1  # desired nominal marginal coverage
-epsilon = 0.5  # L2 bound on the adversarial noise
-n_experiments = 10  # number of experiments to estimate coverage
-n_test = 2000  # number of test points (if larger then available it takes the entire set)
-ratio = 2  # ratio between adversarial noise bound to smoothed noise
-train = False
-
-# hyper-parameters:
-num_epochs = 10
-learning_rate = 0.001
-batch_size = 128
-dataset = "CIFAR10"
-
+# load datasets
 if dataset == "MNIST":
     # Load train set
     train_dataset = torchvision.datasets.MNIST(root='./datasets/',
@@ -167,6 +96,28 @@ elif dataset == "CIFAR10":
                                                 train=False,
                                                 transform=torchvision.transforms.ToTensor())
 
+elif dataset == "CIFAR100":
+    # Load train set
+    train_dataset = torchvision.datasets.CIFAR100(root='./datasets/',
+                                                 train=True,
+                                                 transform=torchvision.transforms.ToTensor(),
+                                                 download=True)
+    # load test set
+    test_dataset = torchvision.datasets.CIFAR100(root='./datasets',
+                                                train=False,
+                                                transform=torchvision.transforms.ToTensor())
+
+elif dataset == "ImageNet":
+    # Load train set
+    train_dataset = torchvision.datasets.ImageNet(root='./datasets/',
+                                                 train=True,
+                                                 transform=torchvision.transforms.ToTensor(),
+                                                 download=True)
+    # load test set
+    test_dataset = torchvision.datasets.ImageNet(root='./datasets',
+                                                train=False,
+                                                transform=torchvision.transforms.ToTensor())
+
 # cut the size of the test set if necessary
 if n_test < len(test_dataset):
     test_dataset = torch.utils.data.random_split(test_dataset, [n_test, len(test_dataset) - n_test])[0]
@@ -175,11 +126,13 @@ if n_test < len(test_dataset):
 n_train = len(train_dataset)
 n_test = len(test_dataset)
 
-# Create Data loader for train set
-train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
-                                           batch_size=batch_size,
-                                           shuffle=True,
-                                           drop_last=True)
+# Create Data loader for train set if training is needed
+if train:
+    train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
+                                            batch_size=batch_size,
+                                            shuffle=True,
+                                            drop_last=True)
+
 # Create Data loader for test set
 test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                           batch_size=n_test,
@@ -203,257 +156,291 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # print the chosen device
 print("device: ", device)
 
-# set loss criterion
-criterion = nn.CrossEntropyLoss()
+# training a model on the desired dataset
+if train:
+    model = train_loop(train_loader, test_loader, dataset, num_epochs, robust_epochs, learning_rate, sigma_model, device)
 
-# build our model and send it to the device
-if dataset == "MNIST":
-    model = MnistCNN().to(device)
-elif dataset == "CIFAR10":
-    model = CifarCNN().to(device)
+# loading a pre-trained model
+else:
+    # load my models
+    if My_model:
+        if dataset == "MNIST":
+            model = MnistCNN()
+            state = torch.load('./checkpoints/MnistCNN_sigma_'+str(sigma_model)+'.pth')
+            model.load_state_dict(state['net'])
+        elif dataset == "CIFAR10":
+            state = torch.load('./checkpoints/Cifar10CNN_sigma_'+str(sigma_model)+'.pth')
+            model = Cifar10CNN()
+            model.load_state_dict(state['net'])
+        elif dataset == "CIFAR100":
+            state = torch.load('./checkpoints/ResNet110_sigma_'+str(sigma_model)+'.pth.tar')
+            model = ResNet(depth=110)
+            model.load_state_dict(state['state_dict'])
+        elif dataset == "ImageNet":
+            state = torch.load('./checkpoints/ImageNetCNN_sigma_'+str(sigma_model)+'.pth')
+            model = Cifar100CNN()
 
-# set optimizer
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    # load cohen and salman models
+    else:
+        #checkpoint = torch.load(
+        #   './pretrained_models/Salman/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_'+str(sigma_model)+'/checkpoint.pth.tar')
+        if dataset == "CIFAR10":
+            checkpoint = torch.load('./pretrained_models/Cohen/cifar10/resnet110/noise_'+str(sigma_model)+'/checkpoint.pth.tar')
+            model = get_architecture(checkpoint["arch"], "cifar10")
+        elif dataset == "ImageNet":
+            checkpoint = torch.load('./pretrained_models/Cohen/imagenet/resnet50/noise_'+str(sigma_model)+'/checkpoint.pth.tar')
+            model = get_architecture(checkpoint["arch"], "imagenet")
+        model.load_state_dict(checkpoint['state_dict'])
 
-# generate random vectors from the Gaussian distribution
-rng = default_rng()
-mean = 0
-sigma = ratio * epsilon
-n_permutations = 50
-robust_epoches = 0
-robust_epoches = np.min([robust_epoches, num_epochs])
-noises = torch.from_numpy(rng.normal(mean, sigma, (n_permutations, channels, rows, cols)).astype(np.float32))
-if (train):
-    # training loop
-    for epoch in range(1, num_epochs + 1):
-        model.train()  # put in training mode
-        running_loss = 0.0
-        epoch_time = time.time()
-        for i, data in enumerate(train_loader, 0):
-            # get the inputs
-            inputs, labels = data
+# send model to device
+model.to(device)
 
-            # send labels to device
-            labels = labels.to(device)
+# put model in evaluation mode
+model.eval()
 
-            if epoch > (num_epochs - robust_epoches):
-                # get number of points in the batch
-                points_in_batch = inputs.size()[0]
+# create indices for the test points
+indices = torch.arange(n_test)
 
-                # create container for mean outputs
-                outputs = torch.zeros(points_in_batch, num_of_classes).to(device)
+directory = "./Adversarial_Examples/"+str(dataset)+"/sigma_model_"+str(sigma_model)+"/n_smooth_"+str(n_smooth)
 
-                # forward
-                # estimate mean over all noise added points
-                for j in range(points_in_batch):
-                    # add noise to data point
-                    noisy_points = inputs[j, :, :, :] + noises
+if not os.path.exists(directory) or not n_test == 10000:
 
-                    # get classifier predictions
-                    noisy_points = noisy_points.to(device)
-                    noisy_outputs = model(noisy_points)
+    # create noises for each data point
+    noises_test = torch.randn((n_test * n_smooth, channels, rows, cols)) * sigma_smooth
 
-                    # calculate mean over all outputs
-                    outputs[j, :] = torch.mean(noisy_outputs)
+    # create noises for the base classifier
+    noises_test_base = torch.randn((n_test, channels, rows, cols)) * sigma_model
 
-            else:
-                # send inputs to device
-                inputs = inputs.to(device)
+    # Generate adversarial test examples
+    x_test_adv = Smooth_Adv(model, x_test, y_test, noises_test, N_steps, epsilon, device)
 
-                # forward
-                outputs = model(inputs)
+    # Generate adversarial test examples for the base classifier
+    x_test_adv_base = Smooth_Adv(model, x_test, y_test, noises_test_base, N_steps, epsilon, device)
 
-            # backward + optimize
-            loss = criterion(outputs, labels)  # calculate the loss
-
-            # always the same 3 steps
-            optimizer.zero_grad()  # zero the parameter gradients
-            loss.backward()  # backpropagation
-            optimizer.step()  # update parameters
-            # print statistics
-            running_loss += loss.data.item()
-        # Normalizing the loss by the total number of train batches
-        running_loss /= len(train_loader)
-        # Calculate training/test set accuracy of the existing model
-        train_accuracy = calculate_accuracy(model, train_loader, device)
-        test_accuracy = calculate_accuracy(model, test_loader, device)
-        log = "Epoch: {} | Loss: {:.4f} | Training accuracy: {:.3f}% | Test accuracy: {:.3f}% | ".format(epoch
-                                                                                                         , running_loss,
-                                                                                                         100 * train_accuracy,
-                                                                                                         100 * test_accuracy)
-        epoch_time = time.time() - epoch_time
-        log += "Epoch Time: {:.2f} secs".format(epoch_time)
-        print(log)
-
-    print('==> Finished Training ...')
-
-    # save model
-    print('==> Saving model ...')
-    state = {'net': model.state_dict(), 'epoch': num_epochs}
-    if not os.path.isdir('checkpoints'):
-        os.mkdir('checkpoints')
-    if dataset == "MNIST":
-        torch.save(state, './checkpoints/MnistCNN.pth')
-    elif dataset == "CIFAR10":
-        torch.save(state, './checkpoints/Cifar10CNN.pth')
+    if n_test == 10000:
+        os.makedirs(directory)
+        with open(directory+"/data.pickle", 'wb') as f:
+            pickle.dump([x_test_adv, x_test_adv_base, noises_test, noises_test_base], f)
 
 else:
-    if dataset == "MNIST":
-        state = torch.load('./checkpoints/MnistCNN.pth', map_location=device)
-    elif dataset == "CIFAR10":
-        state = torch.load('./checkpoints/Cifar10CNN.pth', map_location=device)
-    model.load_state_dict(state['net'])
+    with open(directory+"/data.pickle", 'rb') as f:
+        x_test_adv, x_test_adv_base, noises_test, noises_test_base = pickle.load(f)
 
-# load the base classifier
-checkpoint = torch.load('./pretrained_models/cifar10/finetune_cifar_from_imagenetPGD2steps/PGD_10steps_30epochs_multinoise/2-multitrain/eps_64/cifar10/resnet110/noise_0.12/checkpoint.pth.tar')
-model = get_architecture(checkpoint["arch"], "cifar10")
-model.load_state_dict(checkpoint['state_dict'])
-
-# initiate random generator
-# rng = default_rng()
-
-# generate random vectors from the Gaussian distribution
-# noises = rng.normal(0, ratio*epsilon, (n_train, channels, rows, cols)).astype(np.float32)
-
-# add noise to train data
-# x_train = x_train + noises
-
-
-# Create the ART classifier wrapper based on the model
-classifier = PyTorchClassifier(
-    model=model,
-    clip_values=(min_pixel_value, max_pixel_value),
-    loss=criterion,
-    optimizer=optimizer,
-    input_shape=(channels, rows, cols),
-    nb_classes=num_of_classes,
-)
-
-# Generate adversarial test examples
-# attack = FastGradientMethod(estimator=classifier, eps=epsilon, norm=2)
-# attack = AutoProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
-attack = ProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
-# attack = CarliniL2Method(classifier=classifier)
-x_test_adv = torch.from_numpy(attack.generate(x=x_test.numpy()))
-
-# Evaluate the ART classifier on adversarial test examples
+# n_to_check = np.array([1, 2, 4])
+# acuuracy_true = np.zeros_like(n_to_check)
+# acuuracy_adv_PGD = np.zeros_like(n_to_check)
+# acuuracy_adv_DDN = np.zeros_like(n_to_check)
+#
+# for j, n_smooth in enumerate(n_to_check):
+#     # generate random Gaussian noises for smoothing, the same vectors will bu used for attacking
+#     noises = torch.randn((n_test*n_smooth, channels, rows, cols)) * sigma_smooth
+#
+#     # compute accuracy on the test set
+#     accuracy = calculate_accuracy_smooth(model, x_test, y_test, noises, num_classes=num_of_classes, k=1, device=device)
+#     print("Accuracy on test set: {}%".format(accuracy * 100))
+#     acuuracy_true[j] = accuracy * 100
+#     # # Create the ART classifier wrapper based on the model
+#     # classifier = PyTorchClassifier(
+#     #    model=model,
+#     #    clip_values=(min_pixel_value, max_pixel_value),
+#     #    loss=criterion,
+#     #    optimizer=optimizer,
+#     #    input_shape=(channels, rows, cols),
+#     #    nb_classes=num_of_classes,
+#     # )
+#
+#     # Generate adversarial test examples
+#     # attack = FastGradientMethod(estimator=classifier, eps=epsilon, norm=2)
+#     # attack = AutoProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2)
+#     # attack = ProjectedGradientDescent(estimator=classifier, eps=epsilon, norm=2, batch_size=batch_size)
+#     # attack = CarliniL2Method(classifier=classifier, batch_size=batch_size)
+#     # attack = DeepFool(classifier=classifier, batch_size=batch_size)
+#     # x_test_adv = torch.from_numpy(attack.generate(x=x_test.numpy()))
+#
+#     # generate adversarial example with PGD for smoothed classifiers
+#     x_test_adv = Smooth_Adv(model, x_test, y_test, noises, N_steps, epsilon, device, 'PGD')
+#
+#     # compute accuracy on the adversarial test set
+#     accuracy = calculate_accuracy_smooth(model, x_test_adv, y_test, noises, num_classes=num_of_classes, k=1, device=device)
+#     print("Accuracy on adversarial test examples: {}%".format(accuracy * 100))
+#     acuuracy_adv_PGD[j] = accuracy * 100
+#
+#     # generate adversarial example with DDN for smoothed classifiers
+#     x_test_adv = Smooth_Adv(model, x_test, y_test, noises, N_steps, epsilon, device, 'DDN')
+#
+#     # compute accuracy on the adversarial test set
+#     accuracy = calculate_accuracy_smooth(model, x_test_adv, y_test, noises, num_classes=num_of_classes, k=1, device=device)
+#     print("Accuracy on adversarial test examples: {}%".format(accuracy * 100))
+#     acuuracy_adv_DDN[j] = accuracy * 100
+#
 # plt.figure()
-# plt.imshow(x_test_adv.numpy().transpose((0, 2, 3, 1))[0], cmap='gray')
-# plt.show()
+# plt.plot(n_to_check, acuuracy_true, color='red', label="test set")
+# plt.plot(n_to_check, acuuracy_adv_PGD, color='blue', label="adversarial PGD-20 test set")
+# plt.plot(n_to_check, acuuracy_adv_DDN, color='green', label="adversarial PGD-50 test set")
+#
+# plt.xlabel("number of noises")
+# plt.ylabel("accuracy")
+# plt.grid()
+# plt.legend()
+# plt.savefig("Smoothing_Comparison.png")
 
-# get classifier predictions
-model.eval()  # put in evaluation mode
-with torch.no_grad():
-    x_test_adv = x_test_adv.to(device)
-    predictions = model(x_test_adv).to(torch.device('cpu'))
+# translate desired scores to their functions and put in a list
+scores_list = []
+for score in calibration_scores:
+    if score == 'HCC':
+        scores_list.append(scores.class_probability_score)
+    if score == 'SC':
+        scores_list.append(scores.generalized_inverse_quantile_score)
+    if score == 'SC_Reg':
+        scores_list.append(scores.rank_regularized_score)
 
-# transform net output into probabilities vector
-predictions = scipy.special.softmax(predictions, axis=1)
+acc = calculate_accuracy_smooth(model, x_test, y_test, noises_test_base, num_of_classes, k=1, device=device)
+print("True Model accuracy :" + str(acc*100) + "%")
 
-# compute accuracy on the adversarial test set
-accuracy = torch.sum(torch.argmax(predictions, axis=1) == y_test) / float(len(y_test))
-print("Accuracy on adversarial test examples: {}%".format(accuracy * 100))
-
-# List of calibration methods to be compared
-methods = {
-    'None': methods.No_Calibration,
-    'SC': methods.Non_Conformity_Score_Calibration,
-    # 'CV+': arc.methods.CVPlus,
-    # 'JK+': arc.methods.JackknifePlus,
-    'HCC': methods.Non_Conformity_Score_Calibration,
-    # 'CQC': arc.others.CQC,
-    # 'HCC_LB': methods.Test_Score_Lower_Bound_Calibration,
-    # 'SC_LB': methods.Test_Score_Lower_Bound_Calibration
-    # 'HCC_UB': methods.Upper_Bound_Score_Calibration,
-    # 'SC_UB': methods.Upper_Bound_Score_Calibration,
-    'SC_Smooth': methods.Smoothed_Score_Calibration,
-    'HCC_Smooth': methods.Smoothed_Score_Calibration
-}
+acc = calculate_accuracy_smooth(model, x_test_adv_base, y_test, noises_test_base, num_of_classes, k=1, device=device)
+print("True Model accuracy on adversarial examples :" + str(acc*100) + "%")
+#exit(1)
 
 # create dataframe for storing results
 results = pd.DataFrame()
+quantiles = np.zeros((len(scores_list), 2, n_experiments))
 for experiment in tqdm(range(n_experiments)):
 
     # Split test data into calibration and test
-    x_calib, x_test_new, y_calib, y_test_new = train_test_split(x_test, y_test, test_size=0.5)
+    x_calib, x_test_new, y_calib, y_test_new, idx1, idx2 = train_test_split(x_test, y_test, indices, test_size=0.5)
 
     # save sizes of calibration and test sets
     n_calib = x_calib.size()[0]
-    n_test = x_test_new.size()[0]
+    n_test_new = x_test_new.size()[0]
 
-    # Generate adversarial test examples
-    x_test_adv = torch.from_numpy(attack.generate(x=x_test_new.numpy()))
+    # get the relevant noises for the calibration and test sets
+    noises_calib = torch.zeros((n_calib*n_smooth, channels, rows, cols))
+    noises_calib_base = noises_test_base[idx1]
+    noises_test_new = torch.zeros((n_test_new*n_smooth, channels, rows, cols))
+    noises_test_new_base = noises_test_base[idx2]
 
-    for method_name in methods:
-        # Calibrate model with calibration method
-        if method_name == "HCC_LB" or method_name == "HCC_UB" or method_name == "HCC_Smooth":
-            method = methods[method_name](x_calib, y_calib, model, alpha, epsilon=epsilon,
-                                          score_func=scores.class_probability_score)
-        elif method_name == "SC_LB" or method_name == "SC_UB" or method_name == "SC_Smooth":
-            method = methods[method_name](x_calib, y_calib, model, alpha, epsilon=epsilon,
-                                          score_func=scores.generelized_inverse_quantile_score)
-        elif method_name == "SC":
-            method = methods[method_name](x_calib, y_calib, model, alpha,
-                                          score_func=scores.generelized_inverse_quantile_score)
-        elif method_name == "HCC":
-            method = methods[method_name](x_calib, y_calib, model, alpha,
-                                          score_func=scores.class_probability_score)
-        else:
-            method = methods[method_name](model, alpha)
+    for j, m in enumerate(idx1):
+        noises_calib[(j*n_smooth):((j+1)*n_smooth), :, :, :] = noises_test[(m*n_smooth):((m+1)*n_smooth), :, :, :]
 
-        # Form prediction sets for test points on clean samples
-        S = method.predict(x_test_new)
+    for j, m in enumerate(idx2):
+        noises_test_new[(j*n_smooth):((j+1)*n_smooth), :, :, :] = noises_test[(m*n_smooth):((m+1)*n_smooth), :, :, :]
 
-        # Evaluate results on clean examples
-        res = scores.evaluate_predictions(S, x_test_new.numpy(), y_test_new.numpy(), conditional=False)
+    # get the relevant adversarial examples for the new test set
+    x_test_adv_new = x_test_adv[idx2]
+    x_test_adv_new_base = x_test_adv_base[idx2]
 
-        res['Method'] = method_name
-        res['Nominal'] = 1 - alpha
-        res['n_test'] = n_test
-        res['n_calib'] = n_calib
-        res['n_train'] = n_train
-        res['noise_norm'] = 0
-        res['Black box'] = 'CNN'
+    # calibrate the model with the desired scores and get the thresholds
+    thresholds, bounds = smooth_calibration(model, x_calib, y_calib, noises_calib, alpha, num_of_classes, scores_list, correction, base=False, device=device)
 
-        # Add results to the list
-        results = results.append(res)
+    # calibrate base model with the desired scores and get the thresholds
+    thresholds_base, _ = smooth_calibration(model, x_calib, y_calib, noises_calib_base, alpha, num_of_classes, scores_list, correction, base=True, device=device)
 
-        # Form prediction sets for adversarial examples
-        S = method.predict(x_test_adv)
+    thresholds = thresholds + thresholds_base
 
-        # Evaluate results on adversarial examples
-        res = scores.evaluate_predictions(S, x_test_new.numpy(), y_test_new.numpy(), conditional=False)
+    # put bounds in array of bounds
+    for p in range(len(scores_list)):
+        quantiles[p, 0, experiment] = bounds[p, 0]
+        quantiles[p, 1, experiment] = bounds[p, 1]
 
-        res['Method'] = method_name
-        res['Nominal'] = 1 - alpha
-        res['n_test'] = n_test
-        res['n_calib'] = n_calib
-        res['n_train'] = n_train
-        res['noise_norm'] = epsilon
-        res['Black box'] = 'CNN'
+    # generate prediction sets on the clean test set
+    predicted_clean_sets = predict_sets(model, x_test_new, noises_test_new, num_of_classes, scores_list, thresholds, correction, base=False, device=device)
 
-        # Add results to the list
-        results = results.append(res)
+    # generate prediction sets on the clean test set
+    predicted_clean_sets_base = predict_sets(model, x_test_new, noises_test_new_base, num_of_classes, scores_list, thresholds, correction, base=True, device=device)
+
+    # generate prediction sets on the adversarial test set
+    predicted_adv_sets = predict_sets(model, x_test_adv_new, noises_test_new, num_of_classes, scores_list, thresholds, correction, base=False, device=device)
+
+    # generate prediction sets on the adversarial test set
+    predicted_adv_sets_base = predict_sets(model, x_test_adv_new_base, noises_test_new_base, num_of_classes, scores_list, thresholds, correction, base=True, device=device)
+
+    for p in range(len(scores_list)):
+        predicted_clean_sets[p].insert(0, predicted_clean_sets_base[p])
+        predicted_adv_sets[p].insert(0, predicted_adv_sets_base[p])
+        score_name = calibration_scores[p]
+        methods_list = [score_name+'_simple', score_name+'_smoothed_classifier', score_name+'_smoothed_score', score_name+'_smoothed_score_correction']
+        for r, method in enumerate(methods_list):
+            res = evaluate_predictions(predicted_clean_sets[p][r], x_test_new.numpy(), y_test_new.numpy(), conditional=False)
+            res['Method'] = methods_list[r]
+            res['noise_L2_norm'] = 0
+            res['Black box'] = 'CNN sigma = '+str(sigma_model)
+            # Add results to the list
+            results = results.append(res)
+
+    for p in range(len(scores_list)):
+        score_name = calibration_scores[p]
+        methods_list = [score_name + '_simple', score_name + '_smoothed_classifier', score_name + '_smoothed_score',
+                        score_name + '_smoothed_score_correction']
+        for r, method in enumerate(methods_list):
+            res = evaluate_predictions(predicted_adv_sets[p][r], x_test_new.numpy(), y_test_new.numpy(),
+                                        conditional=False)
+            res['Method'] = methods_list[r]
+            res['noise_L2_norm'] = epsilon
+            res['Black box'] = 'CNN sigma = '+str(sigma_model)
+            # Add results to the list
+            results = results.append(res)
+
+        # res['Method'] = method_name
+        # res['Nominal'] = 1 - alpha
+        # res['n_test'] = n_test
+        # res['n_calib'] = n_calib
+        # res['n_train'] = n_train
+        # res['noise_norm'] = 0
+        # res['Black box'] = 'CNN'
+
+
+directory = "./Results/"+str(dataset)+"/sigma_model_"+str(sigma_model)+"/sigma_smooth_"+str(sigma_smooth)+"/n_smooth_"+str(n_smooth)
+
+for score in calibration_scores:
+    if score == 'SC_Reg':
+        directory = directory + "/Regularization"
+        break
+
+if not os.path.exists(directory):
+    os.makedirs(directory)
 
 # save results
-results.to_csv('results.csv')
+results.to_csv(directory+"/results.csv")
 
 # plot results
 # plot marginal coverage results
+colors_list = sns.color_palette("husl", len(scores_list)*4)
+
 ax = sns.catplot(x="Black box", y="Coverage",
-                 hue="Method", col="noise_norm",
+                 hue="Method", palette=colors_list, col="noise_L2_norm",
                  data=results, kind="box",
                  height=4, aspect=.7)
 # ax = sns.boxplot(y="Coverage", x="Black box", hue="Method", data=results)
+# upper_quantiles_mean = np.mean(upper_quantiles)
+# upper_quantiles_std = np.std(upper_quantiles)
+lower_quantiles_mean = np.zeros(len(scores_list))
+upper_quantiles_mean = np.zeros(len(scores_list))
+lower_quantiles_std = np.zeros(len(scores_list))
+upper_quantiles_std = np.zeros(len(scores_list))
+
+for p in range(len(scores_list)):
+    lower_quantiles_mean[p] = np.mean(quantiles[p, 0, :])
+    upper_quantiles_mean[p] = np.mean(quantiles[p, 1, :])
+    lower_quantiles_std[p] = np.std(quantiles[p, 0, :])
+    upper_quantiles_std[p] = np.std(quantiles[p, 1, :])
+
+colors = ['green', 'blue']
 for i, graph in enumerate(ax.axes[0]):
     graph.set(xlabel='Classifier', ylabel='Marginal coverage')
     graph.axhline(1 - alpha, ls='--', color="red")
+    #graph.axhline(upper_quantiles_mean, ls='--', color="green")
+    #graph.axhline(lower_quantiles_mean, ls='--', color="green")
+    for p in range(len(scores_list)):
+        graph.axhline(upper_quantiles_mean[p], ls='--', color=colors_list[p*4+2])
+        graph.axhline(lower_quantiles_mean[p], ls='--', color=colors_list[p*4+2])
+        #graph.axhspan(upper_quantiles_mean[p]-upper_quantiles_std[p], upper_quantiles_mean[p]+upper_quantiles_std[p], alpha=0.1, color=colors[p])
+        #graph.axhspan(lower_quantiles_mean[p]-lower_quantiles_std[p], lower_quantiles_mean[p]+lower_quantiles_std[p], alpha=0.1, color=colors[p])
 
-ax.savefig("Marginal2.png")
+ax.savefig(directory+"/Marginal.png")
 
 # plot conditional coverage results
 ax = sns.catplot(x="Black box", y="Conditional coverage",
-                 hue="Method", col="noise_norm",
+                 hue="Method", col="noise_L2_norm",
                  data=results, kind="box",
                  height=4, aspect=.7)
 # ax = sns.boxplot(y="Conditional coverage", x="Black box", hue="Method", data=results)
@@ -461,15 +448,15 @@ for i, graph in enumerate(ax.axes[0]):
     graph.set(xlabel='Classifier', ylabel='Conditional coverage')
     graph.axhline(1 - alpha, ls='--', color="red")
 
-ax.savefig("Conditional.png")
+ax.savefig(directory+"/Conditional.png")
 
 # plot interval size results
 ax = sns.catplot(x="Black box", y="Size",
-                 hue="Method", col="noise_norm",
+                 hue="Method", col="noise_L2_norm",
                  data=results, kind="box",
                  height=4, aspect=.7)
 # ax = sns.boxplot(y="Size cover", x="Black box", hue="Method", data=results)
 for i, graph in enumerate(ax.axes[0]):
     graph.set(xlabel='Classifier', ylabel='Set Size')
 
-ax.savefig("Size.png")
+ax.savefig(directory+"/Size.png")
